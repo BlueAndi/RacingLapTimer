@@ -144,7 +144,7 @@ void setup()
         }
 
         /* Setup webserver */
-        gWebServer.serveStatic("/", LittleFS, "/web/", "max-age=1440");
+        gWebServer.serveStatic("/", LittleFS, "/web/", "max-age=86400");
         gWebServer.onNotFound(
             []()
             {
