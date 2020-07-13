@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-    <title>Competition Presenter</title>
+    <title>Racing Lap Timer</title>
     <link rel="stylesheet" href="./bootstrap/4.0.0/css/bootstrap.min.css" />
     <link href="starter-template.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Competition</a>
+        <a class="navbar-brand" href="#">Racing Lap Timer</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation" />
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -126,7 +126,7 @@
 
         function releaseMeasurement() {
             clearTimer();
-            
+
             global.wsClient.release().then(function(rsp) {
                 console.info("Released.");
             }).catch(function(err) {
@@ -227,7 +227,7 @@
                 if ((minutes === 0) &&
                     (seconds === 0) &&
                     (milliseconds === 0)) {
-                    
+
                     fastestLap = "-";
                 } else {
                     fastestLap = pad(minutes, 2) + ":" + pad(seconds, 2) + ":" + pad(milliseconds, 3);
