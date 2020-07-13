@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <title>Competition Presenter</title>
+    <link rel="stylesheet" href="./bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link href="starter-template.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Competition</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation" />
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link hover" href="index.html">Home</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+
+        <div class="row justify-content-center">
+            <div id="goupSelectionBar" class="btn-toolbar" role="group" aria-label="Choose group">
+            </div>
+        </div>
+
+        <div class="starter-template">
+            <h1 id="showSelectedGroup"></h1>
+            <p class="lead">Elapsed time:</p>
+            <p id="elapsedTime" class="display-1 text-monospace"></p>
+            <button type="button" class="btn btn-secondary" onclick="releaseMeasurement()">Release</button>
+        </div>
+
+        <div class="row justify-content-center">
+            <table id="resultTable" class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Group</th>
+                    <th scope="col">Fastest lap</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+        </div>
+
+    </main><!-- /.container -->
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./jquery/jquery-3.5.1.slim.min.js"></script>
+    <script src="./popper/2.4.4/popper.min.js"></script>
+    <script src="./bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="./ws.js"></script>
+    <script>
+        var global = {
+            intervalTimer: null,
+            intervalPeriod: 10,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+            wsClient: new cpjs.ws.Client(),
+            numberOfGroups: 6,
+            selectedGroup: 0,
+            resultTable: []
+        };
+
+        function pad(num, size) {
+            var str = "" + num;
+
+            while (str.length < size) {
+                str = "0" + str;
+            }
+
+            return str;
+        }
+
+        function updateTimer() {
+            $("#elapsedTime").html("<pre>" + pad(global.minutes, 2) + ":" + pad(global.seconds, 2) + ":" + pad(global.milliseconds, 3) + "</pre>");
+        }
+
+        function clearTimer() {
+            global.minutes = 0;
+            global.seconds = 0;
+            global.milliseconds = 0;
+            updateTimer();
+        }
+
+        function increaseElapsedTime() {
+            global.milliseconds += global.intervalPeriod;
+
+            if (1000 <= global.milliseconds) {
+                global.milliseconds = 0;
+                ++global.seconds;
+
+                if (60 <= global.seconds) {
+                    global.seconds = 0;
+                    ++global.minutes;
+
+                    if (60 <= global.minutes) {
+                        global.minutes = 0;
+                    }
+                }
+            }
+
+            updateTimer();
+        }
+
+        function triggerTimer() {
+            if (null !== global.intervalTimer) {
+                clearInterval(global.intervalTimer);
+                global.intervalTimer = null;
+            } else {
+                clearTimer();
+
+                /* Setup a interval timer, which shall be used to show the elapsed time on the web frontend. */
+                global.intervalTimer = setInterval(increaseElapsedTime, global.intervalPeriod);
+            }
+        }
+
+        function releaseMeasurement() {
+            clearTimer();
+            
+            global.wsClient.release().then(function(rsp) {
+                console.info("Released.");
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        function onClosed() {
+            console.info("Closed.");
+        }
+
+        function onEvent(rsp) {
+
+            if ("STARTED" == rsp.event) {
+
+                triggerTimer();
+
+            } else if ("FINISHED" == rsp.event) {
+
+                triggerTimer();
+
+                /* Adjust elapsed time according to received duration,
+                 * because of a better accuracy.
+                 */
+                 global.minutes         = Math.floor(rsp.duration / (60 * 1000));
+                 global.seconds         = Math.floor((rsp.duration / 1000) - (global.minutes * 60));
+                 global.milliseconds    = Math.floor(rsp.duration - (global.minutes * 60 * 1000) - (global.seconds * 1000));
+                 updateTimer();
+
+                 if ((0 == global.resultTable[global.selectedGroup].duration) ||
+                     (rsp.duration < global.resultTable[global.selectedGroup].duration)) {
+
+                    global.resultTable[global.selectedGroup].duration = rsp.duration;
+
+                    updateResultTable();
+                }
+
+            } else {
+                alert("Unknown event received: " + rsp.event);
+            }
+        }
+
+        function createGroups() {
+            var index = 0;
+
+            for(index = 0; index < global.numberOfGroups; ++index) {
+                $("#goupSelectionBar").append("<button type=\"button\" class=\"btn btn-primary mx-2\" onclick=\"selectGroup(" + index + ")\">Group " + String.fromCharCode(65 + index) + "</button>");
+            }
+        }
+
+        function selectGroup(id) {
+            if (global.numberOfGroups > id) {
+                global.selectedGroup = id;
+                $("#showSelectedGroup").html("Group " + String.fromCharCode(65 + global.selectedGroup));
+            }
+        }
+
+        function compareDuration(a, b) {
+            if (a.duration > b.duration) {
+                return 1;
+            }
+
+            if (a.duration < b.duration) {
+                return -1;
+            }
+
+            return 0;
+        }
+
+        function createResultTable() {
+            var index = 0;
+
+            for(index = 0; index < global.numberOfGroups; ++index) {
+                global.resultTable.push({
+                    id: index,
+                    duration: 0
+                });
+            }
+        }
+
+        function updateResultTable() {
+            var index = 0;
+            var sortedTable = global.resultTable.slice().sort(compareDuration);
+            var minutes = 0;
+            var seconds = 0;
+            var milliseconds = 0;
+            var fastestLap = "";
+
+            $("#resultTable > tbody").empty();
+            for(index = 0; index < global.numberOfGroups; ++index) {
+
+                minutes         = Math.floor(sortedTable[index].duration / (60 * 1000));
+                seconds         = Math.floor((sortedTable[index].duration / 1000) - (minutes * 60));
+                milliseconds    = Math.floor(sortedTable[index].duration - (minutes * 60 * 1000) - (seconds * 1000));
+
+                if ((minutes === 0) &&
+                    (seconds === 0) &&
+                    (milliseconds === 0)) {
+                    
+                    fastestLap = "-";
+                } else {
+                    fastestLap = pad(minutes, 2) + ":" + pad(seconds, 2) + ":" + pad(milliseconds, 3);
+                }
+
+                $("#resultTable > tbody").append("<tr><th scope=\"row\">" +
+                    (index + 1) +
+                    "</th><td>" +
+                    String.fromCharCode(65 + sortedTable[index].id) +
+                    "</td><td>" +
+                    fastestLap +
+                    "</td></tr>");
+            }
+        }
+
+        $(document).ready(function () {
+            updateTimer();
+            createGroups();
+            selectGroup(0);
+            createResultTable();
+            updateResultTable();
+
+            global.wsClient.connect({
+                protocol: "ws",
+                hostname: location.hostname,
+                port: 81,
+                endpoint: "/",
+                onEvent: onEvent,
+                onClosed: onClosed,
+            }).then(function(rsp) {
+                console.info("Connected.");
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
