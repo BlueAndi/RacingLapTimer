@@ -8,6 +8,7 @@ A racing lap timer, based on a laser sensor.
 ![RacingLapTimer](./doc/screenshot.jpg)
 
 - [Racing Lap Timer](#racing-lap-timer)
+- [Initial Startup](#initial-startup)
 - [Motivation](#motivation)
 - [Electronic](#electronic)
 - [Software](#software)
