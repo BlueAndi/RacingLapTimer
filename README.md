@@ -27,7 +27,7 @@ For line follower competitions a racing lap timer shall be used. It doesn't only
 # Electronic
 
 * [Wemos D1 Mini (esp8266)](https://docs.platformio.org/en/latest/boards/espressif8266/d1_mini.html)
-* [Waveshare laser sensor](www.waveshare.com/wiki/Laser_Sensor)
+* [Waveshare laser sensor](https://www.waveshare.com/wiki/Laser_Sensor)
 
 # Software
 
