@@ -5,6 +5,8 @@ A racing lap timer, based on a laser sensor.
 [![Repo Status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![Release](https://img.shields.io/github/release/BlueAndi/RacingLapTimer.svg)](https://github.com/BlueAndi/RacingLapTimer/releases)
 
+![RacingLapTimer](./doc/screenshot.jpg)
+
 - [Racing Lap Timer](#racing-lap-timer)
 - [Motivation](#motivation)
 - [Electronic](#electronic)
