@@ -81,8 +81,12 @@
             return str;
         }
 
+        function getFormattedLapTime(minutes, seconds, milliseconds) {
+            return pad(minutes, 2) + ":" + pad(seconds, 2) + ":" + pad(milliseconds, 3);
+        }
+
         function updateTimer() {
-            $("#elapsedTime").html("<pre>" + pad(global.minutes, 2) + ":" + pad(global.seconds, 2) + ":" + pad(global.milliseconds, 3) + "</pre>");
+            $("#elapsedTime").html("<pre>" + getFormattedLapTime(global.minutes, global.seconds, global.milliseconds) + "</pre>");
         }
 
         function clearTimer() {
@@ -136,11 +140,25 @@
             });
         }
 
+        function timestamp2MinSecMSec(timestamp) {
+            var minutes         = Math.floor(timestamp / (60 * 1000));
+            var seconds         = Math.floor((timestamp / 1000) - (minutes * 60));
+            var milliseconds    = Math.floor(timestamp - (minutes * 60 * 1000) - (seconds * 1000));
+
+            return {
+                minutes: minutes,
+                seconds: seconds,
+                milliseconds: milliseconds
+            }
+        }
+
         function onClosed() {
             console.info("Closed.");
+            alert("Websocket connection closed.");
         }
 
         function onEvent(rsp) {
+            var timeMinSecMSec = nullptr;
 
             if ("STARTED" == rsp.event) {
 
@@ -153,9 +171,10 @@
                 /* Adjust elapsed time according to received duration,
                  * because of a better accuracy.
                  */
-                 global.minutes         = Math.floor(rsp.duration / (60 * 1000));
-                 global.seconds         = Math.floor((rsp.duration / 1000) - (global.minutes * 60));
-                 global.milliseconds    = Math.floor(rsp.duration - (global.minutes * 60 * 1000) - (global.seconds * 1000));
+                 timeMinSecMSec         = timestamp2MinSecMSec(rsp.duration);
+                 global.minutes         = timeMinSecMSec.minutes;
+                 global.seconds         = timeMinSecMSec.seconds;
+                 global.milliseconds    = timeMinSecMSec.milliseconds;
                  updateTimer();
 
                  if ((0 == global.resultTable[global.selectedGroup].duration) ||
@@ -210,27 +229,23 @@
         }
 
         function updateResultTable() {
-            var index = 0;
-            var sortedTable = global.resultTable.slice().sort(compareDuration);
-            var minutes = 0;
-            var seconds = 0;
-            var milliseconds = 0;
-            var fastestLap = "";
+            var index           = 0;
+            var sortedTable     = global.resultTable.slice().sort(compareDuration);
+            var fastestLap      = "";
+            var timeMinSecMSec  = null;
 
             $("#resultTable > tbody").empty();
             for(index = 0; index < global.numberOfGroups; ++index) {
 
-                minutes         = Math.floor(sortedTable[index].duration / (60 * 1000));
-                seconds         = Math.floor((sortedTable[index].duration / 1000) - (minutes * 60));
-                milliseconds    = Math.floor(sortedTable[index].duration - (minutes * 60 * 1000) - (seconds * 1000));
+                timeMinSecMSec = timestamp2MinSecMSec(sortedTable[index].duration);
 
-                if ((minutes === 0) &&
-                    (seconds === 0) &&
-                    (milliseconds === 0)) {
+                if ((timeMinSecMSec.minutes === 0) &&
+                    (timeMinSecMSec.seconds === 0) &&
+                    (timeMinSecMSec.milliseconds === 0)) {
 
                     fastestLap = "-";
                 } else {
-                    fastestLap = pad(minutes, 2) + ":" + pad(seconds, 2) + ":" + pad(milliseconds, 3);
+                    fastestLap = getFormattedLapTime(timeMinSecMSec.minutes, timeMinSecMSec.seconds, timeMinSecMSec.milliseconds);
                 }
 
                 $("#resultTable > tbody").append("<tr><th scope=\"row\">" +
@@ -263,6 +278,8 @@
                 if ("undefined" !== typeof err) {
                     console.error(err);
                 }
+
+                alert("Websocket connection failed.");
             });
         });
     </script>
