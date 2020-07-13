@@ -24,6 +24,12 @@ A racing lap timer, based on a laser sensor.
 # Motivation
 For line follower competitions a racing lap timer shall be used. It doesn't only measure the lap time, it shows it nice via web interface, inclusive automatically result table generation.
 
+# Initial Startup
+If the system starts up the first time, it will spawn a wifi access point with the SSID RacingLapTimer. Connect to it, it will request a password (default: "let me in").
+Configure there the wifi network SSID/password to which the system shall later connect.
+
+After configuration, the system will try to establish a connection. If the connection is not successful, the access point will be spawned again. Otherwise the credentials will be stored to persistent memory and loaded the next time automatically.
+
 # Electronic
 
 * [Wemos D1 Mini (esp8266)](https://docs.platformio.org/en/latest/boards/espressif8266/d1_mini.html)
