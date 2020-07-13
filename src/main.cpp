@@ -135,9 +135,9 @@ void setup()
         isError = true;
     }
     /* If there are no credentials stored in persistent memory, a access point
-        * will be spawned. This call will only return if credentials are stored and
-        * a connection was successful established.
-        */
+     * will be spawned. This call will only return if credentials are stored and
+     * a connection was successful established.
+     */
     else if (false == wifiMgr.autoConnect(WIFI_AP_SSID, WIFI_MGR_WEB_PASSWORD))
     {
         Serial.printf("%lu: WiFi manager failed to connect.\n", millis());
