@@ -80,6 +80,9 @@ static const char*      WIFI_AP_SSID            = "RacingLapTimer";
 /** Hostname */
 static const char*      HOSTNAME                = "laptimer";
 
+/** WiFi manager webserver password, only relevant if the access point mode is running. */
+static const char*      WIFI_MGR_WEB_PASSWORD   = "let me in";
+
 /** Webserver port */
 static const uint32_t   WEBSERVER_PORT          = 80;
 
@@ -116,6 +119,9 @@ static CompetitionState gCompetitionState       = COMPETITION_STATE_UNRELEASED;
  */
 void setup()
 {
+    WiFiManager wifiMgr; /* No permanent instance is necessary! */
+    bool        isError = false;
+
     /* Setup serial interface */
     Serial.begin(SERIAL_BAUDRATE);
 
@@ -125,24 +131,26 @@ void setup()
     /* Mount filesystem */
     if (false == LittleFS.begin())
     {
-        Serial.printf("Failed to mount filesystem.\n");
+        Serial.printf("%lu: Failed to mount filesystem.\n", millis());
+        isError = true;
+    }
+    /* If there are no credentials stored in persistent memory, a access point
+        * will be spawned. This call will only return if credentials are stored and
+        * a connection was successful established.
+        */
+    else if (false == wifiMgr.autoConnect(WIFI_AP_SSID, WIFI_MGR_WEB_PASSWORD))
+    {
+        Serial.printf("%lu: WiFi manager failed to connect.\n", millis());
+        isError = true;
+    }
+    /* Setup mDNS service */
+    else if (false == MDNS.begin(HOSTNAME))
+    {
+        Serial.printf("%lu: Failed to start mDNS service.", millis());
+        isError = true;
     }
     else
     {
-        WiFiManager wifiMgr; /* No permanent instance is necessary! */
-
-        /* If there are no credentials stored in persistent memory, a access point
-         * will be spawned. This call will only return if credentials are stored and
-         * a connection was successful established.
-         */
-        wifiMgr.autoConnect(WIFI_AP_SSID);
-
-        /* Setup mDNS service */
-        if (false == MDNS.begin(HOSTNAME))
-        {
-            Serial.printf("Failed to start mDNS service.");
-        }
-
         /* Setup webserver */
         gWebServer.serveStatic("/", LittleFS, "/web/", "max-age=86400");
         gWebServer.onNotFound(
@@ -158,7 +166,15 @@ void setup()
         gWebSocketSrv.begin();
     }
 
-    Serial.printf("Ready.\n");
+    if (true == isError)
+    {
+        delay(30000);
+        ESP.restart();
+    }
+    else
+    {
+        Serial.printf("%lu: Ready.\n", millis());
+    }
 
     return;
 }
