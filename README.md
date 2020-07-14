@@ -36,6 +36,14 @@ After configuration, the system will try to establish a connection. If the conne
 * [Wemos D1 Mini (esp8266)](https://docs.platformio.org/en/latest/boards/espressif8266/d1_mini.html)
 * [Waveshare laser sensor](https://www.waveshare.com/wiki/Laser_Sensor)
 
+## Schematic
+
+**TODO KiCAD schematic**
+
+* Laser module DOUT -- Pin 5 MCU
+* Laser module Vcc shall be 3.3V, because MCU is only 3.3V tolerant.
+* Power supply by USB 5V, with a simple voltage divider to get 3.3V / ~40mA (must be verified by measurement).
+
 # Software
 
 ## Preparation
