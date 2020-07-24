@@ -75,6 +75,10 @@ The [PlatformIO IDE](https://platformio.org/platformio-ide) is used for the deve
 * [WifiManager](https://github.com/tzapu/WiFiManager) - ESP8266 WiFi Connection manager with fallback web configuration portal.
 * [WebSockets](https://github.com/Links2004/arduinoWebSockets) - A WebSocket Server and Client for Arduino based on RFC6455.
 
+## System Context
+
+![SystemContextDiagram](./doc/design/SystemContextDiagram.png)
+
 # Issues, Ideas And Bugs
 If you have further ideas or you found some bugs, great! Create a [issue](https://github.com/BlueAndi/RacingLapTimer/issues) or if you are able and willing to fix it by yourself, clone the repository and create a pull request.
 

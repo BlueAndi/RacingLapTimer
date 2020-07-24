@@ -1,0 +1,40 @@
+@startuml
+
+title Racing lap timer context diagram
+
+node "MCU board" {
+
+    component "Software" {
+        component "Webserver" as webServer
+        component "Websocket server" as webSocket
+        component "Serial driver" as serialDrv
+        component "Application" as app
+        component "I/O driver" as ioDrv
+    }
+
+}
+
+interface "WS port 81" as iWs
+interface "HTTP port 80" as iHttp
+interface "USB" as iUsb
+interface "GPIO" as iGpio
+
+node "PC" as pc
+node "Laser module" as laserModule
+
+serialDrv --( iUsb
+webServer --( iHttp
+webSocket -- iWs
+ioDrv --( iGpio
+
+iUsb -- pc: updating firmware/\ndebugging
+iHttp -- pc: release race/\nview ranking/\netc.
+iWs -- pc: release laser/\nget timings\n(full async)
+iGpio -- laserModule: laser light interrupt
+
+app -- webServer
+app -- webSocket
+app -- serialDrv
+app -- ioDrv
+
+@enduml
