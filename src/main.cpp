@@ -63,7 +63,7 @@ typedef enum
  * Prototypes
  *****************************************************************************/
 
-static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t* payload, size_t length);
+static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
 static void handleCompetition();
 static bool isRobotDetected();
 
@@ -72,31 +72,31 @@ static bool isRobotDetected();
  *****************************************************************************/
 
 /** Serial interface baudrate. */
-static const uint32_t   SERIAL_BAUDRATE         = 115200U;
+static const uint32_t SERIAL_BAUDRATE = 115200U;
 
 /** Wifi access point SSID */
-static const char*      WIFI_AP_SSID            = "RacingLapTimer";
+static const char *WIFI_AP_SSID = "RacingLapTimer";
 
 /** Hostname */
-static const char*      HOSTNAME                = "laptimer";
+static const char *HOSTNAME = "laptimer";
 
 /** WiFi manager webserver password, only relevant if the access point mode is running. */
-static const char*      WIFI_MGR_WEB_PASSWORD   = "let me in";
+static const char *WIFI_MGR_WEB_PASSWORD = "let me in";
 
 /** Webserver port */
-static const uint32_t   WEBSERVER_PORT          = 80;
+static const uint32_t WEBSERVER_PORT = 80;
 
 /** Websocket port */
-static const uint32_t   WEBSOCKET_PORT          = 81;
+static const uint32_t WEBSOCKET_PORT = 81;
 
 /** Digital input pin (arduino pin) for the laser obstacle detection sensor. */
-static const uint8_t    SENSOR_DIN_PIN          = 5;
+static const uint8_t SENSOR_DIN_PIN = 5;
 
 /**
  * After the first detection of the robot with the ext. sensor, this consider
  * the duration in ms after that the sensor will be considered again.
  */
-static const uint32_t   SENSOR_BLIND_PERIOD     = 400;
+static const uint32_t SENSOR_BLIND_PERIOD = 400;
 
 /** Webserver on port for http protocol */
 static ESP8266WebServer gWebServer(WEBSERVER_PORT);
@@ -105,10 +105,10 @@ static ESP8266WebServer gWebServer(WEBSERVER_PORT);
 static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
 
 /** Competition start timestamp in ms */
-static uint32_t         gStartTimestamp         = 0;
+static uint32_t gStartTimestamp = 0;
 
 /** Current competition state */
-static CompetitionState gCompetitionState       = COMPETITION_STATE_UNRELEASED;
+static CompetitionState gCompetitionState = COMPETITION_STATE_UNRELEASED;
 
 /******************************************************************************
  * External functions
@@ -120,7 +120,7 @@ static CompetitionState gCompetitionState       = COMPETITION_STATE_UNRELEASED;
 void setup()
 {
     WiFiManager wifiMgr; /* No permanent instance is necessary! */
-    bool        isError = false;
+    bool isError = false;
 
     /* Setup serial interface */
     Serial.begin(SERIAL_BAUDRATE);
@@ -134,13 +134,9 @@ void setup()
         Serial.printf("%lu: Failed to mount filesystem.\n", millis());
         isError = true;
     }
-    /* If there are no credentials stored in persistent memory, a access point
-     * will be spawned. This call will only return if credentials are stored and
-     * a connection was successful established.
-     */
-    else if (false == wifiMgr.autoConnect(WIFI_AP_SSID, WIFI_MGR_WEB_PASSWORD))
+    else if (!WiFi.softAP(WIFI_AP_SSID, WIFI_MGR_WEB_PASSWORD))
     {
-        Serial.printf("%lu: WiFi manager failed to connect.\n", millis());
+        Serial.printf("%lu: Failed to start AP.\n", millis());
         isError = true;
     }
     /* Setup mDNS service */
@@ -154,11 +150,9 @@ void setup()
         /* Setup webserver */
         gWebServer.serveStatic("/", LittleFS, "/web/", "max-age=86400");
         gWebServer.onNotFound(
-            []()
-            {
+            []() {
                 gWebServer.send(404, "text/plain", "File not found.");
-            }
-        );
+            });
         gWebServer.begin();
 
         /* Setup websocket server */
@@ -204,12 +198,12 @@ void loop()
  * @param[in] payload   Event payload
  * @param[in] length    Event payload length
  */
-static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t* payload, size_t length)
+static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
 {
     String cmd;
     size_t index = 0;
 
-    switch(type)
+    switch (type)
     {
     case WStype_ERROR:
         Serial.printf("%lu: Ws client (%u) error.\n", millis(), clientId);
@@ -224,9 +218,9 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t* payload, si
         break;
 
     case WStype_TEXT:
-        for(index = 0; index < length; ++index)
+        for (index = 0; index < length; ++index)
         {
-            cmd += reinterpret_cast<char*>(payload)[index];
+            cmd += reinterpret_cast<char *>(payload)[index];
         }
 
         Serial.printf("%lu: Ws client (%u): %s\n", millis(), clientId, cmd.c_str());
@@ -291,7 +285,7 @@ static void handleCompetition()
 {
     uint32_t duration = 0;
 
-    switch(gCompetitionState)
+    switch (gCompetitionState)
     {
     case COMPETITION_STATE_UNRELEASED:
         /* Don't care about external sensor.
@@ -341,8 +335,8 @@ static void handleCompetition()
  */
 static bool isRobotDetected()
 {
-    bool  isDetected  = false;
-    int   state       = digitalRead(SENSOR_DIN_PIN);
+    bool isDetected = false;
+    int state = digitalRead(SENSOR_DIN_PIN);
 
     if (HIGH == state)
     {
