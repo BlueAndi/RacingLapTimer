@@ -35,9 +35,7 @@ public:
     ~LapTriggerWebServer();                               /**< Default Destructor */
     bool begin();                                         /**< Initialization of Module */
     bool cycle();                                         /**< Executes Loop Cycle */
-    void WS_textClient(uint8_t clientID, String message); /**< Sends WebSocket Message to one client */
-    void WS_textAll(String message);                      /**< Sends WebSocket Message to all clients */
-
+    
 private:
 };
 

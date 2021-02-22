@@ -7,8 +7,12 @@
 #include "WebServer.h"
 
 /* CONSTANTS *************************************************************************************/
-static const uint32_t WEBSERVER_PORT = 80; /**< Webserver port */
-static const uint32_t WEBSOCKET_PORT = 81; /**< Websocket port */
+
+/** Webserver port */
+static const uint32_t WEBSERVER_PORT = 80;
+
+/** Websocket port */
+static const uint32_t WEBSOCKET_PORT = 81; 
 
 /** Webserver on port for http protocol */
 static ESP8266WebServer gWebServer(WEBSERVER_PORT);
@@ -22,6 +26,7 @@ static const char *HOSTNAME = "laptimer";
 /** WebSocket Message Handler */
 static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
 
+/** Competition Handler Instance */
 static Competition *m_laptrigger;
 
 /* MACROS ****************************************************************************************/
@@ -100,36 +105,18 @@ bool LapTriggerWebServer::begin()
 bool LapTriggerWebServer::cycle()
 {
     bool success = true;
+
     String outputMessage = "";
     if (m_laptrigger->handleCompetition(outputMessage))
     {
-        WS_textAll(outputMessage);
+        gWebSocketSrv.broadcastTXT(outputMessage);
     }
+
     MDNS.update();
     gWebServer.handleClient();
     gWebSocketSrv.loop();
 
     return success;
-}
-
-/**************************************************************************************************/
-
-/**
-*   Sends WebSocket Message to one client
-*/
-void LapTriggerWebServer::WS_textClient(uint8_t clientID, String message)
-{
-    gWebSocketSrv.sendTXT(clientID, message);
-}
-
-/**************************************************************************************************/
-
-/**
-*   Sends WebSocket Message to all Clients
-*/
-void LapTriggerWebServer::WS_textAll(String message)
-{
-    gWebSocketSrv.broadcastTXT(message);
 }
 
 /* PROTECTED METHODES ****************************************************************************/
@@ -168,6 +155,7 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
         break;
 
     case WStype_TEXT:
+
         for (index = 0; index < length; ++index)
         {
             cmd += reinterpret_cast<char *>(payload)[index];
@@ -189,6 +177,7 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
         {
             gWebSocketSrv.sendTXT(clientId, "NACK");
         }
+
         break;
 
     case WStype_BIN:
