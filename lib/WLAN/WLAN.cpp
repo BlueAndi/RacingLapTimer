@@ -8,15 +8,13 @@
 
 /* CONSTANTS *************************************************************************************/
 
-static const uint32_t WIFI_TIMEOUT_MS = 20000; /**< Timeout for WiFi connection */
+static const unsigned long WIFI_TIMEOUT_MS = 5000; /**< Timeout for WiFi connection */
 
 /* MACROS ****************************************************************************************/
 
 /* TYPES *****************************************************************************************/
 
 /* PROTOTYPES ************************************************************************************/
-
-bool connectStation(); /**< Connect to Wireless Access Point */
 
 /* VARIABLES *************************************************************************************/
 
@@ -51,12 +49,9 @@ bool WLAN::begin()
 {
     bool success = false;
 
-    WiFi.mode(WIFI_AP_STA);
-    WiFi.softAP(AP_SSID, AP_PASSWORD);
-    Serial.println(WiFi.softAPIP());
-
-    if (!STA_SSID.isEmpty())
+    if (STA_SSID != "")
     {
+        WiFi.mode(WIFI_STA);
         WiFi.begin(STA_SSID, STA_PASSWORD);
 
         if (connectStation())
@@ -70,6 +65,13 @@ bool WLAN::begin()
     else
     {
         Serial.println("No stored STA Credentials!");
+        Serial.println("Starting AP");
+
+        WiFi.mode(WIFI_AP);
+        WiFi.softAP(AP_SSID, AP_PASSWORD);
+
+        Serial.println(WiFi.softAPIP());
+
         success = true;
     }
 
@@ -133,19 +135,23 @@ const IPAddress &WLAN::getIPAddress(void)
 *   Connect to Wireless Access Point
 */
 
-bool connectStation()
+bool WLAN::connectStation()
 {
     bool success = false;
 
-    uint32_t startConnect = millis();
+    unsigned long startAttempTime = millis();
 
-    while ((WL_CONNECTED != WiFi.status()) && ((millis() - startConnect) < WIFI_TIMEOUT_MS))
+    Serial.println("Connecting...");
+    while ((WiFi.status() != WL_CONNECTED) && ((millis() - startAttempTime) < WIFI_TIMEOUT_MS))
     {
+        delay(100);
     }
 
     if (WL_CONNECTED == WiFi.status())
     {
+        Serial.println("Connected");
         success = true;
+        localIP = WiFi.localIP();
     }
 
     return success;
