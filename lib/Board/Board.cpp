@@ -70,6 +70,7 @@ bool Board::isRobotDetected()
 */
 void Board::errorHalt()
 {
+    Serial.println("Critical Error. Wait for restart (30 Seconds)");
     delay(30000);
     ESP.restart();
 }
