@@ -32,14 +32,15 @@
 /******************************************************************************
  * Includes
  *****************************************************************************/
-#include <Arduino.h>
-#include <ESP8266WiFi.h>
+
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
-#include <WiFiManager.h>
 #include <LittleFS.h>
 #include <WebSocketsServer.h>
+
+#include "Board.h"
+#include "WLAN.h"
 
 /******************************************************************************
  * Macros
@@ -65,23 +66,13 @@ typedef enum
 
 static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
 static void handleCompetition();
-static bool isRobotDetected();
 
 /******************************************************************************
  * Variables
  *****************************************************************************/
 
-/** Serial interface baudrate. */
-static const uint32_t SERIAL_BAUDRATE = 115200U;
-
-/** Wifi access point SSID */
-static const char *WIFI_AP_SSID = "RacingLapTimer";
-
 /** Hostname */
 static const char *HOSTNAME = "laptimer";
-
-/** WiFi manager webserver password, only relevant if the access point mode is running. */
-static const char *WIFI_MGR_WEB_PASSWORD = "let me in";
 
 /** Webserver port */
 static const uint32_t WEBSERVER_PORT = 80;
@@ -89,14 +80,14 @@ static const uint32_t WEBSERVER_PORT = 80;
 /** Websocket port */
 static const uint32_t WEBSOCKET_PORT = 81;
 
-/** Digital input pin (arduino pin) for the laser obstacle detection sensor. */
-static const uint8_t SENSOR_DIN_PIN = 5;
-
 /**
  * After the first detection of the robot with the ext. sensor, this consider
  * the duration in ms after that the sensor will be considered again.
  */
 static const uint32_t SENSOR_BLIND_PERIOD = 400;
+
+/** Competition start timestamp in ms */
+static uint32_t gStartTimestamp = 0;
 
 /** Webserver on port for http protocol */
 static ESP8266WebServer gWebServer(WEBSERVER_PORT);
@@ -104,11 +95,11 @@ static ESP8266WebServer gWebServer(WEBSERVER_PORT);
 /** Websocket server on port for ws protocol */
 static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
 
-/** Competition start timestamp in ms */
-static uint32_t gStartTimestamp = 0;
-
 /** Current competition state */
 static CompetitionState gCompetitionState = COMPETITION_STATE_UNRELEASED;
+
+/** WLAN instance */
+static WLAN wlan;
 
 /******************************************************************************
  * External functions
@@ -119,22 +110,20 @@ static CompetitionState gCompetitionState = COMPETITION_STATE_UNRELEASED;
  */
 void setup()
 {
-    WiFiManager wifiMgr; /* No permanent instance is necessary! */
     bool isError = false;
 
-    /* Setup serial interface */
-    Serial.begin(SERIAL_BAUDRATE);
-
-    /* Prepare sensor input pin */
-    pinMode(SENSOR_DIN_PIN, INPUT);
-
+    if (false == Board::begin())
+    {
+        Serial.printf("%lu: failed to start Board. \n", millis());
+        isError = true;
+    }
     /* Mount filesystem */
-    if (false == LittleFS.begin())
+    else if (false == LittleFS.begin())
     {
         Serial.printf("%lu: Failed to mount filesystem.\n", millis());
         isError = true;
     }
-    else if (!WiFi.softAP(WIFI_AP_SSID, WIFI_MGR_WEB_PASSWORD))
+    else if (false == wlan.begin())
     {
         Serial.printf("%lu: Failed to start AP.\n", millis());
         isError = true;
@@ -162,8 +151,7 @@ void setup()
 
     if (true == isError)
     {
-        delay(30000);
-        ESP.restart();
+        Board::errorHalt();
     }
     else
     {
@@ -295,7 +283,7 @@ static void handleCompetition()
 
     case COMPETITION_STATE_RELEASED:
         /* React on external sensor */
-        if (true == isRobotDetected())
+        if (true == Board::isRobotDetected())
         {
             gStartTimestamp = millis();
             gWebSocketSrv.broadcastTXT("EVT;STARTED");
@@ -309,7 +297,7 @@ static void handleCompetition()
         /* React on external sensor */
         if (SENSOR_BLIND_PERIOD <= duration)
         {
-            if (true == isRobotDetected())
+            if (true == Board::isRobotDetected())
             {
                 gWebSocketSrv.broadcastTXT(String("EVT;FINISHED;") + duration);
                 gCompetitionState = COMPETITION_STATE_FINISHED;
@@ -326,22 +314,4 @@ static void handleCompetition()
     default:
         break;
     }
-}
-
-/**
- * Is a roboter detected or not?
- *
- * @return If a roboter is detected, it will return true otherwise false.
- */
-static bool isRobotDetected()
-{
-    bool isDetected = false;
-    int state = digitalRead(SENSOR_DIN_PIN);
-
-    if (HIGH == state)
-    {
-        isDetected = true;
-    }
-
-    return isDetected;
 }
