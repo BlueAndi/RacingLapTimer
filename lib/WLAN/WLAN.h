@@ -27,6 +27,7 @@ public:
     WLAN();                                             /**< Default Constructor */
     ~WLAN();                                            /**< Default Destructor */
     bool begin();                                       /**< Initialize WLAN Module */
+    bool cycle();                                       /**< Executes WLAN Connection Check */
     bool saveCredentials(String ssid, String password); /**< Saves new STA Credentials */
     const IPAddress &getIPAddress(void);                /**< Returns the IP Address of the System */
 

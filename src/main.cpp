@@ -81,12 +81,12 @@ void setup()
     }
     else if (false == wlan.begin())
     {
-        Serial.printf("%lu: Failed to start AP.\n", millis());
+        Serial.printf("%lu: Failed to start WLAN.\n", millis());
         isError = true;
     }
     else if (false == webserver.begin())
     {
-        Serial.printf("%lu: Failed to start AP.\n", millis());
+        Serial.printf("%lu: Failed to start Web Server.\n", millis());
         isError = true;
     }
 
@@ -105,8 +105,21 @@ void setup()
  */
 void loop()
 {
-    webserver.cycle();
-    //wlan.cycle();
+    bool success = true;
+
+    if (false == webserver.cycle())
+    {
+        success = false;
+    }
+    else if(false == wlan.cycle())
+    {
+        success = false;
+    }
+
+    if(false == success)
+    {
+        Board::errorHalt();
+    }
 }
 
 /******************************************************************************

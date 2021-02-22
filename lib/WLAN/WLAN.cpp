@@ -8,13 +8,19 @@
 
 /* CONSTANTS *************************************************************************************/
 
+static const uint32_t WIFI_TIMEOUT_MS = 20000; /**< Timeout for WiFi connection */
+
 /* MACROS ****************************************************************************************/
 
 /* TYPES *****************************************************************************************/
 
 /* PROTOTYPES ************************************************************************************/
 
+bool connectStation(); /**< Connect to Wireless Access Point */
+
 /* VARIABLES *************************************************************************************/
+
+static bool staAvailable = false;
 
 /* PUBLIC METHODES *******************************************************************************/
 
@@ -43,14 +49,49 @@ WLAN::~WLAN()
 */
 bool WLAN::begin()
 {
-    bool success = true;
+    bool success = false;
 
-    if (!WiFi.softAP(AP_SSID.c_str(), AP_PASSWORD.c_str()))
+    WiFi.mode(WIFI_AP_STA);
+    WiFi.softAP(AP_SSID, AP_PASSWORD);
+    Serial.println(WiFi.softAPIP());
+
+    if (!STA_SSID.isEmpty())
     {
-        Serial.printf("%lu: Failed to start AP.\n", millis());
-        success = false;
+        WiFi.begin(STA_SSID, STA_PASSWORD);
+
+        if (connectStation())
+        {
+            success = true;
+            localIP = WiFi.localIP();
+            staAvailable = true;
+            Serial.println(localIP);
+        }
+    }
+    else
+    {
+        Serial.println("No stored STA Credentials!");
+        success = true;
     }
 
+    return success;
+}
+
+/**************************************************************************************************/
+
+/**
+*   Executes WLAN Connection Check
+*/
+bool WLAN::cycle()
+{
+    bool success = true;
+
+    if (staAvailable)
+    {
+        if (WL_CONNECTED != WiFi.status())
+        {
+            success = connectStation();
+        }
+    }
     return success;
 }
 
@@ -85,3 +126,27 @@ const IPAddress &WLAN::getIPAddress(void)
 /* EXTERNAL FUNCTIONS ****************************************************************************/
 
 /* INTERNAL FUNCTIONS ****************************************************************************/
+
+/**************************************************************************************************/
+
+/**
+*   Connect to Wireless Access Point
+*/
+
+bool connectStation()
+{
+    bool success = false;
+
+    uint32_t startConnect = millis();
+
+    while ((WL_CONNECTED != WiFi.status()) && ((millis() - startConnect) < WIFI_TIMEOUT_MS))
+    {
+    }
+
+    if (WL_CONNECTED == WiFi.status())
+    {
+        success = true;
+    }
+
+    return success;
+}
