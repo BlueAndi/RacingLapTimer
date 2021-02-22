@@ -36,6 +36,7 @@
 #include "Board.h"
 #include "WLAN.h"
 #include "WebServer.h"
+#include "Competition.h"
 
 /******************************************************************************
  * Macros
@@ -45,42 +46,22 @@
  * Types and Classes
  *****************************************************************************/
 
-/** Competition states */
-typedef enum
-{
-    COMPETITION_STATE_UNRELEASED = 0, /**< Competition is not released yet */
-    COMPETITION_STATE_RELEASED,       /**< Competition is released, but not started yet. */
-    COMPETITION_STATE_STARTED,        /**< Competition is started */
-    COMPETITION_STATE_FINISHED        /**< Competition is finished */
+/** WLAN Instance */
+WLAN wlan;
 
-} CompetitionState;
+/** Competition Instance */
+Competition lapTrigger;
+
+/** WebServer Instance */
+LapTriggerWebServer webserver(lapTrigger);
 
 /******************************************************************************
  * Prototypes
  *****************************************************************************/
-static void handleCompetition();
 
 /******************************************************************************
  * Variables
  *****************************************************************************/
-
-/**
- * After the first detection of the robot with the ext. sensor, this consider
- * the duration in ms after that the sensor will be considered again.
- */
-static const uint32_t SENSOR_BLIND_PERIOD = 400;
-
-/** Competition start timestamp in ms */
-static uint32_t gStartTimestamp = 0;
-
-/** Current competition state */
-static CompetitionState gCompetitionState = COMPETITION_STATE_UNRELEASED;
-
-/** WLAN Instance */
-static WLAN wlan;
-
-/** WebServer Instance */
-static Server webserver;
 
 /******************************************************************************
  * External functions
@@ -117,8 +98,6 @@ void setup()
     {
         Serial.printf("%lu: Ready.\n", millis());
     }
-
-    return;
 }
 
 /**
@@ -127,62 +106,9 @@ void setup()
 void loop()
 {
     webserver.cycle();
-    handleCompetition();
+    //wlan.cycle();
 }
 
 /******************************************************************************
  * Local functions
  *****************************************************************************/
-
-
-
-/**
- * Handle the competition state machine, depending on the user input from
- * web frontend and sensor input.
- */
-static void handleCompetition()
-{
-    uint32_t duration = 0;
-
-    switch (gCompetitionState)
-    {
-    case COMPETITION_STATE_UNRELEASED:
-        /* Don't care about external sensor.
-         * User must release the first competition.
-         */
-        break;
-
-    case COMPETITION_STATE_RELEASED:
-        /* React on external sensor */
-        if (true == Board::isRobotDetected())
-        {
-            gStartTimestamp = millis();
-            webserver.WS_textAll("EVT;STARTED");
-            gCompetitionState = COMPETITION_STATE_STARTED;
-        }
-        break;
-
-    case COMPETITION_STATE_STARTED:
-        duration = millis() - gStartTimestamp;
-
-        /* React on external sensor */
-        if (SENSOR_BLIND_PERIOD <= duration)
-        {
-            if (true == Board::isRobotDetected())
-            {
-                webserver.WS_textAll(String("EVT;FINISHED;") + duration);
-                gCompetitionState = COMPETITION_STATE_FINISHED;
-            }
-        }
-        break;
-
-    case COMPETITION_STATE_FINISHED:
-        /* Don't care about external sensor.
-         * User must release next competition.
-         */
-        break;
-
-    default:
-        break;
-    }
-}

@@ -13,6 +13,7 @@
 #include <DNSServer.h>
 #include <LittleFS.h>
 #include <WebSocketsServer.h>
+#include "Competition.h"
 
 /* CONSTANTS *************************************************************************************/
 
@@ -27,16 +28,17 @@
 /**
 *   Abstraction Class for ESP8266 Web Server
 */
-class Server
+class LapTriggerWebServer
 {
 public:
-    Server();                        /**< Default Constructor */
-    ~Server();                       /**< Default Destructor */
-    bool begin();                    /**< Initialization of Module */
-    bool cycle();                    /**< Executes Loop Cycle */
-    void WS_textAll(String message); /**< Sends WebSocket Message to all clients */
+    LapTriggerWebServer(Competition &goalLine);           /**< Default Constructor */
+    ~LapTriggerWebServer();                               /**< Default Destructor */
+    bool begin();                                         /**< Initialization of Module */
+    bool cycle();                                         /**< Executes Loop Cycle */
+    void WS_textClient(uint8_t clientID, String message); /**< Sends WebSocket Message to one client */
+    void WS_textAll(String message);                      /**< Sends WebSocket Message to all clients */
+
 private:
-    const char *HOSTNAME = "laptimer"; /**< Hostname */
 };
 
 #endif /*WEB_SERVER_H_*/

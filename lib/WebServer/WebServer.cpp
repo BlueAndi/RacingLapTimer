@@ -16,14 +16,19 @@ static ESP8266WebServer gWebServer(WEBSERVER_PORT);
 /** Websocket server on port for ws protocol */
 static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
 
+/** Hostname */
+static const char *HOSTNAME = "laptimer";
+
+/** WebSocket Message Handler */
+static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
+
+static Competition *m_laptrigger;
+
 /* MACROS ****************************************************************************************/
 
 /* TYPES *****************************************************************************************/
 
 /* PROTOTYPES ************************************************************************************/
-
-/** WebSocket Message Handler */
-static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
 
 /* VARIABLES *************************************************************************************/
 
@@ -34,8 +39,9 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
 /**
 *   Default Constructor
 */
-Server::Server()
+LapTriggerWebServer::LapTriggerWebServer(Competition &goalLine)
 {
+    m_laptrigger = &goalLine;
 }
 
 /**************************************************************************************************/
@@ -43,7 +49,7 @@ Server::Server()
 /**
 *   Default Destructor
 */
-Server::~Server()
+LapTriggerWebServer::~LapTriggerWebServer()
 {
 }
 
@@ -52,7 +58,7 @@ Server::~Server()
 /**
 *   Initialization of Module
 */
-bool Server::begin()
+bool LapTriggerWebServer::begin()
 {
     bool success = true;
 
@@ -91,10 +97,14 @@ bool Server::begin()
 /**
 *   Executes Loop Cycle
 */
-bool Server::cycle()
+bool LapTriggerWebServer::cycle()
 {
     bool success = true;
-
+    String outputMessage = "";
+    if (m_laptrigger->handleCompetition(outputMessage))
+    {
+        WS_textAll(outputMessage);
+    }
     MDNS.update();
     gWebServer.handleClient();
     gWebSocketSrv.loop();
@@ -105,9 +115,19 @@ bool Server::cycle()
 /**************************************************************************************************/
 
 /**
+*   Sends WebSocket Message to one client
+*/
+void LapTriggerWebServer::WS_textClient(uint8_t clientID, String message)
+{
+    gWebSocketSrv.sendTXT(clientID, message);
+}
+
+/**************************************************************************************************/
+
+/**
 *   Sends WebSocket Message to all Clients
 */
-void Server::WS_textAll(String message)
+void LapTriggerWebServer::WS_textAll(String message)
 {
     gWebSocketSrv.broadcastTXT(message);
 }
@@ -154,13 +174,10 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
         }
 
         Serial.printf("%lu: Ws client (%u): %s\n", millis(), clientId, cmd.c_str());
-
         if (cmd.equals("RELEASE"))
         {
-            if ((COMPETITION_STATE_UNRELEASED == gCompetitionState) ||
-                (COMPETITION_STATE_FINISHED == gCompetitionState))
+            if (m_laptrigger->setReleasedState())
             {
-                gCompetitionState = COMPETITION_STATE_RELEASED;
                 gWebSocketSrv.sendTXT(clientId, "ACK");
             }
             else

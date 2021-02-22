@@ -38,4 +38,5 @@ private:
 
     IPAddress localIP;
 };
+
 #endif /*WLAN_H_*/
