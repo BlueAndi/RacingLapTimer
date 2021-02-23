@@ -262,6 +262,8 @@ void handleCredentials()
             if(m_wireless->saveCredentials(ssidInput,passwordInput))
             {
                 gWebServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
+                delay(3000);
+                ESP.restart();
             }
         }
     }
