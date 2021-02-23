@@ -12,7 +12,7 @@
 static const uint32_t WEBSERVER_PORT = 80;
 
 /** Websocket port */
-static const uint32_t WEBSOCKET_PORT = 81; 
+static const uint32_t WEBSOCKET_PORT = 81;
 
 /** Webserver on port for http protocol */
 static ESP8266WebServer gWebServer(WEBSERVER_PORT);
@@ -34,6 +34,8 @@ static Competition *m_laptrigger;
 /* TYPES *****************************************************************************************/
 
 /* PROTOTYPES ************************************************************************************/
+
+static void handleCredentials();
 
 /* VARIABLES *************************************************************************************/
 
@@ -83,6 +85,7 @@ bool LapTriggerWebServer::begin()
     {
         /* Setup webserver */
         gWebServer.serveStatic("/", LittleFS, "/web/", "max-age=86400");
+        gWebServer.on("/config.html", HTTP_POST, handleCredentials);
         gWebServer.onNotFound(
             []() {
                 gWebServer.send(404, "text/plain", "File not found.");
@@ -210,5 +213,28 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
 
     default:
         break;
+    }
+}
+
+/**************************************************************************************************/
+
+/**
+*   Handler for POST Request
+*/
+void handleCredentials()
+{
+    if (gWebServer.method() != HTTP_POST)
+    {
+        gWebServer.send(405, "text/plain", "Method Not Allowed");
+    }
+    else
+    {
+        String message = "POST form was:\n";
+        for (uint8_t i = 0; i < gWebServer.args(); i++)
+        {
+            message += " " + gWebServer.argName(i) + ": " + gWebServer.arg(i) + "\n";
+        }
+        gWebServer.send(200, "text/plain", message);
+        Serial.println(message);
     }
 }
