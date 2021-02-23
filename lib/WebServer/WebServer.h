@@ -31,7 +31,7 @@
 class LapTriggerWebServer
 {
 public:
-    LapTriggerWebServer(Competition &goalLine);           /**< Default Constructor */
+    LapTriggerWebServer(WLAN &wireless, Competition &goalLine);           /**< Default Constructor */
     ~LapTriggerWebServer();                               /**< Default Destructor */
     bool begin();                                         /**< Initialization of Module */
     bool cycle();                                         /**< Executes Loop Cycle */

@@ -29,6 +29,9 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
 /** Competition Handler Instance */
 static Competition *m_laptrigger;
 
+/** WLAN Handler Instance */
+static WLAN *m_wireless;
+
 /* MACROS ****************************************************************************************/
 
 /* TYPES *****************************************************************************************/
@@ -46,7 +49,7 @@ static void handleCredentials();
 /**
 *   Default Constructor
 */
-LapTriggerWebServer::LapTriggerWebServer(Competition &goalLine)
+LapTriggerWebServer::LapTriggerWebServer(WLAN &wireless, Competition &goalLine)
 {
     m_laptrigger = &goalLine;
 }
@@ -229,12 +232,37 @@ void handleCredentials()
     }
     else
     {
-        String message = "POST form was:\n";
+        String ssidInput = "";
+        String passwordInput = "";
+
         for (uint8_t i = 0; i < gWebServer.args(); i++)
         {
-            message += " " + gWebServer.argName(i) + ": " + gWebServer.arg(i) + "\n";
+            if (gWebServer.argName(i) == "STA_SSID")
+            {
+                ssidInput = gWebServer.arg(i);
+            }
+            else if (gWebServer.argName(i) == "STA_PASSWORD")
+            {
+                passwordInput = gWebServer.arg(i);
+            }
         }
-        gWebServer.send(200, "text/plain", message);
-        Serial.println(message);
+
+        if (ssidInput.isEmpty())
+        {
+            String message = "POST form was:\n";
+            for (uint8_t i = 0; i < gWebServer.args(); i++)
+            {
+                message += " " + gWebServer.argName(i) + ": " + gWebServer.arg(i) + "\n";
+            }
+            gWebServer.send(200, "text/plain", message);
+            Serial.println(message);
+        }
+        else
+        {
+            if(m_wireless->saveCredentials(ssidInput,passwordInput))
+            {
+                gWebServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
+            }
+        }
     }
 }

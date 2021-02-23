@@ -53,7 +53,7 @@ WLAN wlan;
 Competition lapTrigger;
 
 /** WebServer Instance */
-LapTriggerWebServer webserver(lapTrigger);
+LapTriggerWebServer webserver(wlan, lapTrigger);
 
 /******************************************************************************
  * Prototypes
