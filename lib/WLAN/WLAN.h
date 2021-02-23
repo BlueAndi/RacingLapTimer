@@ -36,8 +36,8 @@ private:
 
     const String AP_SSID = "RacingLapTimer"; /**< WiFi AP SSID */
     const String AP_PASSWORD = "let me in";  /**< WiFi AP Password */
-    String STA_SSID = "";                    /**< WiFi STA SSID */
-    String STA_PASSWORD = "";                /**< WiFi STA Password */
+    String STA_SSID = "";              /**< WiFi STA SSID */
+    String STA_PASSWORD = "";   /**< WiFi STA Password */
 
     IPAddress localIP;
 };

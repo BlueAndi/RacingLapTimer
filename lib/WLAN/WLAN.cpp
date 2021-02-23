@@ -61,6 +61,17 @@ bool WLAN::begin()
             staAvailable = true;
             Serial.println(localIP);
         }
+        else
+        {
+            Serial.println("Network not in range or Unvalid Credentials.");
+            Serial.println("Starting AP...");
+
+            WiFi.mode(WIFI_AP);
+            WiFi.softAP(AP_SSID, AP_PASSWORD);
+
+            Serial.println(WiFi.softAPIP());
+            success = true;
+        }
     }
     else
     {
