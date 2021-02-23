@@ -4,31 +4,48 @@
 -->
 <!DOCTYPE html>
 <html>
-<title>ESP32 CAN-Analyzer</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="shortcut icon" href="/pictures/favicon.ico" type="image/x-icon">
-<link rel="icon" href="/pictures/favicon.ico" type="image/x-icon">
-
-<link rel="stylesheet" href="/css/style.css" />
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <title>Credential Configuration</title>
+    <link rel="stylesheet" href="./bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link href="starter-template.css" rel="stylesheet">
+</head>
 
 <body>
-    <div class="topnav">
-        <a href="/">Home</a>
-    </div>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Racing Lap Timer</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation" />
+        <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <h1>Change Station Credentials</h1>
-    <div>
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <a class="nav-link hover" href="index.html">Home</a>
+                <li class="nav-item active">
+                    <a class="nav-link hover" href="config.html">Configuration</a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <main role="main" class="container"></main>
+    <h1 class="row justify-content-center">Change Station Credentials</h1>
+
+    <div class="row justify-content-center">
         <form action="" method="post">
             <p><input type="text" placeholder="SSID" required name="STA_SSID">
             </p>
             <p><input type="password" placeholder="Password" name="STA_PASSWORD">
             </p>
-            <p><button type="submit">Save and Restart</button></p>
+            <p><button type="submit" class="btn btn-secondary">Save and Restart</button></p>
         </form>
     </div>
 
+    </main><!-- /.container -->
 </body>
 
 </html>
