@@ -34,7 +34,7 @@ jobs:
           platformio update
       
       - name: Perform static checks
-        run: platformio check --environment native --skip-packages
+        run: platformio check --environment test --skip-packages
       
       - name: Set up graphviz
         uses: ts-graphviz/setup-graphviz@v1
