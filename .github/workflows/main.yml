@@ -24,6 +24,18 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install platformio
+          platformio update
+      
+      - name: Perform static checks
+        run: platformio check --environment native --skip-packages
+      
       - name: Set up graphviz
         uses: ts-graphviz/setup-graphviz@v1
         
@@ -32,7 +44,3 @@ jobs:
         with:
           working-directory: './doc/doxygen'
           doxyfile-path: './Doxyfile'
-          
-      - name: Perform static checks
-        run: platformio check --environment native --skip-packages
-        
