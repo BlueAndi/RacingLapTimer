@@ -4,13 +4,15 @@ A racing lap timer, based on a laser sensor.
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://choosealicense.com/licenses/mit/)
 [![Repo Status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![Release](https://img.shields.io/github/release/BlueAndi/RacingLapTimer.svg)](https://github.com/BlueAndi/RacingLapTimer/releases)
+[![Build Status](https://github.com/BlueAndi/RacingLapTimer/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/BlueAndi/RacingLapTimer/actions/workflows/main.yml)
 
 ![RacingLapTimer](./doc/screenshot.jpg)
 
 - [Racing Lap Timer](#racing-lap-timer)
-- [Initial Startup](#initial-startup)
 - [Motivation](#motivation)
+- [Initial Startup](#initial-startup)
 - [Electronic](#electronic)
+  - [Schematic](#schematic)
 - [Software](#software)
   - [Preparation](#preparation)
   - [IDE](#ide)
@@ -19,6 +21,7 @@ A racing lap timer, based on a laser sensor.
   - [Update of the device](#update-of-the-device)
     - [Update via usb](#update-via-usb)
   - [Used Libraries](#used-libraries)
+  - [System Context](#system-context)
 - [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
 - [License](#license)
 
