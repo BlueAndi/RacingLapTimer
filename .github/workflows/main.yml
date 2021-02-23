@@ -33,3 +33,6 @@ jobs:
           working-directory: './doc/doxygen'
           doxyfile-path: './Doxyfile'
           
+      - name: Perform static checks
+        run: platformio check --environment native --skip-packages
+        
