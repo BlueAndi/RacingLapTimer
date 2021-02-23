@@ -49,6 +49,10 @@ bool WLAN::begin()
 {
     bool success = false;
 
+    /*
+    * IMPORT CREDENTIALS FROM MEMORY HERE
+    */
+
     if (STA_SSID != "")
     {
         WiFi.mode(WIFI_STA);
@@ -117,6 +121,7 @@ bool WLAN::saveCredentials(String ssid, String password)
 {
     bool success = true;
 
+    Serial.println("Credentials Received");
     /* Code */
 
     return success;
