@@ -22,15 +22,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - uses: actions/checkout@v1
+      
       - name: Set up graphviz
         uses: ts-graphviz/setup-graphviz@v1
-        
-      - name: Where we are
-        run: pwd
         
       - name: Set up doxygen and generate documentation
         uses: mattnotmitt/doxygen-action@v1.2.3
         with:
           working-directory: './doc/doxygen'
-          doxyfile-path: 'Doxyfile'
+          doxyfile-path: './Doxyfile'
           
