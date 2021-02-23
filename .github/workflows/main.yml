@@ -26,8 +26,8 @@ jobs:
         uses: ts-graphviz/setup-graphviz@v1
         
       - name: Set up doxygen and generate documentation
-        uses: mattnotmitt/doxygen-action@v1.1.0
+        uses: mattnotmitt/doxygen-action@v1.2.3
         with:
-          working-directory: './doc/doxygen'
-          doxyfile-path: './Doxyfile'
+          working-directory: 'doc/doxygen/'
+          doxyfile-path: 'Doxyfile'
           
