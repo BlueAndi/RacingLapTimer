@@ -117,9 +117,9 @@ bool WLAN::cycle()
 /**
 *   Saves new STA Credentials
 */
-bool WLAN::saveCredentials(String ssid, String password)
+bool WLAN::saveCredentials(const String &ssid, const String &password)
 {
-    bool success = true;
+    bool success = false;
 
     Serial.println("Credentials Received");
     /* Code */
