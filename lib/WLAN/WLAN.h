@@ -58,10 +58,10 @@ private:
     bool importCredentials(); /**< Imports Credentials from EEPROM. */
     void clearEEPROM();       /**< Deletes stored Credentials. */
 
-    const String AP_SSID = "RacingLapTimer"; /**< WiFi AP SSID. */
-    const String AP_PASSWORD = "let me in";  /**< WiFi AP Password. */
-    String STA_SSID = "";                    /**< WiFi STA SSID. */
-    String STA_PASSWORD = "";                /**< WiFi STA Password. */
+    String AP_SSID;      /**< WiFi AP SSID. */
+    String AP_PASSWORD;  /**< WiFi AP Password. */
+    String STA_SSID;     /**< WiFi STA SSID. */
+    String STA_PASSWORD; /**< WiFi STA Password. */
 
     IPAddress localIP;
 }; /** WIFI */

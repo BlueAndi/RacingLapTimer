@@ -55,6 +55,10 @@ static bool staAvailable = false; /**< True if system is connected in STA mode t
 */
 WIFI::WIFI(/* args */)
 {
+    AP_SSID = "RacingLapTimer";
+    AP_PASSWORD = "let me in";
+    STA_SSID = "";
+    STA_PASSWORD = "";
 }
 
 /**************************************************************************************************/
