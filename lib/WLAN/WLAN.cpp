@@ -22,7 +22,7 @@
  */
 /**************************************************************************************************
 * File: WLAN.cpp
-* @brief: Implementation of WLAN.h
+* @brief: Implementation of WLAN.h.
 * @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 /* INCLUDES **************************************************************************************/
@@ -31,10 +31,10 @@
 
 /* CONSTANTS *************************************************************************************/
 
-static const unsigned long WIFI_TIMEOUT_MS = 5000; /**< Timeout for WiFi connection */
-static const uint8_t CREDENTIALS_MAX_LENGTH = 50;  /**< Maximum length for saved Credentials */
-static const uint8_t NVM_SSID_ADDRESS = 0;         /**< Address of saved SSID in EEPROM */
-static const uint8_t NVM_PASSWORD_ADDRESS = 50;    /**< Address of saved Password in EEPROM */
+static const unsigned long WIFI_TIMEOUT_MS = 5000; /**< Timeout for WiFi connection. */
+static const uint8_t CREDENTIALS_MAX_LENGTH = 50;  /**< Maximum length for saved Credentials. */
+static const uint8_t NVM_SSID_ADDRESS = 0;         /**< Address of saved SSID in EEPROM. */
+static const uint8_t NVM_PASSWORD_ADDRESS = 50;    /**< Address of saved Password in EEPROM. */
 
 /* MACROS ****************************************************************************************/
 
@@ -44,14 +44,14 @@ static const uint8_t NVM_PASSWORD_ADDRESS = 50;    /**< Address of saved Passwor
 
 /* VARIABLES *************************************************************************************/
 
-static bool staAvailable = false;
+static bool staAvailable = false; /**< True if system is connected in STA mode to a Network. */
 
 /* PUBLIC METHODES *******************************************************************************/
 
 /**************************************************************************************************/
 
 /**
-*   Default Constructor
+*   @brief Default Constructor.
 */
 WLAN::WLAN(/* args */)
 {
@@ -60,7 +60,7 @@ WLAN::WLAN(/* args */)
 /**************************************************************************************************/
 
 /**
-*   Default Destructor
+*   @brief Default Destructor.
 */
 WLAN::~WLAN()
 {
@@ -69,7 +69,8 @@ WLAN::~WLAN()
 /**************************************************************************************************/
 
 /**
-*   Initialize WLAN Module
+*   @brief Initialize WLAN Module.
+*   @return Success.
 */
 bool WLAN::begin()
 {
@@ -120,7 +121,8 @@ bool WLAN::begin()
 /**************************************************************************************************/
 
 /**
-*   Executes WLAN Connection Check
+*   @brief Executes WLAN Connection Check.
+*   @return Success.
 */
 bool WLAN::cycle()
 {
@@ -139,8 +141,12 @@ bool WLAN::cycle()
 /**************************************************************************************************/
 
 /**
-*   Saves new STA Credentials
-*/
+ * @brief Saves new STA Credentials.
+ * 
+ * @param ssid SSID of host network to connect to.
+ * @param password Password of host network to connect to.
+ * @return Success.
+ */
 bool WLAN::saveCredentials(const String &ssid, const String &password)
 {
     bool success = false;
@@ -182,7 +188,8 @@ bool WLAN::saveCredentials(const String &ssid, const String &password)
 /**************************************************************************************************/
 
 /**
-*   Returns the IP Address of the System
+*   @brief Returns the IP Address of the System.
+*   @return local IP.
 */
 const IPAddress &WLAN::getIPAddress(void)
 {
@@ -196,9 +203,9 @@ const IPAddress &WLAN::getIPAddress(void)
 /**************************************************************************************************/
 
 /**
-*   Connect to Wireless Access Point
+*   @brief Connect to Wireless Access Point.
+*   @return Success.
 */
-
 bool WLAN::connectStation()
 {
     bool success = false;
@@ -224,7 +231,8 @@ bool WLAN::connectStation()
 /**************************************************************************************************/
 
 /**
-*   Imports Credentials from EEPROM
+*   @brief Imports Credentials from EEPROM.
+*   @return Success.
 */
 bool WLAN::importCredentials()
 {
@@ -272,7 +280,7 @@ bool WLAN::importCredentials()
 /**************************************************************************************************/
 
 /**
-*  Deletes stored Credentials
+*  @brief Deletes stored Credentials.
 */
 void WLAN::clearEEPROM()
 {

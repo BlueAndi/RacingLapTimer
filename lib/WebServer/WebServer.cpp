@@ -22,7 +22,7 @@
  */
 /**************************************************************************************************
 * File: WebServer.cpp
-* @brief: Implementation of WebServer.h
+* @brief: Implementation of WebServer.h.
 * @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 /* INCLUDES **************************************************************************************/
@@ -30,28 +30,35 @@
 
 /* CONSTANTS *************************************************************************************/
 
-/** Webserver port */
+/** Webserver port. */
 static const uint32_t WEBSERVER_PORT = 80;
 
-/** Websocket port */
+/** Websocket port. */
 static const uint32_t WEBSOCKET_PORT = 81;
 
-/** Webserver on port for http protocol */
+/** Webserver on port for http protocol. */
 static ESP8266WebServer gWebServer(WEBSERVER_PORT);
 
-/** Websocket server on port for ws protocol */
+/** Websocket server on port for ws protocol. */
 static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
 
-/** Hostname */
+/** Hostname. */
 static const char *HOSTNAME = "laptimer";
 
-/** WebSocket Message Handler */
+/**
+ * @brief Handle websocket event.
+ *
+ * @param[in] clientId  Websocket client id.
+ * @param[in] type      Event type.
+ * @param[in] payload   Event payload.
+ * @param[in] length    Event payload length.
+ */
 static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
 
-/** Competition Handler Instance */
+/** Competition Handler Instance. */
 static Competition *m_laptrigger;
 
-/** WLAN Handler Instance */
+/** WLAN Handler Instance. */
 static WLAN *m_wireless;
 
 /* MACROS ****************************************************************************************/
@@ -60,6 +67,7 @@ static WLAN *m_wireless;
 
 /* PROTOTYPES ************************************************************************************/
 
+/** Handler for POST Request for the storage of the STA Credentials. */
 static void handleCredentials();
 
 /* VARIABLES *************************************************************************************/
@@ -69,17 +77,21 @@ static void handleCredentials();
 /**************************************************************************************************/
 
 /**
-*   Default Constructor
-*/
+ * @brief Default Constructor.
+ * 
+ * @param wireless Instance of WiFi Handler.
+ * @param goalLine Instance of Competition Handler.
+ */
 LapTriggerWebServer::LapTriggerWebServer(WLAN &wireless, Competition &goalLine)
 {
+    m_wireless = &wireless;
     m_laptrigger = &goalLine;
 }
 
 /**************************************************************************************************/
 
 /**
-*   Default Destructor
+*   @brief Default Destructor.
 */
 LapTriggerWebServer::~LapTriggerWebServer()
 {
@@ -88,19 +100,20 @@ LapTriggerWebServer::~LapTriggerWebServer()
 /**************************************************************************************************/
 
 /**
-*   Initialization of Module
+*   @brief Initialization of Module.
+*   @return Success.
 */
 bool LapTriggerWebServer::begin()
 {
     bool success = true;
 
-    /* Mount filesystem */
+    /** Mount filesystem. */
     if (false == LittleFS.begin())
     {
         Serial.printf("%lu: Failed to mount filesystem.\n", millis());
         success = false;
     }
-    /* Setup mDNS service */
+    /** Setup mDNS service. */
     else if (false == MDNS.begin(HOSTNAME))
     {
         Serial.printf("%lu: Failed to start mDNS service.", millis());
@@ -108,7 +121,7 @@ bool LapTriggerWebServer::begin()
     }
     else
     {
-        /* Setup webserver */
+        /** Setup webserver. */
         gWebServer.serveStatic("/", LittleFS, "/web/", "max-age=86400");
         gWebServer.on("/config.html", HTTP_POST, handleCredentials);
         gWebServer.onNotFound(
@@ -117,7 +130,7 @@ bool LapTriggerWebServer::begin()
             });
         gWebServer.begin();
 
-        /* Setup websocket server */
+        /** Setup websocket server. */
         gWebSocketSrv.onEvent(webSocketEvent);
         gWebSocketSrv.begin();
     }
@@ -128,7 +141,8 @@ bool LapTriggerWebServer::begin()
 /**************************************************************************************************/
 
 /**
-*   Executes Loop Cycle
+*   @brief Executes Loop Cycle.
+*   @return Success.
 */
 bool LapTriggerWebServer::cycle()
 {
@@ -156,12 +170,12 @@ bool LapTriggerWebServer::cycle()
 /* INTERNAL FUNCTIONS ****************************************************************************/
 
 /**
- * Handle websocket event.
+ * @brief Handle websocket event.
  *
- * @param[in] clientId  Websocket client id
- * @param[in] type      Event type
- * @param[in] payload   Event payload
- * @param[in] length    Event payload length
+ * @param[in] clientId  Websocket client id.
+ * @param[in] type      Event type.
+ * @param[in] payload   Event payload.
+ * @param[in] length    Event payload length.
  */
 static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
 {
@@ -244,7 +258,7 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
 /**************************************************************************************************/
 
 /**
-*   Handler for POST Request
+*   @brief Handler for POST Request for the storage of the STA Credentials.
 */
 void handleCredentials()
 {
@@ -281,7 +295,7 @@ void handleCredentials()
         }
         else
         {
-            if(m_wireless->saveCredentials(ssidInput,passwordInput))
+            if (m_wireless->saveCredentials(ssidInput, passwordInput))
             {
                 gWebServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
                 delay(3000);

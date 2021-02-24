@@ -22,7 +22,7 @@
  */
 /**************************************************************************************************
 * File: Competition.cpp
-* @brief: Implementation of Competition.h
+* @brief: Implementation of Competition.h.
 * @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 /* INCLUDES **************************************************************************************/
@@ -37,7 +37,7 @@
 */
 static const uint32_t SENSOR_BLIND_PERIOD = 400;
 
-/** Competition start timestamp in ms */
+/** Competition start timestamp in ms. */
 uint32_t gStartTimestamp = 0;
 
 /* MACROS ****************************************************************************************/
@@ -53,7 +53,7 @@ uint32_t gStartTimestamp = 0;
 /**************************************************************************************************/
 
 /**
-*   Default Constructor
+*   @brief Default Constructor.
 */
 Competition::Competition()
 {
@@ -62,7 +62,7 @@ Competition::Competition()
 /**************************************************************************************************/
 
 /**
-*   Default Destructor
+*   @brief Default Destructor.
 */
 Competition::~Competition()
 {
@@ -71,8 +71,11 @@ Competition::~Competition()
 /**************************************************************************************************/
 
 /**
- * Handle the competition state machine, depending on the user input from
- * web frontend and sensor input.
+ * @brief Handle the competition state machine, depending on the user input 
+ * from web frontend and sensor input.
+ * 
+ * @param outputMessage Message to be sent to Client through Web Socket.
+ * @return Success.
  */
 bool Competition::handleCompetition(String &outputMessage)
 {
@@ -88,7 +91,7 @@ bool Competition::handleCompetition(String &outputMessage)
         break;
 
     case COMPETITION_STATE_RELEASED:
-        /* React on external sensor */
+        /* React on external sensor. */
         if (true == Board::isRobotDetected())
         {
             gStartTimestamp = millis();
@@ -101,7 +104,7 @@ bool Competition::handleCompetition(String &outputMessage)
     case COMPETITION_STATE_STARTED:
         duration = millis() - gStartTimestamp;
 
-        /* React on external sensor */
+        /* React on external sensor. */
         if (SENSOR_BLIND_PERIOD <= duration)
         {
             if (true == Board::isRobotDetected())
@@ -129,7 +132,8 @@ bool Competition::handleCompetition(String &outputMessage)
 /**************************************************************************************************/
 
 /**
-*   Sets gCompetitionState to COMPETITION_STATE_RELEASED
+*   @brief Sets gCompetitionState to COMPETITION_STATE_RELEASED.
+*   @return Success.
 */
 bool Competition::setReleasedState()
 {

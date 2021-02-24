@@ -22,7 +22,7 @@
  */
 /**************************************************************************************************
 * File: Board.cpp
-* @brief: Implementation of Board.h
+* @brief: Implementation of Board.h.
 * @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 /* INCLUDES **************************************************************************************/
@@ -49,9 +49,9 @@ static const uint8_t SENSOR_DIN_PIN = 5;
 /**************************************************************************************************/
 
 /**
-*   Board Initialization
-*   @return success
-*/
+ * @brief Board Initialization. 
+ * @return Success.
+ */
 bool Board::begin()
 {
     bool success = true;
@@ -68,9 +68,8 @@ bool Board::begin()
 /**************************************************************************************************/
 
 /**
- * Is a roboter detected or not?
- *
- * @return If a roboter is detected, it will return true otherwise false.
+ * @brief Is a roboter detected or not?.
+ * @return true if Robot is detected. False otherwise.
  */
 bool Board::isRobotDetected()
 {
@@ -88,8 +87,8 @@ bool Board::isRobotDetected()
 /**************************************************************************************************/
 
 /**
-*   Halts the device for 30 Seconds and restarts
-*/
+ * @brief Halts the device for 30 Seconds and restarts the device.
+ */
 void Board::errorHalt()
 {
     Serial.println("Critical Error. Wait for restart (30 Seconds)");

@@ -22,7 +22,7 @@
  */
 /**************************************************************************************************
 * File: WebServer.h
-* @brief: Abstraction of WebServer
+* @brief: Abstraction of WebServer.
 * @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 #ifndef WEB_SERVER_H_
@@ -48,17 +48,17 @@
 /**************************************************************************************************/
 
 /**
-*   Abstraction Class for ESP8266 Web Server
+*   @brief Abstraction Class for ESP8266 Web Server.
 */
 class LapTriggerWebServer
 {
 public:
-    LapTriggerWebServer(WLAN &wireless, Competition &goalLine);           /**< Default Constructor */
-    ~LapTriggerWebServer();                               /**< Default Destructor */
-    bool begin();                                         /**< Initialization of Module */
-    bool cycle();                                         /**< Executes Loop Cycle */
-    
+    LapTriggerWebServer(WLAN &wireless, Competition &goalLine); /**< Default Constructor. */
+    ~LapTriggerWebServer();                                     /**< Default Destructor. */
+    bool begin();                                               /**< Initialization of Module. */
+    bool cycle();                                               /**< Executes Loop Cycle. */
+
 private:
-};
+}; /** LapTriggerWebServer */
 
 #endif /*WEB_SERVER_H_*/

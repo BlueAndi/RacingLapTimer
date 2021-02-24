@@ -22,7 +22,7 @@
  */
 /**************************************************************************************************
 * File: Board.h
-* @brief: Implementation of ESP8266 Board
+* @brief: Implementation of ESP8266 Board.
 * @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 #ifndef BOARD_H_
@@ -38,12 +38,16 @@
 /* INLINE FUNCTIONS ******************************************************************************/
 
 /* PROTOTYPES ************************************************************************************/
+/*************************************************************************************************/
 
+/**
+ * @brief D1 Mini board abstraction.
+ */
 namespace Board
 {
-    bool begin();           /**< Board Initialization  */
-    bool isRobotDetected(); /**< Is a roboter detected or not? */
-    void errorHalt();       /**< Halts the device for 30 Seconds and restarts */
+    bool begin();           /**< Board Initialization.  */
+    bool isRobotDetected(); /**< Is a roboter detected or not?. */
+    void errorHalt();       /**< Halts the device for 30 Seconds and restarts. */
 };
 
 #endif /*BOARD_H_*/
