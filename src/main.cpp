@@ -117,7 +117,7 @@ static CompetitionState gCompetitionState       = COMPETITION_STATE_UNRELEASED;
 /**
  * Setup the system.
  */
-void setup()
+void setup() /* cppcheck-suppress unusedFunction */
 {
     WiFiManager wifiMgr; /* No permanent instance is necessary! */
     bool        isError = false;
@@ -182,7 +182,7 @@ void setup()
 /**
  * Main loop, which is called periodically.
  */
-void loop()
+void loop() /* cppcheck-suppress unusedFunction */
 {
     MDNS.update();
     gWebServer.handleClient();
