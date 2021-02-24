@@ -48,8 +48,8 @@ class WIFI
 public:
     WIFI();                                                           /**< Default Constructor. */
     ~WIFI();                                                          /**< Default Destructor. */
-    bool begin();                                                     /**< Initialize WLAN Module. */
-    bool cycle();                                                     /**< Executes WLAN Connection Check. */
+    bool begin();                                                     /**< Initialize WIFI Module. */
+    bool cycle();                                                     /**< Executes WIFI Connection Check. */
     bool saveCredentials(const String &ssid, const String &password); /**< Saves new STA Credentials. */
     const IPAddress &getIPAddress(void);                              /**< Returns the IP Address of the System. */
 
