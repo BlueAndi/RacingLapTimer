@@ -45,3 +45,8 @@ jobs:
         with:
           working-directory: './doc/doxygen'
           doxyfile-path: './Doxyfile'
+
+      - name: Check for doxygen warnings
+        run: |
+          cd ./doc/doxygen
+          ./checkForWarnings.sh
