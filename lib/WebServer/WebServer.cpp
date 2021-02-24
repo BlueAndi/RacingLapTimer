@@ -59,7 +59,7 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
 static Competition *m_laptrigger;
 
 /** WLAN Handler Instance. */
-static WLAN *m_wireless;
+static WIFI *m_wireless;
 
 /* MACROS ****************************************************************************************/
 
@@ -82,7 +82,7 @@ static void handleCredentials();
  * @param wireless Instance of WiFi Handler.
  * @param goalLine Instance of Competition Handler.
  */
-LapTriggerWebServer::LapTriggerWebServer(WLAN &wireless, Competition &goalLine)
+LapTriggerWebServer::LapTriggerWebServer(WIFI &wireless, Competition &goalLine)
 {
     m_wireless = &wireless;
     m_laptrigger = &goalLine;

@@ -47,7 +47,7 @@
  *****************************************************************************/
 
 /** WLAN Instance */
-WLAN wlan;
+WIFI wlan;
 
 /** Competition Instance */
 Competition lapTrigger;

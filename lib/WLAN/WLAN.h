@@ -43,11 +43,11 @@
 /**
 *   @brief WLAN Class for Implementation of Wireless Capabilites.
 */
-class WLAN
+class WIFI
 {
 public:
-    WLAN();                                                           /**< Default Constructor. */
-    ~WLAN();                                                          /**< Default Destructor. */
+    WIFI();                                                           /**< Default Constructor. */
+    ~WIFI();                                                          /**< Default Destructor. */
     bool begin();                                                     /**< Initialize WLAN Module. */
     bool cycle();                                                     /**< Executes WLAN Connection Check. */
     bool saveCredentials(const String &ssid, const String &password); /**< Saves new STA Credentials. */
@@ -64,6 +64,6 @@ private:
     String STA_PASSWORD = "";                /**< WiFi STA Password. */
 
     IPAddress localIP;
-}; /** WLAN */
+}; /** WIFI */
 
 #endif /*WLAN_H_*/

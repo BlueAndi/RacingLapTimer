@@ -53,7 +53,7 @@ static bool staAvailable = false; /**< True if system is connected in STA mode t
 /**
 *   @brief Default Constructor.
 */
-WLAN::WLAN(/* args */)
+WIFI::WIFI(/* args */)
 {
 }
 
@@ -62,17 +62,17 @@ WLAN::WLAN(/* args */)
 /**
 *   @brief Default Destructor.
 */
-WLAN::~WLAN()
+WIFI::~WIFI()
 {
 }
 
 /**************************************************************************************************/
 
 /**
-*   @brief Initialize WLAN Module.
+*   @brief Initialize WIFI Module.
 *   @return Success.
 */
-bool WLAN::begin()
+bool WIFI::begin()
 {
     bool success = false;
 
@@ -121,10 +121,10 @@ bool WLAN::begin()
 /**************************************************************************************************/
 
 /**
-*   @brief Executes WLAN Connection Check.
+*   @brief Executes WIFI Connection Check.
 *   @return Success.
 */
-bool WLAN::cycle()
+bool WIFI::cycle()
 {
     bool success = true;
 
@@ -147,7 +147,7 @@ bool WLAN::cycle()
  * @param password Password of host network to connect to.
  * @return Success.
  */
-bool WLAN::saveCredentials(const String &ssid, const String &password)
+bool WIFI::saveCredentials(const String &ssid, const String &password)
 {
     bool success = false;
 
@@ -191,7 +191,7 @@ bool WLAN::saveCredentials(const String &ssid, const String &password)
 *   @brief Returns the IP Address of the System.
 *   @return local IP.
 */
-const IPAddress &WLAN::getIPAddress(void)
+const IPAddress &WIFI::getIPAddress(void)
 {
     return localIP;
 }
@@ -206,7 +206,7 @@ const IPAddress &WLAN::getIPAddress(void)
 *   @brief Connect to Wireless Access Point.
 *   @return Success.
 */
-bool WLAN::connectStation()
+bool WIFI::connectStation()
 {
     bool success = false;
 
@@ -234,7 +234,7 @@ bool WLAN::connectStation()
 *   @brief Imports Credentials from EEPROM.
 *   @return Success.
 */
-bool WLAN::importCredentials()
+bool WIFI::importCredentials()
 {
     bool success = false;
 
@@ -282,7 +282,7 @@ bool WLAN::importCredentials()
 /**
 *  @brief Deletes stored Credentials.
 */
-void WLAN::clearEEPROM()
+void WIFI::clearEEPROM()
 {
     for (int i = 0; i < 512; i++)
     {
