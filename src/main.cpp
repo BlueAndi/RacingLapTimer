@@ -70,7 +70,7 @@ LapTriggerWebServer webserver(wlan, lapTrigger);
 /**
  * Setup the system.
  */
-void setup()
+void setup() /* cppcheck-suppress unusedFunction */
 {
     bool isError = false;
 
@@ -103,7 +103,7 @@ void setup()
 /**
  * Main loop, which is called periodically.
  */
-void loop()
+void loop() /* cppcheck-suppress unusedFunction */
 {
     bool success = true;
 
