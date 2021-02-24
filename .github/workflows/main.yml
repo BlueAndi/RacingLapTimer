@@ -49,4 +49,5 @@ jobs:
       - name: Check for doxygen warnings
         run: |
           cd ./doc/doxygen
+          chmod +x ./checkForWarnings.sh
           ./checkForWarnings.sh
