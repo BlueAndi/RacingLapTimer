@@ -21,9 +21,9 @@
  * SOFTWARE.
  */
 /**************************************************************************************************
-* File: Board.h
-* @brief: Implementation of ESP8266 Board.
-* @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
+*   @file Board.h
+*   Implementation of ESP8266 Board.
+*   @author Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 #ifndef BOARD_H_
 #define BOARD_H_
@@ -41,7 +41,7 @@
 /*************************************************************************************************/
 
 /**
- * @brief D1 Mini board abstraction.
+ *  D1 Mini board abstraction.
  */
 namespace Board
 {

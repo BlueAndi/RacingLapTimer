@@ -21,9 +21,9 @@
  * SOFTWARE.
  */
 /**************************************************************************************************
-* File: Board.cpp
-* @brief: Implementation of Board.h.
-* @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
+*   @file: Board.cpp
+*   Implementation of Board.h.
+*   @author Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 /* INCLUDES **************************************************************************************/
 #include "Board.h"
@@ -49,8 +49,9 @@ static const uint8_t SENSOR_DIN_PIN = 5;
 /**************************************************************************************************/
 
 /**
- * @brief Board Initialization. 
- * @return Success.
+ *  Board Initialization.
+ * 
+ *  @return success.
  */
 bool Board::begin()
 {
@@ -68,8 +69,9 @@ bool Board::begin()
 /**************************************************************************************************/
 
 /**
- * @brief Is a roboter detected or not?.
- * @return true if Robot is detected. False otherwise.
+ *  Is a roboter detected or not?.
+ * 
+ *  @return true if Robot is detected. False otherwise.
  */
 bool Board::isRobotDetected()
 {
@@ -87,7 +89,7 @@ bool Board::isRobotDetected()
 /**************************************************************************************************/
 
 /**
- * @brief Halts the device for 30 Seconds and restarts the device.
+ *  Halts the device for 30 Seconds and restarts the device.
  */
 void Board::errorHalt()
 {

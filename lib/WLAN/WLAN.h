@@ -63,7 +63,7 @@ private:
     String STA_SSID;     /**< WiFi STA SSID. */
     String STA_PASSWORD; /**< WiFi STA Password. */
 
-    IPAddress localIP;
+    IPAddress localIP; /**< Local IP of the Device */
 }; /** WIFI */
 
 #endif /*WLAN_H_*/

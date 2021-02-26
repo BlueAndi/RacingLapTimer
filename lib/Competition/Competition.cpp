@@ -21,9 +21,9 @@
  * SOFTWARE.
  */
 /**************************************************************************************************
-* File: Competition.cpp
-* @brief: Implementation of Competition.h.
-* @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
+*   @file Competition.cpp
+*   Implementation of Competition.h.
+*   @author Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 /* INCLUDES **************************************************************************************/
 #include "Competition.h"
@@ -32,9 +32,9 @@
 /* CONSTANTS *************************************************************************************/
 
 /**
-* After the first detection of the robot with the ext. sensor, this consider
-* the duration in ms after that the sensor will be considered again.
-*/
+ *  After the first detection of the robot with the ext. sensor, this consider
+ *  the duration in ms after that the sensor will be considered again.
+ */
 static const uint32_t SENSOR_BLIND_PERIOD = 400;
 
 /** Competition start timestamp in ms. */
@@ -53,8 +53,8 @@ uint32_t gStartTimestamp = 0;
 /**************************************************************************************************/
 
 /**
-*   @brief Default Constructor.
-*/
+ *  Default Constructor.
+ */
 Competition::Competition()
 {
 }
@@ -62,8 +62,8 @@ Competition::Competition()
 /**************************************************************************************************/
 
 /**
-*   @brief Default Destructor.
-*/
+ *  Default Destructor.
+ */
 Competition::~Competition()
 {
 }
@@ -71,11 +71,11 @@ Competition::~Competition()
 /**************************************************************************************************/
 
 /**
- * @brief Handle the competition state machine, depending on the user input 
- * from web frontend and sensor input.
+ *  Handle the competition state machine, depending on the user input 
+ *  from web frontend and sensor input.
  * 
- * @param outputMessage Message to be sent to Client through Web Socket.
- * @return Success.
+ *  @param outputMessage Message to be sent to Client through Web Socket.
+ *  @return success.
  */
 bool Competition::handleCompetition(String &outputMessage)
 {
@@ -132,9 +132,10 @@ bool Competition::handleCompetition(String &outputMessage)
 /**************************************************************************************************/
 
 /**
-*   @brief Sets gCompetitionState to COMPETITION_STATE_RELEASED.
-*   @return Success.
-*/
+ *  Sets gCompetitionState to COMPETITION_STATE_RELEASED.
+ * 
+ *  @return Success.
+ */
 bool Competition::setReleasedState()
 {
     bool success = false;

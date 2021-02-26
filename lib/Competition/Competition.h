@@ -21,9 +21,9 @@
  * SOFTWARE.
  */
 /**************************************************************************************************
-* File: Competition.h
-* @brief: Competition Handler.
-* @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
+*   @file Competition.h
+*   Competition Handler.
+*   @author Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 #ifndef COMPETITION_H_
 #define COMPETITION_H_
@@ -42,14 +42,14 @@
 /**************************************************************************************************/
 
 /**
- * @brief Competition Handler Class.
+ *  Competition Handler Class.
  * 
  */
 class Competition
 {
 public:
     /**
-     * @brief Competition states.
+     *  Competition states.
      */
     typedef enum
     {

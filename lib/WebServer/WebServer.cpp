@@ -21,9 +21,9 @@
  * SOFTWARE.
  */
 /**************************************************************************************************
-* File: WebServer.cpp
-* @brief: Implementation of WebServer.h.
-* @author: Gabryel Reyes <gabryelrdiaz@gmail.com>
+*   @file WebServer.cpp
+*   Implementation of WebServer.h.
+*   @author Gabryel Reyes <gabryelrdiaz@gmail.com>
 **************************************************************************************************/
 /* INCLUDES **************************************************************************************/
 #include "WebServer.h"
@@ -46,12 +46,12 @@ static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
 static const char *HOSTNAME = "laptimer";
 
 /**
- * @brief Handle websocket event.
+ *  Handle websocket event.
  *
- * @param[in] clientId  Websocket client id.
- * @param[in] type      Event type.
- * @param[in] payload   Event payload.
- * @param[in] length    Event payload length.
+ *  @param[in] clientId  Websocket client id.
+ *  @param[in] type      Event type.
+ *  @param[in] payload   Event payload.
+ *  @param[in] length    Event payload length.
  */
 static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
 
@@ -77,10 +77,10 @@ static void handleCredentials();
 /**************************************************************************************************/
 
 /**
- * @brief Default Constructor.
+ *  Default Constructor.
  * 
- * @param wireless Instance of WiFi Handler.
- * @param goalLine Instance of Competition Handler.
+ *  @param wireless Instance of WiFi Handler.
+ *  @param goalLine Instance of Competition Handler.
  */
 LapTriggerWebServer::LapTriggerWebServer(WIFI &wireless, Competition &goalLine)
 {
@@ -91,8 +91,8 @@ LapTriggerWebServer::LapTriggerWebServer(WIFI &wireless, Competition &goalLine)
 /**************************************************************************************************/
 
 /**
-*   @brief Default Destructor.
-*/
+ *  Default Destructor.
+ */
 LapTriggerWebServer::~LapTriggerWebServer()
 {
 }
@@ -100,9 +100,10 @@ LapTriggerWebServer::~LapTriggerWebServer()
 /**************************************************************************************************/
 
 /**
-*   @brief Initialization of Module.
-*   @return Success.
-*/
+ *  Initialization of Module.
+ * 
+ *  @return success.
+ */
 bool LapTriggerWebServer::begin()
 {
     bool success = true;
@@ -141,9 +142,10 @@ bool LapTriggerWebServer::begin()
 /**************************************************************************************************/
 
 /**
-*   @brief Executes Loop Cycle.
-*   @return Success.
-*/
+ *  Executes Loop Cycle.
+ * 
+ *  @return success.
+ */
 bool LapTriggerWebServer::cycle()
 {
     bool success = true;
@@ -170,12 +172,12 @@ bool LapTriggerWebServer::cycle()
 /* INTERNAL FUNCTIONS ****************************************************************************/
 
 /**
- * @brief Handle websocket event.
+ *  Handle websocket event.
  *
- * @param[in] clientId  Websocket client id.
- * @param[in] type      Event type.
- * @param[in] payload   Event payload.
- * @param[in] length    Event payload length.
+ *  @param[in] clientId  Websocket client id.
+ *  @param[in] type      Event type.
+ *  @param[in] payload   Event payload.
+ *  @param[in] length    Event payload length.
  */
 static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
 {
@@ -258,8 +260,8 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
 /**************************************************************************************************/
 
 /**
-*   @brief Handler for POST Request for the storage of the STA Credentials.
-*/
+ *  Handler for POST Request for the storage of the STA Credentials.
+ */
 void handleCredentials()
 {
     if (gWebServer.method() != HTTP_POST)

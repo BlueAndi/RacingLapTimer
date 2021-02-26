@@ -48,8 +48,8 @@
 /**************************************************************************************************/
 
 /**
-*   @brief Abstraction Class for ESP8266 Web Server.
-*/
+ *  Abstraction Class for ESP8266 Web Server.
+ */
 class LapTriggerWebServer
 {
 public:

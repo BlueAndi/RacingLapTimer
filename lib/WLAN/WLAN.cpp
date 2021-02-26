@@ -51,8 +51,8 @@ static bool staAvailable = false; /**< True if system is connected in STA mode t
 /**************************************************************************************************/
 
 /**
-*   @brief Default Constructor.
-*/
+ *  Default Constructor.
+ */
 WIFI::WIFI() : AP_SSID("RacingLapTimer"), AP_PASSWORD("let me in"), STA_SSID(""), STA_PASSWORD("")
 {
 }
@@ -60,8 +60,8 @@ WIFI::WIFI() : AP_SSID("RacingLapTimer"), AP_PASSWORD("let me in"), STA_SSID("")
 /**************************************************************************************************/
 
 /**
-*   @brief Default Destructor.
-*/
+ *  Default Destructor.
+ */
 WIFI::~WIFI()
 {
 }
@@ -69,9 +69,10 @@ WIFI::~WIFI()
 /**************************************************************************************************/
 
 /**
-*   @brief Initialize WIFI Module.
-*   @return Success.
-*/
+ *  Initialize WIFI Module.
+ * 
+ *  @return success.
+ */
 bool WIFI::begin()
 {
     bool success = false;
@@ -120,9 +121,10 @@ bool WIFI::begin()
 /**************************************************************************************************/
 
 /**
-*   @brief Executes WIFI Connection Check.
-*   @return Success.
-*/
+ *  Executes WIFI Connection Check.
+ * 
+ *  @return success.
+ */
 bool WIFI::cycle()
 {
     bool success = true;
@@ -140,11 +142,11 @@ bool WIFI::cycle()
 /**************************************************************************************************/
 
 /**
- * @brief Saves new STA Credentials.
+ *  Saves new STA Credentials.
  * 
- * @param ssid SSID of host network to connect to.
- * @param password Password of host network to connect to.
- * @return Success.
+ *  @param ssid SSID of host network to connect to.
+ *  @param password Password of host network to connect to.
+ *  @return success.
  */
 bool WIFI::saveCredentials(const String &ssid, const String &password)
 {
@@ -187,9 +189,10 @@ bool WIFI::saveCredentials(const String &ssid, const String &password)
 /**************************************************************************************************/
 
 /**
-*   @brief Returns the IP Address of the System.
-*   @return local IP.
-*/
+ *  Returns the IP Address of the System.
+ * 
+ *  @return local IP.
+ */
 const IPAddress &WIFI::getIPAddress(void)
 {
     return localIP;
@@ -202,9 +205,10 @@ const IPAddress &WIFI::getIPAddress(void)
 /**************************************************************************************************/
 
 /**
-*   @brief Connect to Wireless Access Point.
-*   @return Success.
-*/
+ *  Connect to Wireless Access Point.
+ * 
+ *  @return success.
+ */
 bool WIFI::connectStation()
 {
     bool success = false;
@@ -230,9 +234,10 @@ bool WIFI::connectStation()
 /**************************************************************************************************/
 
 /**
-*   @brief Imports Credentials from EEPROM.
-*   @return Success.
-*/
+ *  Imports Credentials from EEPROM.
+ * 
+ *  @return success.
+ */
 bool WIFI::importCredentials()
 {
     bool success = false;
@@ -279,8 +284,8 @@ bool WIFI::importCredentials()
 /**************************************************************************************************/
 
 /**
-*  @brief Deletes stored Credentials.
-*/
+ *  Deletes stored Credentials.
+ */
 void WIFI::clearEEPROM()
 {
     for (int i = 0; i < 512; i++)
