@@ -53,12 +53,8 @@ static bool staAvailable = false; /**< True if system is connected in STA mode t
 /**
 *   @brief Default Constructor.
 */
-WIFI::WIFI(/* args */)
+WIFI::WIFI() : AP_SSID("RacingLapTimer"), AP_PASSWORD("let me in"), STA_SSID(""), STA_PASSWORD("")
 {
-    AP_SSID = "RacingLapTimer";
-    AP_PASSWORD = "let me in";
-    STA_SSID = "";
-    STA_PASSWORD = "";
 }
 
 /**************************************************************************************************/
@@ -92,7 +88,6 @@ bool WIFI::begin()
             success = true;
             localIP = WiFi.localIP();
             staAvailable = true;
-            Serial.println(localIP);
         }
         else
         {
@@ -101,8 +96,7 @@ bool WIFI::begin()
 
             WiFi.mode(WIFI_AP);
             WiFi.softAP(AP_SSID, AP_PASSWORD);
-
-            Serial.println(WiFi.softAPIP());
+            localIP = WiFi.softAPIP();
             success = true;
         }
     }
@@ -113,11 +107,12 @@ bool WIFI::begin()
 
         WiFi.mode(WIFI_AP);
         WiFi.softAP(AP_SSID, AP_PASSWORD);
-
-        Serial.println(WiFi.softAPIP());
+        localIP = WiFi.softAPIP();
 
         success = true;
     }
+
+    Serial.println(getIPAddress());
 
     return success;
 }
