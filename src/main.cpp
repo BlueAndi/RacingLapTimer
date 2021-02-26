@@ -34,7 +34,7 @@
  *****************************************************************************/
 
 #include "Board.h"
-#include "WLAN.h"
+#include "WIFI.h"
 #include "WebServer.h"
 #include "Competition.h"
 
