@@ -262,7 +262,7 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
 /**
  *  Handler for POST Request for the storage of the STA Credentials.
  */
-void handleCredentials()
+static void handleCredentials()
 {
     if (gWebServer.method() != HTTP_POST)
     {
