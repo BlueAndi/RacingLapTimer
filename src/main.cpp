@@ -47,13 +47,13 @@
  *****************************************************************************/
 
 /** WLAN Instance */
-WIFI wlan;
+static WIFI wlan;
 
 /** Competition Instance */
-Competition lapTrigger;
+static Competition lapTrigger;
 
 /** WebServer Instance */
-LapTriggerWebServer webserver(wlan, lapTrigger);
+static LapTriggerWebServer webserver(wlan, lapTrigger);
 
 /******************************************************************************
  * Prototypes
