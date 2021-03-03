@@ -29,7 +29,6 @@
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 
-
 #ifndef WLAN_H_
 #define WLAN_H_
 
@@ -52,17 +51,65 @@
 class WIFI
 {
 public:
-    WIFI();                                                           /**< Default Constructor. */
-    ~WIFI();                                                          /**< Default Destructor. */
-    bool begin();                                                     /**< Initialize WIFI Module. */
-    bool cycle();                                                     /**< Executes WIFI Connection Check. */
-    bool saveCredentials(const String &ssid, const String &password); /**< Saves new STA Credentials. */
-    const IPAddress &getIPAddress(void);                              /**< Returns the IP Address of the System. */
+    /**
+     *  Default Constructor.
+     */
+    WIFI();
+
+    /**
+     *  Default Destructor.
+     */
+    ~WIFI();
+
+    /**
+     *  Initialize WIFI Module.
+     * 
+     *  @return If initialization is successful, returns True. Otherwise, false.
+     */
+    bool begin();
+
+    /**
+     *  Executes WIFI Connection Check.
+     * 
+     *  @return success.
+     */
+    bool cycle();
+
+    /**
+     *  Saves new STA Credentials.
+     * 
+     *  @param[in] ssid SSID of host network to connect to.
+     *  @param[in] password Password of host network to connect to.
+     *  @return If Credentials succesfully saved, return True. Otherwise, False.
+     */
+    bool saveCredentials(const String &ssid, const String &password);
+
+    /**
+     *  Get the IP Address of the Syste,
+     * 
+     *  @return Returns the IP Address.
+     */
+    const IPAddress &getIPAddress(void);
 
 private:
-    bool connectStation();    /**< Connect to Wireless Access Point. */
-    bool importCredentials(); /**< Imports Credentials from EEPROM. */
-    void clearEEPROM();       /**< Deletes stored Credentials. */
+    /**
+     *  Connect to Wireless Access Point.
+     * 
+     *  @return success.
+     */
+    bool connectStation();
+
+    /**
+     *  Imports Credentials from EEPROM.
+     * 
+     *  @return If Credentials successfully imported, returns True. Otherwise, False.
+     */
+    bool importCredentials();
+
+    /**
+     *  Deletes stored Credentials.
+     */
+    void clearEEPROM();
 
     String AP_SSID;      /**< WiFi AP SSID. */
     String AP_PASSWORD;  /**< WiFi AP Password. */
@@ -70,7 +117,8 @@ private:
     String STA_PASSWORD; /**< WiFi STA Password. */
 
     IPAddress localIP; /**< Local IP of the Device */
-};                     /** WIFI */
+
+}; /** WIFI */
 
 /******************************************************************************
  * Prototypes

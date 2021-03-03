@@ -88,30 +88,16 @@ static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
  * Public Methods
  *****************************************************************************/
 
-/**
- *  Default Constructor.
- * 
- *  @param wireless Instance of WiFi Handler.
- *  @param goalLine Instance of Competition Handler.
- */
 LapTriggerWebServer::LapTriggerWebServer(WIFI &wireless, Competition &goalLine)
 {
     m_wireless = &wireless;
     m_laptrigger = &goalLine;
 }
 
-/**
- *  Default Destructor.
- */
 LapTriggerWebServer::~LapTriggerWebServer()
 {
 }
 
-/**
- *  Initialization of Module.
- * 
- *  @return success.
- */
 bool LapTriggerWebServer::begin()
 {
     bool success = true;
@@ -147,14 +133,10 @@ bool LapTriggerWebServer::begin()
     return success;
 }
 
-/**
- *  Executes Loop Cycle.
- * 
- *  @return success.
- */
+
 bool LapTriggerWebServer::cycle()
 {
-    bool success = true;
+    bool success = false;
 
     String outputMessage = "";
     if (m_laptrigger->handleCompetition(outputMessage))
@@ -162,7 +144,7 @@ bool LapTriggerWebServer::cycle()
         gWebSocketSrv.broadcastTXT(outputMessage);
     }
 
-    MDNS.update();
+    success = MDNS.update();
     gWebServer.handleClient();
     gWebSocketSrv.loop();
 
@@ -185,14 +167,6 @@ bool LapTriggerWebServer::cycle()
  * Local functions
  *****************************************************************************/
 
-/**
- *  Handle websocket event.
- *
- *  @param[in] clientId  Websocket client id.
- *  @param[in] type      Event type.
- *  @param[in] payload   Event payload.
- *  @param[in] length    Event payload length.
- */
 static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
 {
     String cmd;
@@ -271,11 +245,6 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
     }
 }
 
-/**************************************************************************************************/
-
-/**
- *  Handler for POST Request for the storage of the STA Credentials.
- */
 static void handleCredentials()
 {
     if (gWebServer.method() != HTTP_POST)

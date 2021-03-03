@@ -49,9 +49,24 @@
  */
 namespace Board
 {
-    bool begin();           /**< Board Initialization.  */
-    bool isRobotDetected(); /**< Is a roboter detected or not?. */
-    void errorHalt();       /**< Halts the device for 30 Seconds and restarts. */
+    /**
+     *  Board Initialization.
+     * 
+     *  @return If initialization is successful, returns True. Otherwise, false.
+     */
+    bool begin();
+
+    /**
+     *  Is a roboter detected or not?.
+     * 
+     *  @return If Robot is detected, returns True. Otherwise, false.
+     */
+    bool isRobotDetected();
+
+    /**
+     *  Halts the device for 30 Seconds and restarts the device.
+     */
+    void errorHalt();
 
 }; /** Board */
 

@@ -47,7 +47,6 @@
 
 /**
  *  Competition Handler Class.
- * 
  */
 class Competition
 {
@@ -64,10 +63,33 @@ public:
 
     } CompetitionState;
 
-    Competition();                                 /**< Default Constructor. */
-    ~Competition();                                /**< Default Destructor. */
-    bool handleCompetition(String &outputMessage); /**< Handle the competition state machine. */
-    bool setReleasedState();                       /**< Sets gCompetitionState to COMPETITION_STATE_RELEASED. */
+    /**
+     *  Default Constructor.
+     */
+    Competition();
+
+    /**
+     *  Default Destructor.
+     */
+    ~Competition();
+
+    /**
+     *  Handle the competition state machine, depending on the user input 
+     *  from web frontend and sensor input.
+    * 
+    *  @param[out] outputMessage Message to be sent to Client through Web Socket.
+    *  @return If robot is detected during the correct competition state, returns True. Otherwise, False
+    */
+    bool handleCompetition(String &outputMessage);
+
+    /**
+     *  Checks the current Competition state to be either Unreleased or Finished. 
+     *  Releases the competition if found in any of these states.
+     * 
+     *  @return If competition is released, returns True. Otherwise, False.
+     */
+    bool setReleasedState();
+
 private:
     /** Current competition state. */
     CompetitionState gCompetitionState = COMPETITION_STATE_UNRELEASED;

@@ -64,27 +64,16 @@ static uint32_t gStartTimestamp = 0;
  * Public Methods
  *****************************************************************************/
 
-/**
- *  Default Constructor.
- */
+
 Competition::Competition()
 {
 }
 
-/**
- *  Default Destructor.
- */
 Competition::~Competition()
 {
 }
 
-/**
- *  Handle the competition state machine, depending on the user input 
- *  from web frontend and sensor input.
- * 
- *  @param outputMessage Message to be sent to Client through Web Socket.
- *  @return success.
- */
+
 bool Competition::handleCompetition(String &outputMessage)
 {
     bool success = false;
@@ -137,11 +126,6 @@ bool Competition::handleCompetition(String &outputMessage)
     return success;
 }
 
-/**
- *  Sets gCompetitionState to COMPETITION_STATE_RELEASED.
- * 
- *  @return Success.
- */
 bool Competition::setReleasedState()
 {
     bool success = false;

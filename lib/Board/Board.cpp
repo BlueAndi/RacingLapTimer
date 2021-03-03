@@ -64,11 +64,6 @@ static const uint8_t SENSOR_DIN_PIN = 5;
  * Public Methods
  *****************************************************************************/
 
-/**
- *  Board Initialization.
- * 
- *  @return success.
- */
 bool Board::begin()
 {
     bool success = true;
@@ -82,11 +77,6 @@ bool Board::begin()
     return success;
 }
 
-/**
- *  Is a roboter detected or not?.
- * 
- *  @return true if Robot is detected. False otherwise.
- */
 bool Board::isRobotDetected()
 {
     bool isDetected = false;
@@ -100,9 +90,6 @@ bool Board::isRobotDetected()
     return isDetected;
 }
 
-/**
- *  Halts the device for 30 Seconds and restarts the device.
- */
 void Board::errorHalt()
 {
     Serial.println("Critical Error. Wait for restart (30 Seconds)");

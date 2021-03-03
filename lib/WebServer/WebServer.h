@@ -57,10 +57,32 @@
 class LapTriggerWebServer
 {
 public:
-    LapTriggerWebServer(WIFI &wireless, Competition &goalLine); /**< Default Constructor. */
-    ~LapTriggerWebServer();                                     /**< Default Destructor. */
-    bool begin();                                               /**< Initialization of Module. */
-    bool cycle();                                               /**< Executes Loop Cycle. */
+    /**
+     *  Class Constructor.
+     * 
+     *  @param[in,out] wireless Instance of WiFi Handler.
+     *  @param[in,out] goalLine Instance of Competition Handler.
+     */
+    LapTriggerWebServer(WIFI &wireless, Competition &goalLine);
+
+    /**
+     *  Default Destructor.
+     */
+    ~LapTriggerWebServer();
+
+    /**
+     *  Initialization of Module.
+     * 
+     *  @return If initialization is successful, returns True. Otherwise, false.
+     */
+    bool begin();
+
+    /**
+     *  Executes Loop Cycle.
+     * 
+     *  @return If WebServer successfully handled, returns True. Otherwise, false..
+     */
+    bool cycle();
 
 private:
 }; /** LapTriggerWebServer */
