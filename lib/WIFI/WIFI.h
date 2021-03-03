@@ -76,15 +76,6 @@ public:
     bool runCycle();
 
     /**
-     *  Saves new STA Credentials.
-     * 
-     *  @param[in] ssid SSID of host network to connect to.
-     *  @param[in] password Password of host network to connect to.
-     *  @return If Credentials succesfully saved, return True. Otherwise, False.
-     */
-    bool saveCredentials(const String &ssid, const String &password);
-
-    /**
      *  Get the IP Address of the Syste,
      * 
      *  @return Returns the IP Address.
@@ -100,29 +91,8 @@ private:
      */
     bool connectStation();
 
-    /**
-     *  Imports the Station Credentials from the EEPROM.
-     * 
-     *  @return If Credentials successfully imported, returns True. Otherwise, False.
-     */
-    bool importCredentials();
-
-    /**
-     *  Deletes stored Credentials.
-     */
-    void clearEEPROM();
-
     /** Timeout for WiFi connection. */
-    const unsigned long WIFI_TIMEOUT_MS = 5000;
-
-    /** Maximum length for saved Credentials. */
-    const uint8_t CREDENTIALS_MAX_LENGTH = 50;
-
-    /** Address of saved SSID in EEPROM. */
-    const uint8_t NVM_SSID_ADDRESS = 0;
-
-    /** Address of saved Password in EEPROM. */
-    const uint8_t NVM_PASSWORD_ADDRESS = 50;
+    const unsigned long WIFI_TIMEOUT_MS = 10000;
 
     /** True if system is connected in STA mode to a Network. */
     bool isStaAvailable = false;

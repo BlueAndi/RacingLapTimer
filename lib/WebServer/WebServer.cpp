@@ -33,6 +33,7 @@
  * Includes
  *****************************************************************************/
 #include "WebServer.h"
+#include "FlashMem.h"
 
 /******************************************************************************
  * Macros
@@ -280,7 +281,7 @@ static void handleCredentials()
         }
         else
         {
-            if (m_wireless->saveCredentials(ssidInput, passwordInput))
+            if (Flash::saveCredentials(ssidInput, passwordInput))
             {
                 gWebServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
                 delay(3000);

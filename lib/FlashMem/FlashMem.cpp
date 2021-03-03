@@ -25,22 +25,25 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of WIFI.h.
+ * @brief  Implememtation of FlashMem.h
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 
 /******************************************************************************
  * Includes
  *****************************************************************************/
-#include "WIFI.h"
 #include "FlashMem.h"
+
+/******************************************************************************
+ * Compiler Switches
+ *****************************************************************************/
 
 /******************************************************************************
  * Macros
  *****************************************************************************/
 
 /******************************************************************************
- * Types and Classes
+ * Types and classes
  *****************************************************************************/
 
 /******************************************************************************
@@ -55,76 +58,105 @@
  * Public Methods
  *****************************************************************************/
 
-WIFI::WIFI() : m_ApSSID("RacingLapTimer"), m_ApPassword("let me in"), m_Sta_SSID(""), m_Sta_Password("")
+bool Flash::begin()
 {
+    bool isSuccess = true;
+    EEPROM.begin(EEPROM_SIZE);
+    return isSuccess;
 }
 
-WIFI::~WIFI()
-{
-}
-
-bool WIFI::begin()
+bool Flash::importCredentials(String &ssid, String &password)
 {
     bool isSuccess = false;
 
-    Flash::begin();
-
-    if (Flash::importCredentials(m_Sta_SSID, m_Sta_Password))
+    if (';' == char(EEPROM.read(NVM_SSID_ADDRESS)))
     {
-        WiFi.mode(WIFI_STA);
-        WiFi.begin(m_Sta_SSID, m_Sta_Password);
+        char temp;
 
-        if (connectStation())
+        for (uint8_t i = 1; i < CREDENTIALS_MAX_LENGTH; i++)
         {
-            isSuccess = true;
-            m_LocalIP = WiFi.localIP();
-            isStaAvailable = true;
+            temp = EEPROM.read(NVM_SSID_ADDRESS + i);
+            if (';' != temp)
+            {
+                ssid += temp;
+            }
+            else
+            {
+                break;
+            }
         }
-        else
+
+        if (';' == char(EEPROM.read(NVM_PASSWORD_ADDRESS)))
         {
-            Serial.println("Network not in range or Unvalid Credentials.");
-            Serial.println("Starting AP...");
-
-            WiFi.mode(WIFI_AP);
-            WiFi.softAP(m_ApSSID, m_ApPassword);
-            m_LocalIP = WiFi.softAPIP();
-            isSuccess = true;
+            for (uint8_t i = 1; i < CREDENTIALS_MAX_LENGTH; i++)
+            {
+                temp = EEPROM.read(NVM_PASSWORD_ADDRESS + i);
+                if (';' != temp)
+                {
+                    password += temp;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
-    }
-    else
-    {
-        Serial.println("No stored STA Credentials!");
-        Serial.println("Starting AP");
-
-        WiFi.mode(WIFI_AP);
-        WiFi.softAP(m_ApSSID, m_ApPassword);
-        m_LocalIP = WiFi.softAPIP();
 
         isSuccess = true;
     }
 
-    Serial.println(getIPAddress());
-
     return isSuccess;
 }
 
-bool WIFI::runCycle()
+bool Flash::saveCredentials(const String &ssid, const String &password)
 {
-    bool isSuccess = true;
+    bool isSuccess = false;
 
-    if (isStaAvailable)
+    Flash::clearEEPROM();
+
+    uint8_t memoryPosition = 1;
+
+    /** Save SSID */
+    EEPROM.write(NVM_SSID_ADDRESS, ';');
+
+    for (memoryPosition = 1; memoryPosition <= ssid.length(); memoryPosition++)
     {
-        if (WL_CONNECTED != WiFi.status())
-        {
-            isSuccess = connectStation();
-        }
+        EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ssid[memoryPosition - 1]);
     }
+
+    EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ';');
+
+    /** Save Password */
+    EEPROM.write(NVM_PASSWORD_ADDRESS, ';');
+
+    for (memoryPosition = 1; memoryPosition <= password.length(); memoryPosition++)
+    {
+        EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, password[memoryPosition - 1]);
+    }
+
+    EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, ';');
+
+    if (EEPROM.commit())
+    {
+        Serial.println("EEPROM successfully committed");
+        Serial.println("Credentials Received");
+        Serial.println("SSID: " + ssid);
+        isSuccess = true;
+    }
+    else
+    {
+        Serial.println("ERROR! EEPROM commit failed");
+    }
+
     return isSuccess;
 }
 
-const IPAddress &WIFI::getIPAddress(void)
+void Flash::clearEEPROM()
 {
-    return m_LocalIP;
+    for (int i = 0; i < EEPROM_SIZE; i++)
+    {
+        EEPROM.write(i, 0);
+    }
 }
 
 /******************************************************************************
@@ -135,32 +167,10 @@ const IPAddress &WIFI::getIPAddress(void)
  * Private Methods
  *****************************************************************************/
 
-bool WIFI::connectStation()
-{
-    bool isSuccess = false;
-
-    unsigned long startAttempTime = millis();
-
-    Serial.println("Connecting to \"" + m_Sta_SSID + "\"...");
-    while ((WiFi.status() != WL_CONNECTED) && ((millis() - startAttempTime) < WIFI_TIMEOUT_MS))
-    {
-        delay(100);
-    }
-
-    if (WL_CONNECTED == WiFi.status())
-    {
-        Serial.println("Connected Succesfully.");
-        isSuccess = true;
-        m_LocalIP = WiFi.localIP();
-    }
-
-    return isSuccess;
-}
-
 /******************************************************************************
- * External functions
+ * External Functions
  *****************************************************************************/
 
 /******************************************************************************
- * Local functions
+ * Local Functions
  *****************************************************************************/

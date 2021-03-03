@@ -25,15 +25,17 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of WIFI.h.
+ * @brief  Abstraction of EEPROM for the ESP8266
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 
+#ifndef FLASHMEM_H_
+#define FLASHMEM_H_
 /******************************************************************************
  * Includes
  *****************************************************************************/
-#include "WIFI.h"
-#include "FlashMem.h"
+#include <EEPROM.h>
+#include <Arduino.h>
 
 /******************************************************************************
  * Macros
@@ -43,119 +45,58 @@
  * Types and Classes
  *****************************************************************************/
 
+namespace Flash
+{
+    /** Address of saved SSID in EEPROM. */
+    const uint8_t NVM_SSID_ADDRESS = 0;
+
+    /** Address of saved Password in EEPROM. */
+    const uint8_t NVM_PASSWORD_ADDRESS = 50;
+
+    /** Maximum length for saved Credentials. */
+    const uint8_t CREDENTIALS_MAX_LENGTH = 50;
+
+    /** Size of the EEPROM destined to store credentials*/
+    const uint16_t EEPROM_SIZE = 512;
+
+    /**
+     *  Initialization of the EEPROM Module
+     * 
+     *  @return If Initialization is successful, return True. Otherwise False.
+     */
+    bool begin();
+
+    /**
+     *  Imports the Station Credentials from the EEPROM.
+     * 
+     *  @param[out] ssid SSID of host network to connect to.
+     *  @param[out] password Password of host network to connect to.
+     *  @return If Credentials successfully imported, returns True. Otherwise, False.
+     */
+    bool importCredentials(String &ssid, String &password);
+
+    /**
+     *  Saves new STA Credentials.
+     * 
+     *  @param[in] ssid SSID of host network to connect to.
+     *  @param[in] password Password of host network to connect to.
+     *  @return If Credentials succesfully saved, return True. Otherwise, False.
+     */
+    bool saveCredentials(const String &ssid, const String &password);
+    /**
+     *  Deletes stored Data in the EEPROM.
+     */
+    void clearEEPROM();
+
+}; /* Flash */
+
 /******************************************************************************
  * Prototypes
  *****************************************************************************/
 
 /******************************************************************************
- * Local Variables
+ * Variables
  *****************************************************************************/
-
-/******************************************************************************
- * Public Methods
- *****************************************************************************/
-
-WIFI::WIFI() : m_ApSSID("RacingLapTimer"), m_ApPassword("let me in"), m_Sta_SSID(""), m_Sta_Password("")
-{
-}
-
-WIFI::~WIFI()
-{
-}
-
-bool WIFI::begin()
-{
-    bool isSuccess = false;
-
-    Flash::begin();
-
-    if (Flash::importCredentials(m_Sta_SSID, m_Sta_Password))
-    {
-        WiFi.mode(WIFI_STA);
-        WiFi.begin(m_Sta_SSID, m_Sta_Password);
-
-        if (connectStation())
-        {
-            isSuccess = true;
-            m_LocalIP = WiFi.localIP();
-            isStaAvailable = true;
-        }
-        else
-        {
-            Serial.println("Network not in range or Unvalid Credentials.");
-            Serial.println("Starting AP...");
-
-            WiFi.mode(WIFI_AP);
-            WiFi.softAP(m_ApSSID, m_ApPassword);
-            m_LocalIP = WiFi.softAPIP();
-            isSuccess = true;
-        }
-    }
-    else
-    {
-        Serial.println("No stored STA Credentials!");
-        Serial.println("Starting AP");
-
-        WiFi.mode(WIFI_AP);
-        WiFi.softAP(m_ApSSID, m_ApPassword);
-        m_LocalIP = WiFi.softAPIP();
-
-        isSuccess = true;
-    }
-
-    Serial.println(getIPAddress());
-
-    return isSuccess;
-}
-
-bool WIFI::runCycle()
-{
-    bool isSuccess = true;
-
-    if (isStaAvailable)
-    {
-        if (WL_CONNECTED != WiFi.status())
-        {
-            isSuccess = connectStation();
-        }
-    }
-    return isSuccess;
-}
-
-const IPAddress &WIFI::getIPAddress(void)
-{
-    return m_LocalIP;
-}
-
-/******************************************************************************
- * Protected Methods
- *****************************************************************************/
-
-/******************************************************************************
- * Private Methods
- *****************************************************************************/
-
-bool WIFI::connectStation()
-{
-    bool isSuccess = false;
-
-    unsigned long startAttempTime = millis();
-
-    Serial.println("Connecting to \"" + m_Sta_SSID + "\"...");
-    while ((WiFi.status() != WL_CONNECTED) && ((millis() - startAttempTime) < WIFI_TIMEOUT_MS))
-    {
-        delay(100);
-    }
-
-    if (WL_CONNECTED == WiFi.status())
-    {
-        Serial.println("Connected Succesfully.");
-        isSuccess = true;
-        m_LocalIP = WiFi.localIP();
-    }
-
-    return isSuccess;
-}
 
 /******************************************************************************
  * External functions
@@ -164,3 +105,5 @@ bool WIFI::connectStation()
 /******************************************************************************
  * Local functions
  *****************************************************************************/
+
+#endif /*FLASHMEM_H_*/
