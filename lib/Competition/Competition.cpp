@@ -51,19 +51,9 @@
  * Local Variables
  *****************************************************************************/
 
-/**
- *  After the first detection of the robot with the ext. sensor, this consider
- *  the duration in ms after that the sensor will be considered again.
- */
-static const uint32_t SENSOR_BLIND_PERIOD = 400;
-
-/** Competition start timestamp in ms. */
-static uint32_t gStartTimestamp = 0;
-
 /******************************************************************************
  * Public Methods
  *****************************************************************************/
-
 
 Competition::Competition()
 {
@@ -73,13 +63,12 @@ Competition::~Competition()
 {
 }
 
-
 bool Competition::handleCompetition(String &outputMessage)
 {
     bool isSuccess = false;
     uint32_t duration = 0;
 
-    switch (gCompetitionState)
+    switch (m_CompetitionState)
     {
     case COMPETITION_STATE_UNRELEASED:
         /* Don't care about external sensor.
@@ -91,15 +80,15 @@ bool Competition::handleCompetition(String &outputMessage)
         /* React on external sensor. */
         if (true == Board::isRobotDetected())
         {
-            gStartTimestamp = millis();
+            m_StartTimestamp = millis();
             outputMessage = "EVT;STARTED";
             isSuccess = true;
-            gCompetitionState = COMPETITION_STATE_STARTED;
+            m_CompetitionState = COMPETITION_STATE_STARTED;
         }
         break;
 
     case COMPETITION_STATE_STARTED:
-        duration = millis() - gStartTimestamp;
+        duration = millis() - m_StartTimestamp;
 
         /* React on external sensor. */
         if (SENSOR_BLIND_PERIOD <= duration)
@@ -108,7 +97,7 @@ bool Competition::handleCompetition(String &outputMessage)
             {
                 outputMessage = String("EVT;FINISHED;") + duration;
                 isSuccess = true;
-                gCompetitionState = COMPETITION_STATE_FINISHED;
+                m_CompetitionState = COMPETITION_STATE_FINISHED;
             }
         }
         break;
@@ -130,11 +119,11 @@ bool Competition::setReleasedState()
 {
     bool isSuccess = false;
 
-    if ((COMPETITION_STATE_UNRELEASED == gCompetitionState) ||
-        (COMPETITION_STATE_FINISHED == gCompetitionState))
+    if ((COMPETITION_STATE_UNRELEASED == m_CompetitionState) ||
+        (COMPETITION_STATE_FINISHED == m_CompetitionState))
     {
         isSuccess = true;
-        gCompetitionState = COMPETITION_STATE_RELEASED;
+        m_CompetitionState = COMPETITION_STATE_RELEASED;
     }
     return isSuccess;
 }

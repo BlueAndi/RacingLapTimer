@@ -91,8 +91,17 @@ public:
     bool setReleasedState();
 
 private:
+    /**
+     *  After the first detection of the robot with the ext. sensor, this consider
+     *  the duration in ms after that the sensor will be considered again.
+     */
+    const uint32_t SENSOR_BLIND_PERIOD = 400;
+
+    /** Competition start timestamp in ms. */
+    uint32_t m_StartTimestamp = 0;
+
     /** Current competition state. */
-    CompetitionState gCompetitionState = COMPETITION_STATE_UNRELEASED;
+    CompetitionState m_CompetitionState = COMPETITION_STATE_UNRELEASED;
 
 }; /** Competition */
 
