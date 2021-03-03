@@ -142,6 +142,13 @@ private:
     /** Local IP of the Device */
     IPAddress m_LocalIP;
 
+private:   
+    /** An instance shall not be copied. */
+    WIFI(const WIFI &wifi);
+
+    /** An instance shall not assigned. */
+    WIFI &operator=(const WIFI &wifi);
+
 }; /** WIFI */
 
 /******************************************************************************
