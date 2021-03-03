@@ -25,7 +25,7 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of WLAN.h.
+ * @brief  Implementation of WIFI.h.
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 
@@ -43,18 +43,6 @@
  * Types and Classes
  *****************************************************************************/
 
-/** Timeout for WiFi connection. */
-static const unsigned long WIFI_TIMEOUT_MS = 5000;
-
-/** Maximum length for saved Credentials. */
-static const uint8_t CREDENTIALS_MAX_LENGTH = 50;
-
-/** Address of saved SSID in EEPROM. */
-static const uint8_t NVM_SSID_ADDRESS = 0;
-
-/** Address of saved Password in EEPROM. */
-static const uint8_t NVM_PASSWORD_ADDRESS = 50;
-
 /******************************************************************************
  * Prototypes
  *****************************************************************************/
@@ -62,9 +50,6 @@ static const uint8_t NVM_PASSWORD_ADDRESS = 50;
 /******************************************************************************
  * Local Variables
  *****************************************************************************/
-
-/** True if system is connected in STA mode to a Network. */
-static bool isStaAvailable = false;
 
 /******************************************************************************
  * Public Methods

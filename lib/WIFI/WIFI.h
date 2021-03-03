@@ -118,6 +118,21 @@ private:
 
     IPAddress localIP; /**< Local IP of the Device */
 
+    /** Timeout for WiFi connection. */
+    const unsigned long WIFI_TIMEOUT_MS = 5000;
+
+    /** Maximum length for saved Credentials. */
+    const uint8_t CREDENTIALS_MAX_LENGTH = 50;
+
+    /** Address of saved SSID in EEPROM. */
+    const uint8_t NVM_SSID_ADDRESS = 0;
+
+    /** Address of saved Password in EEPROM. */
+    const uint8_t NVM_PASSWORD_ADDRESS = 50;
+
+    /** True if system is connected in STA mode to a Network. */
+    bool isStaAvailable = false;
+
 }; /** WIFI */
 
 /******************************************************************************
