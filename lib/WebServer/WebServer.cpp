@@ -20,15 +20,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**************************************************************************************************
-*   @file WebServer.cpp
-*   Implementation of WebServer.h.
-*   @author Gabryel Reyes <gabryelrdiaz@gmail.com>
-**************************************************************************************************/
-/* INCLUDES **************************************************************************************/
+
+/*******************************************************************************
+    DESCRIPTION
+*******************************************************************************/
+/**
+ * @brief  Implementation of WebServer.h.
+ * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
+ */
+
+/******************************************************************************
+ * Includes
+ *****************************************************************************/
 #include "WebServer.h"
 
-/* CONSTANTS *************************************************************************************/
+/******************************************************************************
+ * Macros
+ *****************************************************************************/
+
+/******************************************************************************
+ * Types and Classes
+ *****************************************************************************/
 
 /** Webserver port. */
 static const uint32_t WEBSERVER_PORT = 80;
@@ -36,14 +48,12 @@ static const uint32_t WEBSERVER_PORT = 80;
 /** Websocket port. */
 static const uint32_t WEBSOCKET_PORT = 81;
 
-/** Webserver on port for http protocol. */
-static ESP8266WebServer gWebServer(WEBSERVER_PORT);
-
-/** Websocket server on port for ws protocol. */
-static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
-
 /** Hostname. */
 static const char *HOSTNAME = "laptimer";
+
+/******************************************************************************
+ * Prototypes
+ *****************************************************************************/
 
 /**
  *  Handle websocket event.
@@ -55,26 +65,28 @@ static const char *HOSTNAME = "laptimer";
  */
 static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
 
+/** Handler for POST Request for the storage of the STA Credentials. */
+static void handleCredentials();
+
+/******************************************************************************
+ * Local Variables
+ *****************************************************************************/
+
 /** Competition Handler Instance. */
 static Competition *m_laptrigger;
 
 /** WLAN Handler Instance. */
 static WIFI *m_wireless;
 
-/* MACROS ****************************************************************************************/
+/** Webserver on port for http protocol. */
+static ESP8266WebServer gWebServer(WEBSERVER_PORT);
 
-/* TYPES *****************************************************************************************/
+/** Websocket server on port for ws protocol. */
+static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
 
-/* PROTOTYPES ************************************************************************************/
-
-/** Handler for POST Request for the storage of the STA Credentials. */
-static void handleCredentials();
-
-/* VARIABLES *************************************************************************************/
-
-/* PUBLIC METHODES *******************************************************************************/
-
-/**************************************************************************************************/
+/******************************************************************************
+ * Public Methods
+ *****************************************************************************/
 
 /**
  *  Default Constructor.
@@ -88,16 +100,12 @@ LapTriggerWebServer::LapTriggerWebServer(WIFI &wireless, Competition &goalLine)
     m_laptrigger = &goalLine;
 }
 
-/**************************************************************************************************/
-
 /**
  *  Default Destructor.
  */
 LapTriggerWebServer::~LapTriggerWebServer()
 {
 }
-
-/**************************************************************************************************/
 
 /**
  *  Initialization of Module.
@@ -139,8 +147,6 @@ bool LapTriggerWebServer::begin()
     return success;
 }
 
-/**************************************************************************************************/
-
 /**
  *  Executes Loop Cycle.
  * 
@@ -163,13 +169,21 @@ bool LapTriggerWebServer::cycle()
     return success;
 }
 
-/* PROTECTED METHODES ****************************************************************************/
+/******************************************************************************
+ * Protected Methods
+ *****************************************************************************/
 
-/* PRIVATE METHODES ******************************************************************************/
+/******************************************************************************
+ * Private Methods
+ *****************************************************************************/
 
-/* EXTERNAL FUNCTIONS ****************************************************************************/
+/******************************************************************************
+ * External functions
+ *****************************************************************************/
 
-/* INTERNAL FUNCTIONS ****************************************************************************/
+/******************************************************************************
+ * Local functions
+ *****************************************************************************/
 
 /**
  *  Handle websocket event.
