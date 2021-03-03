@@ -47,13 +47,13 @@
  *****************************************************************************/
 
 /** WLAN Instance */
-static WIFI wlan;
+static WIFI m_wlan;
 
 /** Competition Instance */
-static Competition lapTrigger;
+static Competition m_LapTrigger;
 
 /** WebServer Instance */
-static LapTriggerWebServer webserver(lapTrigger);
+static LapTriggerWebServer m_WebServer(m_LapTrigger);
 
 /******************************************************************************
  * Prototypes
@@ -74,12 +74,14 @@ void setup() /* cppcheck-suppress unusedFunction */
 {
     bool isError = false;
 
+    /** Initialize HAL. */
     if (false == Board::begin())
     {
         Serial.printf("%lu: failed to start Board. \n", millis());
         isError = true;
     }
-    else if (false == wlan.begin())
+    /** Start Wireless Connection. */
+    else if (false == m_wlan.begin())
     {
         Serial.printf("%lu: Failed to start WLAN.\n", millis());
         isError = true;
@@ -90,7 +92,8 @@ void setup() /* cppcheck-suppress unusedFunction */
         Serial.printf("%lu: Failed to mount filesystem.\n", millis());
         isError = false;
     }
-    else if (false == webserver.begin())
+    /** Start Web Server. */
+    else if (false == m_WebServer.begin())
     {
         Serial.printf("%lu: Failed to start Web Server.\n", millis());
         isError = true;
@@ -113,16 +116,16 @@ void loop() /* cppcheck-suppress unusedFunction */
 {
     bool isSuccess = true;
 
-    if (false == webserver.runCycle())
+    if (false == m_WebServer.runCycle())
     {
         isSuccess = false;
     }
-    else if(false == wlan.runCycle())
+    else if (false == m_wlan.runCycle())
     {
         isSuccess = false;
     }
 
-    if(false == isSuccess)
+    if (false == isSuccess)
     {
         Board::errorHalt();
     }
