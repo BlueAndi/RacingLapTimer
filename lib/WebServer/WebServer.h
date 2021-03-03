@@ -81,10 +81,10 @@ public:
      * 
      *  @return If WebServer successfully handled, returns True. Otherwise, false..
      */
-    bool cycle();
+    bool runCycle();
 
 private:
-    /** Hostname. */
+    /** Hostname for DNS Server. */
     const char *HOSTNAME = "laptimer";
 
 }; /** LapTriggerWebServer */

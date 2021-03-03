@@ -113,7 +113,7 @@ void loop() /* cppcheck-suppress unusedFunction */
 {
     bool isSuccess = true;
 
-    if (false == webserver.cycle())
+    if (false == webserver.runCycle())
     {
         isSuccess = false;
     }

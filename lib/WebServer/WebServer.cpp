@@ -120,7 +120,7 @@ bool LapTriggerWebServer::begin()
     return isSuccess;
 }
 
-bool LapTriggerWebServer::cycle()
+bool LapTriggerWebServer::runCycle()
 {
     bool isSuccess = false;
 
