@@ -84,6 +84,12 @@ void setup() /* cppcheck-suppress unusedFunction */
         Serial.printf("%lu: Failed to start WLAN.\n", millis());
         isError = true;
     }
+    /** Mount filesystem. */
+    else if (false == LittleFS.begin())
+    {
+        Serial.printf("%lu: Failed to mount filesystem.\n", millis());
+        isError = false;
+    }
     else if (false == webserver.begin())
     {
         Serial.printf("%lu: Failed to start Web Server.\n", millis());

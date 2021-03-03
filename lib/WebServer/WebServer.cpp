@@ -95,14 +95,8 @@ bool LapTriggerWebServer::begin()
 {
     bool isSuccess = true;
 
-    /** Mount filesystem. */
-    if (false == LittleFS.begin())
-    {
-        Serial.printf("%lu: Failed to mount filesystem.\n", millis());
-        isSuccess = false;
-    }
     /** Setup mDNS service. */
-    else if (false == MDNS.begin(HOSTNAME))
+    if (false == MDNS.begin(HOSTNAME))
     {
         Serial.printf("%lu: Failed to start mDNS service.", millis());
         isSuccess = false;
