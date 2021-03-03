@@ -29,8 +29,8 @@
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 
-#ifndef WLAN_H_
-#define WLAN_H_
+#ifndef WIFI_H_
+#define WIFI_H_
 
 /******************************************************************************
  * Includes
@@ -73,7 +73,7 @@ public:
      * 
      *  @return success.
      */
-    bool cycle();
+    bool runCycle();
 
     /**
      *  Saves new STA Credentials.
@@ -95,12 +95,13 @@ private:
     /**
      *  Connect to Wireless Access Point.
      * 
-     *  @return success.
+     *  @return If the device is succesfully connected to the Wireless Network, 
+     *  returns True. Otherwise False.
      */
     bool connectStation();
 
     /**
-     *  Imports Credentials from EEPROM.
+     *  Imports the Station Credentials from the EEPROM.
      * 
      *  @return If Credentials successfully imported, returns True. Otherwise, False.
      */
@@ -110,13 +111,6 @@ private:
      *  Deletes stored Credentials.
      */
     void clearEEPROM();
-
-    String AP_SSID;      /**< WiFi AP SSID. */
-    String AP_PASSWORD;  /**< WiFi AP Password. */
-    String STA_SSID;     /**< WiFi STA SSID. */
-    String STA_PASSWORD; /**< WiFi STA Password. */
-
-    IPAddress localIP; /**< Local IP of the Device */
 
     /** Timeout for WiFi connection. */
     const unsigned long WIFI_TIMEOUT_MS = 5000;
@@ -132,6 +126,21 @@ private:
 
     /** True if system is connected in STA mode to a Network. */
     bool isStaAvailable = false;
+
+    /** WiFi AP SSID. */
+    String m_ApSSID;
+
+    /** WiFi AP Password. */
+    String m_ApPassword;
+
+    /** WiFi STA SSID. */
+    String m_Sta_SSID;
+
+    /** WiFi STA Password. */
+    String m_Sta_Password;
+
+    /** Local IP of the Device */
+    IPAddress m_LocalIP;
 
 }; /** WIFI */
 
@@ -151,4 +160,4 @@ private:
  * Local functions
  *****************************************************************************/
 
-#endif /*WLAN_H_*/
+#endif /*WIFI_H_*/

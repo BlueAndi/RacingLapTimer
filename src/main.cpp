@@ -111,7 +111,7 @@ void loop() /* cppcheck-suppress unusedFunction */
     {
         isSuccess = false;
     }
-    else if(false == wlan.cycle())
+    else if(false == wlan.runCycle())
     {
         isSuccess = false;
     }
