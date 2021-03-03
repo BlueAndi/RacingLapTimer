@@ -35,7 +35,7 @@
 
 #include "Board.h"
 #include "WIFI.h"
-#include "WebServer.h"
+#include "LapTriggerWebServer.h"
 #include "Competition.h"
 
 /******************************************************************************

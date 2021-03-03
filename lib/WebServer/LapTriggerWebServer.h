@@ -29,8 +29,8 @@
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 
-#ifndef WEB_SERVER_H_
-#define WEB_SERVER_H_
+#ifndef LAP_TRIGGER_WEB_SERVER_H_
+#define LAP_TRIGGER_WEB_SERVER_H_
 
 /******************************************************************************
  * Includes
@@ -105,4 +105,4 @@ private:
  * Local functions
  *****************************************************************************/
 
-#endif /*WEB_SERVER_H_*/
+#endif /*LAP_TRIGGER_WEB_SERVER_H_*/
