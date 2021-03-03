@@ -116,36 +116,42 @@ bool Flash::saveCredentials(const String &ssid, const String &password)
 
     uint8_t memoryPosition = 1;
 
-    /** Save SSID */
-    EEPROM.write(NVM_SSID_ADDRESS, ';');
-
-    for (memoryPosition = 1; memoryPosition <= ssid.length(); memoryPosition++)
+    if ((!ssid.isEmpty()) &&
+        (!password.isEmpty()) &&
+        (ssid.length() < CREDENTIALS_MAX_LENGTH) &&
+        (password.length() < CREDENTIALS_MAX_LENGTH))
     {
-        EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ssid[memoryPosition - 1]);
-    }
+        /** Save SSID */
+        EEPROM.write(NVM_SSID_ADDRESS, ';');
 
-    EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ';');
+        for (memoryPosition = 1; memoryPosition <= ssid.length(); memoryPosition++)
+        {
+            EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ssid[memoryPosition - 1]);
+        }
 
-    /** Save Password */
-    EEPROM.write(NVM_PASSWORD_ADDRESS, ';');
+        EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ';');
 
-    for (memoryPosition = 1; memoryPosition <= password.length(); memoryPosition++)
-    {
-        EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, password[memoryPosition - 1]);
-    }
+        /** Save Password */
+        EEPROM.write(NVM_PASSWORD_ADDRESS, ';');
 
-    EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, ';');
+        for (memoryPosition = 1; memoryPosition <= password.length(); memoryPosition++)
+        {
+            EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, password[memoryPosition - 1]);
+        }
 
-    if (EEPROM.commit())
-    {
-        Serial.println("EEPROM successfully committed");
-        Serial.println("Credentials Received");
-        Serial.println("SSID: " + ssid);
-        isSuccess = true;
-    }
-    else
-    {
-        Serial.println("ERROR! EEPROM commit failed");
+        EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, ';');
+
+        if (EEPROM.commit())
+        {
+            Serial.println("EEPROM successfully committed");
+            Serial.println("Credentials Received");
+            Serial.println("SSID: " + ssid);
+            isSuccess = true;
+        }
+        else
+        {
+            Serial.println("ERROR! EEPROM commit failed");
+        }
     }
 
     return isSuccess;
