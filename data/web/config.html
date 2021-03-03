@@ -18,27 +18,28 @@
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <a class="nav-link hover" href="index.html">Home</a>
+                <li class="nav-item">
+                    <a class="nav-link hover" href="index.html">Home</a>
+                </li>
                 <li class="nav-item active">
                     <a class="nav-link hover" href="config.html">Configuration</a>
                 </li>
-
             </ul>
         </div>
     </nav>
 
-    <main role="main" class="container"></main>
-    <h1 class="row justify-content-center">Change Station Credentials</h1>
+    <main role="main" class="container">
+        <h1 class="row justify-content-center">Change Station Credentials</h1>
 
-    <div class="row justify-content-center">
-        <form action="" method="post">
-            <p><input type="text" placeholder="SSID" required name="STA_SSID">
-            </p>
-            <p><input type="password" placeholder="Password" name="STA_PASSWORD">
-            </p>
-            <p><button type="submit" class="btn btn-secondary">Save and Restart</button></p>
-        </form>
-    </div>
+        <div class="row justify-content-center">
+            <form action="" method="post">
+                <p><input type="text" placeholder="SSID" required name="STA_SSID" />
+                </p>
+                <p><input type="password" placeholder="Password" name="STA_PASSWORD" />
+                </p>
+                <p><button type="submit" class="btn btn-secondary">Save and Restart</button></p>
+            </form>
+        </div>
 
     </main>
     <!-- /.container -->

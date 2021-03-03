@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
@@ -7,11 +8,12 @@
     <link rel="stylesheet" href="./bootstrap/4.0.0/css/bootstrap.min.css" />
     <link href="starter-template.css" rel="stylesheet">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="#">Racing Lap Timer</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation" />
-            <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
@@ -19,7 +21,9 @@
                 <li class="nav-item active">
                     <a class="nav-link hover" href="index.html">Home</a>
                 </li>
-                <a class="nav-link hover" href="config.html">Configuration</a>
+                <li class="nav-item">
+                    <a class="nav-link hover" href="config.html">Configuration</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -41,18 +45,19 @@
         <div class="row justify-content-center">
             <table id="resultTable" class="table table-sm">
                 <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Group</th>
-                    <th scope="col">Fastest lap</th>
-                  </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Group</th>
+                        <th scope="col">Fastest lap</th>
+                    </tr>
                 </thead>
                 <tbody>
                 </tbody>
-              </table>
+            </table>
         </div>
 
-    </main><!-- /.container -->
+    </main>
+    <!-- /.container -->
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./jquery/jquery-3.5.1.slim.min.js"></script>
@@ -142,9 +147,9 @@
         }
 
         function timestamp2MinSecMSec(timestamp) {
-            var minutes         = Math.floor(timestamp / (60 * 1000));
-            var seconds         = Math.floor((timestamp / 1000) - (minutes * 60));
-            var milliseconds    = Math.floor(timestamp - (minutes * 60 * 1000) - (seconds * 1000));
+            var minutes = Math.floor(timestamp / (60 * 1000));
+            var seconds = Math.floor((timestamp / 1000) - (minutes * 60));
+            var milliseconds = Math.floor(timestamp - (minutes * 60 * 1000) - (seconds * 1000));
 
             return {
                 minutes: minutes,
@@ -171,14 +176,14 @@
                 /* Adjust elapsed time according to received duration,
                  * because of a better accuracy.
                  */
-                 timeMinSecMSec         = timestamp2MinSecMSec(rsp.duration);
-                 global.minutes         = timeMinSecMSec.minutes;
-                 global.seconds         = timeMinSecMSec.seconds;
-                 global.milliseconds    = timeMinSecMSec.milliseconds;
-                 updateTimer();
+                timeMinSecMSec = timestamp2MinSecMSec(rsp.duration);
+                global.minutes = timeMinSecMSec.minutes;
+                global.seconds = timeMinSecMSec.seconds;
+                global.milliseconds = timeMinSecMSec.milliseconds;
+                updateTimer();
 
-                 if ((0 == global.resultTable[global.selectedGroup].duration) ||
-                     (rsp.duration < global.resultTable[global.selectedGroup].duration)) {
+                if ((0 == global.resultTable[global.selectedGroup].duration) ||
+                    (rsp.duration < global.resultTable[global.selectedGroup].duration)) {
 
                     global.resultTable[global.selectedGroup].duration = rsp.duration;
 
@@ -193,7 +198,7 @@
         function createGroups() {
             var index = 0;
 
-            for(index = 0; index < global.numberOfGroups; ++index) {
+            for (index = 0; index < global.numberOfGroups; ++index) {
                 $("#goupSelectionBar").append("<button type=\"button\" class=\"btn btn-primary mx-2\" onclick=\"selectGroup(" + index + ")\">Group " + String.fromCharCode(65 + index) + "</button>");
             }
         }
@@ -220,7 +225,7 @@
         function createResultTable() {
             var index = 0;
 
-            for(index = 0; index < global.numberOfGroups; ++index) {
+            for (index = 0; index < global.numberOfGroups; ++index) {
                 global.resultTable.push({
                     id: index,
                     duration: 0
@@ -229,13 +234,13 @@
         }
 
         function updateResultTable() {
-            var index           = 0;
-            var sortedTable     = global.resultTable.slice().sort(compareDuration);
-            var fastestLap      = "";
-            var timeMinSecMSec  = null;
+            var index = 0;
+            var sortedTable = global.resultTable.slice().sort(compareDuration);
+            var fastestLap = "";
+            var timeMinSecMSec = null;
 
             $("#resultTable > tbody").empty();
-            for(index = 0; index < global.numberOfGroups; ++index) {
+            for (index = 0; index < global.numberOfGroups; ++index) {
 
                 timeMinSecMSec = timestamp2MinSecMSec(sortedTable[index].duration);
 
@@ -258,7 +263,7 @@
             }
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             updateTimer();
             createGroups();
             selectGroup(0);
@@ -285,4 +290,5 @@
     </script>
 
 </body>
+
 </html>
