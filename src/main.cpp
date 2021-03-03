@@ -53,7 +53,7 @@ static WIFI wlan;
 static Competition lapTrigger;
 
 /** WebServer Instance */
-static LapTriggerWebServer webserver(wlan, lapTrigger);
+static LapTriggerWebServer webserver(lapTrigger);
 
 /******************************************************************************
  * Prototypes

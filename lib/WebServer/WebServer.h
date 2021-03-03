@@ -60,10 +60,9 @@ public:
     /**
      *  Class Constructor.
      * 
-     *  @param[in,out] wireless Instance of WiFi Handler.
-     *  @param[in,out] goalLine Instance of Competition Handler.
+     *  @param[in] goalLine Instance of Competition Handler.
      */
-    LapTriggerWebServer(WIFI &wireless, Competition &goalLine);
+    LapTriggerWebServer(Competition &goalLine);
 
     /**
      *  Default Destructor.
@@ -85,6 +84,9 @@ public:
     bool cycle();
 
 private:
+    /** Hostname. */
+    const char *HOSTNAME = "laptimer";
+
 }; /** LapTriggerWebServer */
 
 /******************************************************************************

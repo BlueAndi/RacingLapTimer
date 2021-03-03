@@ -43,14 +43,8 @@
  * Types and Classes
  *****************************************************************************/
 
-/** Webserver port. */
-static const uint32_t WEBSERVER_PORT = 80;
-
-/** Websocket port. */
-static const uint32_t WEBSOCKET_PORT = 81;
-
-/** Hostname. */
-static const char *HOSTNAME = "laptimer";
+/** Competition Handler Instance. */
+static Competition *m_laptrigger;
 
 /******************************************************************************
  * Prototypes
@@ -72,12 +66,11 @@ static void handleCredentials();
 /******************************************************************************
  * Local Variables
  *****************************************************************************/
+/** Webserver port. */
+static const uint32_t WEBSERVER_PORT = 80;
 
-/** Competition Handler Instance. */
-static Competition *m_laptrigger;
-
-/** WLAN Handler Instance. */
-static WIFI *m_wireless;
+/** Websocket port. */
+static const uint32_t WEBSOCKET_PORT = 81;
 
 /** Webserver on port for http protocol. */
 static ESP8266WebServer gWebServer(WEBSERVER_PORT);
@@ -89,9 +82,8 @@ static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
  * Public Methods
  *****************************************************************************/
 
-LapTriggerWebServer::LapTriggerWebServer(WIFI &wireless, Competition &goalLine)
+LapTriggerWebServer::LapTriggerWebServer(Competition &goalLine)
 {
-    m_wireless = &wireless;
     m_laptrigger = &goalLine;
 }
 
@@ -134,7 +126,6 @@ bool LapTriggerWebServer::begin()
     return isSuccess;
 }
 
-
 bool LapTriggerWebServer::cycle()
 {
     bool isSuccess = false;
@@ -158,14 +149,6 @@ bool LapTriggerWebServer::cycle()
 
 /******************************************************************************
  * Private Methods
- *****************************************************************************/
-
-/******************************************************************************
- * External functions
- *****************************************************************************/
-
-/******************************************************************************
- * Local functions
  *****************************************************************************/
 
 static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
@@ -290,3 +273,11 @@ static void handleCredentials()
         }
     }
 }
+
+/******************************************************************************
+ * External functions
+ *****************************************************************************/
+
+/******************************************************************************
+ * Local functions
+ *****************************************************************************/
