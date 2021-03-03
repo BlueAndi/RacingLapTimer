@@ -105,18 +105,18 @@ void setup() /* cppcheck-suppress unusedFunction */
  */
 void loop() /* cppcheck-suppress unusedFunction */
 {
-    bool success = true;
+    bool isSuccess = true;
 
     if (false == webserver.cycle())
     {
-        success = false;
+        isSuccess = false;
     }
     else if(false == wlan.cycle())
     {
-        success = false;
+        isSuccess = false;
     }
 
-    if(false == success)
+    if(false == isSuccess)
     {
         Board::errorHalt();
     }

@@ -66,7 +66,7 @@ static const uint8_t SENSOR_DIN_PIN = 5;
 
 bool Board::begin()
 {
-    bool success = true;
+    bool isSuccess = true;
 
     /* Setup serial interface */
     Serial.begin(SERIAL_BAUDRATE);
@@ -74,7 +74,7 @@ bool Board::begin()
     /* Prepare sensor input pin */
     pinMode(SENSOR_DIN_PIN, INPUT);
 
-    return success;
+    return isSuccess;
 }
 
 bool Board::isRobotDetected()

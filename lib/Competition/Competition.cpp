@@ -76,7 +76,7 @@ Competition::~Competition()
 
 bool Competition::handleCompetition(String &outputMessage)
 {
-    bool success = false;
+    bool isSuccess = false;
     uint32_t duration = 0;
 
     switch (gCompetitionState)
@@ -93,7 +93,7 @@ bool Competition::handleCompetition(String &outputMessage)
         {
             gStartTimestamp = millis();
             outputMessage = "EVT;STARTED";
-            success = true;
+            isSuccess = true;
             gCompetitionState = COMPETITION_STATE_STARTED;
         }
         break;
@@ -107,7 +107,7 @@ bool Competition::handleCompetition(String &outputMessage)
             if (true == Board::isRobotDetected())
             {
                 outputMessage = String("EVT;FINISHED;") + duration;
-                success = true;
+                isSuccess = true;
                 gCompetitionState = COMPETITION_STATE_FINISHED;
             }
         }
@@ -123,20 +123,20 @@ bool Competition::handleCompetition(String &outputMessage)
         break;
     }
 
-    return success;
+    return isSuccess;
 }
 
 bool Competition::setReleasedState()
 {
-    bool success = false;
+    bool isSuccess = false;
 
     if ((COMPETITION_STATE_UNRELEASED == gCompetitionState) ||
         (COMPETITION_STATE_FINISHED == gCompetitionState))
     {
-        success = true;
+        isSuccess = true;
         gCompetitionState = COMPETITION_STATE_RELEASED;
     }
-    return success;
+    return isSuccess;
 }
 
 /******************************************************************************

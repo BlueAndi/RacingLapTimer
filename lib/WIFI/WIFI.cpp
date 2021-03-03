@@ -64,7 +64,7 @@ static const uint8_t NVM_PASSWORD_ADDRESS = 50;
  *****************************************************************************/
 
 /** True if system is connected in STA mode to a Network. */
-static bool staAvailable = false;
+static bool isStaAvailable = false;
 
 /******************************************************************************
  * Public Methods
@@ -80,7 +80,7 @@ WIFI::~WIFI()
 
 bool WIFI::begin()
 {
-    bool success = false;
+    bool isSuccess = false;
 
     EEPROM.begin(512);
 
@@ -91,9 +91,9 @@ bool WIFI::begin()
 
         if (connectStation())
         {
-            success = true;
+            isSuccess = true;
             localIP = WiFi.localIP();
-            staAvailable = true;
+            isStaAvailable = true;
         }
         else
         {
@@ -103,7 +103,7 @@ bool WIFI::begin()
             WiFi.mode(WIFI_AP);
             WiFi.softAP(AP_SSID, AP_PASSWORD);
             localIP = WiFi.softAPIP();
-            success = true;
+            isSuccess = true;
         }
     }
     else
@@ -115,31 +115,31 @@ bool WIFI::begin()
         WiFi.softAP(AP_SSID, AP_PASSWORD);
         localIP = WiFi.softAPIP();
 
-        success = true;
+        isSuccess = true;
     }
 
     Serial.println(getIPAddress());
 
-    return success;
+    return isSuccess;
 }
 
 bool WIFI::cycle()
 {
-    bool success = true;
+    bool isSuccess = true;
 
-    if (staAvailable)
+    if (isStaAvailable)
     {
         if (WL_CONNECTED != WiFi.status())
         {
-            success = connectStation();
+            isSuccess = connectStation();
         }
     }
-    return success;
+    return isSuccess;
 }
 
 bool WIFI::saveCredentials(const String &ssid, const String &password)
 {
-    bool success = false;
+    bool isSuccess = false;
 
     clearEEPROM();
 
@@ -170,9 +170,9 @@ bool WIFI::saveCredentials(const String &ssid, const String &password)
     if (true)
     {
         Serial.println("Credentials Received");
-        success = true;
+        isSuccess = true;
     }
-    return success;
+    return isSuccess;
 }
 
 const IPAddress &WIFI::getIPAddress(void)
@@ -190,7 +190,7 @@ const IPAddress &WIFI::getIPAddress(void)
 
 bool WIFI::connectStation()
 {
-    bool success = false;
+    bool isSuccess = false;
 
     unsigned long startAttempTime = millis();
 
@@ -203,16 +203,16 @@ bool WIFI::connectStation()
     if (WL_CONNECTED == WiFi.status())
     {
         Serial.println("Connected Succesfully.");
-        success = true;
+        isSuccess = true;
         localIP = WiFi.localIP();
     }
 
-    return success;
+    return isSuccess;
 }
 
 bool WIFI::importCredentials()
 {
-    bool success = false;
+    bool isSuccess = false;
 
     if (';' == char(EEPROM.read(NVM_SSID_ADDRESS)))
     {
@@ -247,10 +247,10 @@ bool WIFI::importCredentials()
             }
         }
 
-        success = true;
+        isSuccess = true;
     }
 
-    return success;
+    return isSuccess;
 }
 
 void WIFI::clearEEPROM()

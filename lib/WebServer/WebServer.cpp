@@ -100,19 +100,19 @@ LapTriggerWebServer::~LapTriggerWebServer()
 
 bool LapTriggerWebServer::begin()
 {
-    bool success = true;
+    bool isSuccess = true;
 
     /** Mount filesystem. */
     if (false == LittleFS.begin())
     {
         Serial.printf("%lu: Failed to mount filesystem.\n", millis());
-        success = false;
+        isSuccess = false;
     }
     /** Setup mDNS service. */
     else if (false == MDNS.begin(HOSTNAME))
     {
         Serial.printf("%lu: Failed to start mDNS service.", millis());
-        success = false;
+        isSuccess = false;
     }
     else
     {
@@ -130,13 +130,13 @@ bool LapTriggerWebServer::begin()
         gWebSocketSrv.begin();
     }
 
-    return success;
+    return isSuccess;
 }
 
 
 bool LapTriggerWebServer::cycle()
 {
-    bool success = false;
+    bool isSuccess = false;
 
     String outputMessage = "";
     if (m_laptrigger->handleCompetition(outputMessage))
@@ -144,11 +144,11 @@ bool LapTriggerWebServer::cycle()
         gWebSocketSrv.broadcastTXT(outputMessage);
     }
 
-    success = MDNS.update();
+    isSuccess = MDNS.update();
     gWebServer.handleClient();
     gWebSocketSrv.loop();
 
-    return success;
+    return isSuccess;
 }
 
 /******************************************************************************
