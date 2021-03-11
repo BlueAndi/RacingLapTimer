@@ -112,11 +112,19 @@ private:
     /** Local IP of the Device */
     IPAddress m_LocalIP;
 
-private:   
-    /** An instance shall not be copied. */
+private:
+    /** An instance shall not be copied. 
+     *  
+     *  @param[in] wifi WiFi instance to copy.
+     */
     WIFI(const WIFI &wifi);
 
-    /** An instance shall not assigned. */
+    /** 
+     *  An instance shall not assigned.
+     *   
+     *  @param[in] wifi WiFi instance to assign.
+     *  @return Pointer to this instance.
+     */
     WIFI &operator=(const WIFI &wifi);
 
 }; /** WIFI */
