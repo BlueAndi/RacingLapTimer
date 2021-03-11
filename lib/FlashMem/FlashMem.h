@@ -47,8 +47,11 @@
 
 namespace Flash
 {
+    /** Address of Meta Data header in EEPROM. */
+    const uint8_t NVM_METADATA_ADDRESS = 0;
+
     /** Address of saved SSID in EEPROM. */
-    const uint8_t NVM_SSID_ADDRESS = 0;
+    const uint8_t NVM_SSID_ADDRESS = 10;
 
     /** SSID maximal length */
     const uint8_t NVM_SSID_MAX_LENGTH = 32;
@@ -94,6 +97,13 @@ namespace Flash
      *  Deletes stored Data in the EEPROM.
      */
     void clearEEPROM();
+
+    /**
+     *  Checks if there are Credentials stored in the EEPROM
+     * 
+     *  @return If Credentials are stored in EEPROM, returns True. Otherwise False.
+     */
+    bool areCredentialsStored();
 
 }; /* Flash */
 

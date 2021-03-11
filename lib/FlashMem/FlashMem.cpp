@@ -69,7 +69,7 @@ bool Flash::importCredentials(String &ssid, String &password)
 {
     bool isSuccess = false;
 
-    if (0x00 != EEPROM.read(NVM_SSID_ADDRESS))
+    if (areCredentialsStored())
     {
         char temp = 0x00;
 
@@ -139,6 +139,10 @@ bool Flash::saveCredentials(const String &ssid, const String &password)
             Serial.println();
         }
 
+        /* Write 0x55 and 0xA5 to Metadata Header are Credentials are Stored) */
+        EEPROM.write(NVM_METADATA_ADDRESS, 0x55);
+        EEPROM.write(NVM_METADATA_ADDRESS + 1, 0xA5);
+
         if (EEPROM.commit())
         {
             Serial.println("EEPROM successfully committed");
@@ -155,8 +159,19 @@ bool Flash::saveCredentials(const String &ssid, const String &password)
 
 void Flash::clearEEPROM()
 {
-    EEPROM.write(NVM_SSID_ADDRESS, 0x00);
-    EEPROM.write(NVM_PASSWORD_ADDRESS, 0x00);
+    EEPROM.write(NVM_METADATA_ADDRESS, 0x00);
+    EEPROM.write(NVM_METADATA_ADDRESS + 1, 0x00);
+}
+
+bool Flash::areCredentialsStored()
+{
+    bool areCredentialsStored = false;
+    if ((0x55 == EEPROM.read(NVM_METADATA_ADDRESS)) &&
+        (0xA5 == EEPROM.read(NVM_METADATA_ADDRESS + 1)))
+    {
+        areCredentialsStored = true;
+    }
+    return areCredentialsStored;
 }
 
 /******************************************************************************
