@@ -87,6 +87,34 @@ private:
     /** Hostname for DNS Server. */
     const char *HOSTNAME = "laptimer";
 
+    /** Webserver port. */
+    const uint32_t WEBSERVER_PORT = 80;
+
+    /** Websocket port. */
+    const uint32_t WEBSOCKET_PORT = 81;
+
+    /** Competition Handler Instance. */
+    Competition *m_laptrigger;
+
+    /** Webserver on port for http protocol. */
+    ESP8266WebServer *m_WebServer;
+
+    /** Websocket server on port for ws protocol. */
+    WebSocketsServer *m_WebSocketSrv;
+
+    /**
+     *  Handler for websocket event.
+     *
+     *  @param[in] clientId  Websocket client id.
+     *  @param[in] type      Event type.
+     *  @param[in] payload   Event payload.
+     *  @param[in] length    Event payload length.
+     */
+    void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
+
+    /** Handler for POST Request for the storage of the STA Credentials. */
+    void handleCredentials();
+
 }; /** LapTriggerWebServer */
 
 /******************************************************************************

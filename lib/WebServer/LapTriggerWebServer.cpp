@@ -43,59 +43,35 @@
  * Types and Classes
  *****************************************************************************/
 
-/** Competition Handler Instance. */
-static Competition *m_laptrigger;
-
 /******************************************************************************
  * Prototypes
  *****************************************************************************/
 
-/**
- *  Handle websocket event.
- *
- *  @param[in] clientId  Websocket client id.
- *  @param[in] type      Event type.
- *  @param[in] payload   Event payload.
- *  @param[in] length    Event payload length.
- */
-static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
-
-/** Handler for POST Request for the storage of the STA Credentials. */
-static void handleCredentials();
-
 /******************************************************************************
  * Local Variables
  *****************************************************************************/
-/** Webserver port. */
-static const uint32_t WEBSERVER_PORT = 80;
-
-/** Websocket port. */
-static const uint32_t WEBSOCKET_PORT = 81;
-
-/** Webserver on port for http protocol. */
-static ESP8266WebServer gWebServer(WEBSERVER_PORT);
-
-/** Websocket server on port for ws protocol. */
-static WebSocketsServer gWebSocketSrv(WEBSOCKET_PORT);
 
 /******************************************************************************
  * Public Methods
  *****************************************************************************/
 
-LapTriggerWebServer::LapTriggerWebServer(Competition &goalLine)
+LapTriggerWebServer::LapTriggerWebServer(Competition &goalLine) : m_laptrigger(&goalLine)
 {
-    m_laptrigger = &goalLine;
+    m_WebServer = new ESP8266WebServer(WEBSERVER_PORT);
+    m_WebSocketSrv = new WebSocketsServer(WEBSOCKET_PORT);
 }
 
 LapTriggerWebServer::~LapTriggerWebServer()
 {
+    /* Unmount Filesystem */
+    LittleFS.end();
 }
 
 bool LapTriggerWebServer::begin()
 {
     bool isSuccess = true;
 
-    /** Setup mDNS service. */
+    /* Setup mDNS service. */
     if (false == MDNS.begin(HOSTNAME))
     {
         Serial.printf("%lu: Failed to start mDNS service.", millis());
@@ -103,18 +79,23 @@ bool LapTriggerWebServer::begin()
     }
     else
     {
-        /** Setup webserver. */
-        gWebServer.serveStatic("/", LittleFS, "/web/", "max-age=86400");
-        gWebServer.on("/config.html", HTTP_POST, handleCredentials);
-        gWebServer.onNotFound(
-            []() {
-                gWebServer.send(404, "text/plain", "File not found.");
+        /* Setup webserver. */
+        m_WebServer->serveStatic("/", LittleFS, "/web/", "max-age=86400");
+        m_WebServer->on("/config.html", HTTP_POST, [this]() {
+            this->handleCredentials();
+        });
+        m_WebServer->onNotFound(
+            [this]() {
+                this->m_WebServer->send(404, "text/plain", "File not found.");
             });
-        gWebServer.begin();
+        m_WebServer->begin();
 
-        /** Setup websocket server. */
-        gWebSocketSrv.onEvent(webSocketEvent);
-        gWebSocketSrv.begin();
+        /* Setup websocket server. */
+        m_WebSocketSrv->onEvent(
+            [this](uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
+                this->webSocketEvent(num, type, payload, length);
+            });
+        m_WebSocketSrv->begin();
     }
 
     return isSuccess;
@@ -127,12 +108,12 @@ bool LapTriggerWebServer::runCycle()
     String outputMessage = "";
     if (m_laptrigger->handleCompetition(outputMessage))
     {
-        gWebSocketSrv.broadcastTXT(outputMessage);
+        m_WebSocketSrv->broadcastTXT(outputMessage);
     }
 
     isSuccess = MDNS.update();
-    gWebServer.handleClient();
-    gWebSocketSrv.loop();
+    m_WebServer->handleClient();
+    m_WebSocketSrv->loop();
 
     return isSuccess;
 }
@@ -145,7 +126,7 @@ bool LapTriggerWebServer::runCycle()
  * Private Methods
  *****************************************************************************/
 
-static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
+void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
 {
     String cmd;
     size_t index = 0;
@@ -174,18 +155,18 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
         Serial.printf("%lu: Ws client (%u): %s\n", millis(), clientId, cmd.c_str());
         if (cmd.equals("RELEASE"))
         {
-            if (m_laptrigger->setReleasedState())
+            if (m_laptrigger)
             {
-                gWebSocketSrv.sendTXT(clientId, "ACK");
+                m_WebSocketSrv->sendTXT(clientId, "ACK");
             }
             else
             {
-                gWebSocketSrv.sendTXT(clientId, "NACK");
+                m_WebSocketSrv->sendTXT(clientId, "NACK");
             }
         }
         else
         {
-            gWebSocketSrv.sendTXT(clientId, "NACK");
+            m_WebSocketSrv->sendTXT(clientId, "NACK");
         }
 
         break;
@@ -223,44 +204,44 @@ static void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, si
     }
 }
 
-static void handleCredentials()
+void LapTriggerWebServer::handleCredentials()
 {
-    if (gWebServer.method() != HTTP_POST)
+    if (m_WebServer->method() != HTTP_POST)
     {
-        gWebServer.send(405, "text/plain", "Method Not Allowed");
+        m_WebServer->send(405, "text/plain", "Method Not Allowed");
     }
     else
     {
         String ssidInput = "";
         String passwordInput = "";
 
-        for (uint8_t i = 0; i < gWebServer.args(); i++)
+        for (uint8_t i = 0; i < m_WebServer->args(); i++)
         {
-            if (gWebServer.argName(i) == "STA_SSID")
+            if (m_WebServer->argName(i) == "STA_SSID")
             {
-                ssidInput = gWebServer.arg(i);
+                ssidInput = m_WebServer->arg(i);
             }
-            else if (gWebServer.argName(i) == "STA_PASSWORD")
+            else if (m_WebServer->argName(i) == "STA_PASSWORD")
             {
-                passwordInput = gWebServer.arg(i);
+                passwordInput = m_WebServer->arg(i);
             }
         }
 
         if (ssidInput.isEmpty())
         {
             String message = "POST form was:\n";
-            for (uint8_t i = 0; i < gWebServer.args(); i++)
+            for (uint8_t i = 0; i < m_WebServer->args(); i++)
             {
-                message += " " + gWebServer.argName(i) + ": " + gWebServer.arg(i) + "\n";
+                message += " " + m_WebServer->argName(i) + ": " + m_WebServer->arg(i) + "\n";
             }
-            gWebServer.send(200, "text/plain", message);
+            m_WebServer->send(200, "text/plain", message);
             Serial.println(message);
         }
         else
         {
             if (Flash::saveCredentials(ssidInput, passwordInput))
             {
-                gWebServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
+                m_WebServer->send(200, "text/plain", "Credentials Accepted.\nRestarting...");
                 delay(3000);
                 ESP.restart();
             }
