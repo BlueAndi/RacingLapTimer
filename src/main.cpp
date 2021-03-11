@@ -74,25 +74,25 @@ void setup() /* cppcheck-suppress unusedFunction */
 {
     bool isError = false;
 
-    /** Initialize HAL. */
+    /* Initialize HAL. */
     if (false == Board::begin())
     {
         Serial.printf("%lu: failed to start Board. \n", millis());
         isError = true;
     }
-    /** Start Wireless Connection. */
+    /* Start Wireless Connection. */
     else if (false == m_wlan.begin())
     {
         Serial.printf("%lu: Failed to start WLAN.\n", millis());
         isError = true;
     }
-    /** Mount filesystem. */
+    /* Mount filesystem. */
     else if (false == LittleFS.begin())
     {
         Serial.printf("%lu: Failed to mount filesystem.\n", millis());
         isError = false;
     }
-    /** Start Web Server. */
+    /* Start Web Server. */
     else if (false == m_WebServer.begin())
     {
         Serial.printf("%lu: Failed to start Web Server.\n", millis());
