@@ -155,7 +155,7 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
         Serial.printf("%lu: Ws client (%u): %s\n", millis(), clientId, cmd.c_str());
         if (cmd.equals("RELEASE"))
         {
-            if (m_laptrigger)
+            if (m_laptrigger->setReleasedState())
             {
                 m_WebSocketSrv->sendTXT(clientId, "ACK");
             }
