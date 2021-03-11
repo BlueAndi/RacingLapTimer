@@ -50,11 +50,17 @@ namespace Flash
     /** Address of saved SSID in EEPROM. */
     const uint8_t NVM_SSID_ADDRESS = 0;
 
+    /** SSID maximal length */
+    const uint8_t NVM_SSID_MAX_LENGTH = 32;
+
     /** Address of saved Password in EEPROM. */
-    const uint8_t NVM_PASSWORD_ADDRESS = 50;
+    const uint8_t NVM_PASSWORD_ADDRESS = NVM_SSID_ADDRESS + NVM_SSID_MAX_LENGTH;
+
+    /** WPA-PSK Password laximal length */
+    const uint8_t NVM_PASSWORD_MAX_LENGTH = 63;
 
     /** Maximum length for saved Credentials. */
-    const uint8_t CREDENTIALS_MAX_LENGTH = 50;
+    const uint8_t CREDENTIALS_MAX_LENGTH = NVM_PASSWORD_ADDRESS + NVM_PASSWORD_MAX_LENGTH;
 
     /** Size of the EEPROM destined to store credentials*/
     const uint16_t EEPROM_SIZE = 512;
@@ -83,6 +89,7 @@ namespace Flash
      *  @return If Credentials succesfully saved, return True. Otherwise, False.
      */
     bool saveCredentials(const String &ssid, const String &password);
+
     /**
      *  Deletes stored Data in the EEPROM.
      */

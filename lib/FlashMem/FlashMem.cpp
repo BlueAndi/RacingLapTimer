@@ -69,38 +69,42 @@ bool Flash::importCredentials(String &ssid, String &password)
 {
     bool isSuccess = false;
 
-    if (';' == char(EEPROM.read(NVM_SSID_ADDRESS)))
+    if (0x00 != EEPROM.read(NVM_SSID_ADDRESS))
     {
-        char temp;
+        char temp = 0x00;
 
-        for (uint8_t i = 1; i < CREDENTIALS_MAX_LENGTH; i++)
+        for (uint8_t memoryPosition = 0; memoryPosition <= NVM_SSID_MAX_LENGTH; memoryPosition++)
         {
-            temp = EEPROM.read(NVM_SSID_ADDRESS + i);
-            if (';' != temp)
-            {
-                ssid += temp;
-            }
-            else
+            temp = EEPROM.read(NVM_SSID_ADDRESS + memoryPosition);
+
+            if (0x00 == temp)
             {
                 break;
             }
+            else
+            {
+                ssid += temp;
+            }
         }
 
-        if (';' == char(EEPROM.read(NVM_PASSWORD_ADDRESS)))
+        if (0x00 != EEPROM.read(NVM_PASSWORD_ADDRESS))
         {
-            for (uint8_t i = 1; i < CREDENTIALS_MAX_LENGTH; i++)
+            for (uint8_t memoryPosition = 0; memoryPosition <= NVM_PASSWORD_MAX_LENGTH; memoryPosition++)
             {
-                temp = EEPROM.read(NVM_PASSWORD_ADDRESS + i);
-                if (';' != temp)
-                {
-                    password += temp;
-                }
-                else
+                temp = EEPROM.read(NVM_PASSWORD_ADDRESS + memoryPosition);
+
+                if (0x00 == temp)
                 {
                     break;
                 }
+                else
+                {
+                    password += temp;
+                }
             }
         }
+
+        Serial.println("\n SSID: " + ssid + "\n Password: " + password);
 
         isSuccess = true;
     }
@@ -114,38 +118,30 @@ bool Flash::saveCredentials(const String &ssid, const String &password)
 
     Flash::clearEEPROM();
 
-    uint8_t memoryPosition = 1;
-
-    if ((!ssid.isEmpty()) &&
-        (!password.isEmpty()) &&
-        (ssid.length() < CREDENTIALS_MAX_LENGTH) &&
-        (password.length() < CREDENTIALS_MAX_LENGTH))
+    if ((!ssid.isEmpty()) && (ssid.length() <= CREDENTIALS_MAX_LENGTH))
     {
-        /** Save SSID */
-        EEPROM.write(NVM_SSID_ADDRESS, ';');
-
-        for (memoryPosition = 1; memoryPosition <= ssid.length(); memoryPosition++)
+        /* Save SSID */
+        for (uint8_t memoryPosition = 0; memoryPosition <= ssid.length(); memoryPosition++)
         {
-            EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ssid[memoryPosition - 1]);
+            EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ssid[memoryPosition]);
+            Serial.print(ssid[memoryPosition]);
         }
+        Serial.println();
 
-        EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ';');
-
-        /** Save Password */
-        EEPROM.write(NVM_PASSWORD_ADDRESS, ';');
-
-        for (memoryPosition = 1; memoryPosition <= password.length(); memoryPosition++)
+        if ((!password.isEmpty()) && (password.length() <= CREDENTIALS_MAX_LENGTH))
         {
-            EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, password[memoryPosition - 1]);
+            /* Save Password */
+            for (uint8_t memoryPosition = 0; memoryPosition <= password.length(); memoryPosition++)
+            {
+                EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, password[memoryPosition]);
+                Serial.print(password[memoryPosition]);
+            }
+            Serial.println();
         }
-
-        EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, ';');
 
         if (EEPROM.commit())
         {
             Serial.println("EEPROM successfully committed");
-            Serial.println("Credentials Received");
-            Serial.println("SSID: " + ssid);
             isSuccess = true;
         }
         else
@@ -159,10 +155,8 @@ bool Flash::saveCredentials(const String &ssid, const String &password)
 
 void Flash::clearEEPROM()
 {
-    for (int i = 0; i < EEPROM_SIZE; i++)
-    {
-        EEPROM.write(i, 0);
-    }
+    EEPROM.write(NVM_SSID_ADDRESS, 0x00);
+    EEPROM.write(NVM_PASSWORD_ADDRESS, 0x00);
 }
 
 /******************************************************************************
