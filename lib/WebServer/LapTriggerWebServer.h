@@ -115,6 +115,21 @@ private:
     /** Handler for POST Request for the storage of the STA Credentials. */
     void handleCredentials();
 
+    /** 
+     *  An instance shall not be copied. 
+     *  
+     *  @param[in] server Server instance to copy.
+     */
+    LapTriggerWebServer(const LapTriggerWebServer &server);
+
+    /** 
+     *  An instance shall not assigned.
+     *   
+     *  @param[in] server Server instance to assign.
+     *  @return Pointer to this instance.
+     */
+    LapTriggerWebServer &operator=(const LapTriggerWebServer &server);
+
 }; /** LapTriggerWebServer */
 
 /******************************************************************************
