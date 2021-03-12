@@ -104,8 +104,6 @@ bool Flash::importCredentials(String &ssid, String &password)
             }
         }
 
-        Serial.println("\n SSID: " + ssid + "\n Password: " + password);
-
         isSuccess = true;
     }
 
