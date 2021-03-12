@@ -48,25 +48,25 @@
 namespace Flash
 {
     /** Address of Meta Data header in EEPROM. */
-    const uint8_t NVM_METADATA_ADDRESS = 0;
+    static const uint8_t NVM_METADATA_ADDRESS = 0;
 
     /** Address of saved SSID in EEPROM. */
-    const uint8_t NVM_SSID_ADDRESS = 10;
+    static const uint8_t NVM_SSID_ADDRESS = 10;
 
     /** SSID maximal length */
-    const uint8_t NVM_SSID_MAX_LENGTH = 32;
+    static const uint8_t NVM_SSID_MAX_LENGTH = 32;
 
     /** Address of saved Password in EEPROM. */
-    const uint8_t NVM_PASSWORD_ADDRESS = NVM_SSID_ADDRESS + NVM_SSID_MAX_LENGTH;
+    static const uint8_t NVM_PASSWORD_ADDRESS = NVM_SSID_ADDRESS + NVM_SSID_MAX_LENGTH;
 
     /** WPA-PSK Password laximal length */
-    const uint8_t NVM_PASSWORD_MAX_LENGTH = 63;
+    static const uint8_t NVM_PASSWORD_MAX_LENGTH = 63;
 
     /** Maximum length for saved Credentials. */
-    const uint8_t CREDENTIALS_MAX_LENGTH = NVM_PASSWORD_ADDRESS + NVM_PASSWORD_MAX_LENGTH;
+    static const uint8_t CREDENTIALS_MAX_LENGTH = NVM_PASSWORD_ADDRESS + NVM_PASSWORD_MAX_LENGTH;
 
     /** Size of the EEPROM destined to store credentials*/
-    const uint16_t EEPROM_SIZE = 512;
+    static const uint16_t EEPROM_SIZE = 512;
 
     /**
      *  Initialization of the EEPROM Module
