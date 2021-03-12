@@ -147,9 +147,9 @@
         }
 
         function timestamp2MinSecMSec(timestamp) {
-            var minutes = Math.floor(timestamp / (60 * 1000));
-            var seconds = Math.floor((timestamp / 1000) - (minutes * 60));
-            var milliseconds = Math.floor(timestamp - (minutes * 60 * 1000) - (seconds * 1000));
+            var minutes         = Math.floor(timestamp / (60 * 1000));
+            var seconds         = Math.floor((timestamp / 1000) - (minutes * 60));
+            var milliseconds    = Math.floor(timestamp - (minutes * 60 * 1000) - (seconds * 1000));
 
             return {
                 minutes: minutes,
@@ -177,10 +177,10 @@
                 /* Adjust elapsed time according to received duration,
                  * because of a better accuracy.
                  */
-                timeMinSecMSec = timestamp2MinSecMSec(rsp.duration);
-                global.minutes = timeMinSecMSec.minutes;
-                global.seconds = timeMinSecMSec.seconds;
-                global.milliseconds = timeMinSecMSec.milliseconds;
+                timeMinSecMSec          = timestamp2MinSecMSec(rsp.duration);
+                global.minutes          = timeMinSecMSec.minutes;
+                global.seconds          = timeMinSecMSec.seconds;
+                global.milliseconds     = timeMinSecMSec.milliseconds;
                 updateTimer();
 
                 if ((0 == global.resultTable[global.selectedGroup].duration) ||
@@ -235,10 +235,10 @@
         }
 
         function updateResultTable() {
-            var index = 0;
-            var sortedTable = global.resultTable.slice().sort(compareDuration);
-            var fastestLap = "";
-            var timeMinSecMSec = null;
+            var index           = 0;
+            var sortedTable     = global.resultTable.slice().sort(compareDuration);
+            var fastestLap      = "";
+            var timeMinSecMSec  = null;
 
             $("#resultTable > tbody").empty();
             for (index = 0; index < global.numberOfGroups; ++index) {
