@@ -25,7 +25,7 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of WebServer.h.
+ * @brief  Abstraction of WebServer.
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 

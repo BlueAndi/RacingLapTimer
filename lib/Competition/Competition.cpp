@@ -25,7 +25,7 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of Competition.h.
+ * @brief  Competition Handler.
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 

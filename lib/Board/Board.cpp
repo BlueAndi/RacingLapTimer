@@ -25,7 +25,7 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of Board.h.
+ * @brief  Implementation of ESP8266 Board.
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 

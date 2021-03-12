@@ -25,7 +25,7 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implememtation of FlashMem.h
+ * @brief  Abstraction of EEPROM for the ESP8266
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 

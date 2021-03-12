@@ -25,7 +25,7 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of WIFI.h.
+ * @brief  Implementation of Wireless Capabilities.
  * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
  */
 
