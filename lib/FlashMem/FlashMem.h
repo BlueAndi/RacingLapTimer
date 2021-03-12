@@ -50,8 +50,14 @@ namespace Flash
     /** Address of Meta Data header in EEPROM. */
     static const uint8_t NVM_METADATA_ADDRESS = 0;
 
+    /** Meta Data maximal length. */
+    static const uint8_t NVM_METADATA_MAX_LENGTH = 2;
+
+    /** Metadata for Valid Stored Credetials */
+    static const String NVM_METADATA_VALID = "UZ";
+
     /** Address of saved SSID in EEPROM. */
-    static const uint8_t NVM_SSID_ADDRESS = 10;
+    static const uint8_t NVM_SSID_ADDRESS = NVM_METADATA_ADDRESS + NVM_METADATA_MAX_LENGTH;
 
     /** SSID maximal length */
     static const uint8_t NVM_SSID_MAX_LENGTH = 32;
@@ -106,29 +112,48 @@ namespace Flash
     bool areCredentialsStored();
 
     /**
+     *  Sets the Meta Data header
+     * 
+     *  @param[in] areCredentialsStored If true, Credentials stored are valid 
+     *  and Header is set to.
+     *  @return If Header succesfully set, returns True. Otherwise False.
+     */
+    bool setHeader(bool areCredentialsStored);
+
+    /**
      *  Retrieves a Null-terminated String from the EEPROM.
      *
      *  @param[in] address Address where the String is saved.
      *  @param[in] maxLength Maximum Length of the String.
      *  @param[out] output Buffer to save the String to.
      */
-    void fetchString(const uint8_t address, const uint8_t maxLength, String &output);
+    void fetchString(const uint8_t &address, const uint8_t &maxLength, String &output);
+
+    /**
+     *  Saves a Null-terminated String in the EEPROM.
+     *
+     *  @param[in] address Address where the String will be saved.
+     *  @param[in] maxLength Maximum Length of the String.
+     *  @param[in] input String to save in EEPROM.
+     *  @return If string written in EEPROM, returns True. Otherwise False.
+     */
+    bool saveString(const uint8_t &address, const uint8_t &maxLength, const String &input);
 
 }; /* Flash */
 
-/******************************************************************************
+    /******************************************************************************
  * Prototypes
  *****************************************************************************/
 
-/******************************************************************************
+    /******************************************************************************
  * Variables
  *****************************************************************************/
 
-/******************************************************************************
+    /******************************************************************************
  * External functions
  *****************************************************************************/
 
-/******************************************************************************
+    /******************************************************************************
  * Local functions
  *****************************************************************************/
 

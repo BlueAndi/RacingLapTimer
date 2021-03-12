@@ -83,71 +83,47 @@ bool Flash::saveCredentials(const String &ssid, const String &password)
 {
     bool isSuccess = false;
 
-    Flash::clearEEPROM();
-
-    if ((!ssid.isEmpty()) && (ssid.length() <= CREDENTIALS_MAX_LENGTH))
+    /* Save SSID */
+    if (saveString(NVM_SSID_ADDRESS, NVM_SSID_MAX_LENGTH, ssid))
     {
-        /* Save SSID */
-        for (uint8_t memoryPosition = 0; memoryPosition <= ssid.length(); memoryPosition++)
+        /* Save Password */
+        if (saveString(NVM_PASSWORD_ADDRESS, NVM_PASSWORD_MAX_LENGTH, password))
         {
-            EEPROM.write(NVM_SSID_ADDRESS + memoryPosition, ssid[memoryPosition]);
-            Serial.print(ssid[memoryPosition]);
-        }
-        Serial.println();
-
-        if ((!password.isEmpty()) && (password.length() <= CREDENTIALS_MAX_LENGTH))
-        {
-            /* Save Password */
-            for (uint8_t memoryPosition = 0; memoryPosition <= password.length(); memoryPosition++)
-            {
-                EEPROM.write(NVM_PASSWORD_ADDRESS + memoryPosition, password[memoryPosition]);
-                Serial.print(password[memoryPosition]);
-            }
-            Serial.println();
-        }
-
-        /* Write 0x55 and 0xA5 to Metadata Header are Credentials are Stored) */
-        EEPROM.write(NVM_METADATA_ADDRESS, 0x55);
-        EEPROM.write(NVM_METADATA_ADDRESS + 1, 0xA5);
-
-        if (EEPROM.commit())
-        {
-            Serial.println("EEPROM successfully committed");
             isSuccess = true;
-        }
-        else
-        {
-            Serial.println("ERROR! EEPROM commit failed");
         }
     }
 
-    return isSuccess;
+    return setHeader(isSuccess);
 }
 
 void Flash::clearEEPROM()
 {
     EEPROM.write(NVM_METADATA_ADDRESS, 0x00);
-    EEPROM.write(NVM_METADATA_ADDRESS + 1, 0x00);
 }
 
 bool Flash::areCredentialsStored()
 {
     bool areCredentialsStored = false;
-    if ((0x55 == EEPROM.read(NVM_METADATA_ADDRESS)) &&
-        (0xA5 == EEPROM.read(NVM_METADATA_ADDRESS + 1)))
+
+    String storedHeader;
+
+    fetchString(NVM_METADATA_ADDRESS, NVM_METADATA_MAX_LENGTH, storedHeader);
+
+    if (NVM_METADATA_VALID.equals(storedHeader))
     {
         areCredentialsStored = true;
     }
+
     return areCredentialsStored;
 }
 
-void Flash::fetchString(const uint8_t address, const uint8_t maxLength, String &output)
+void Flash::fetchString(const uint8_t &address, const uint8_t &maxLength, String &output)
 {
-    char temp = 0x00;
+    output.clear();
 
-    for (uint8_t memoryPosition = 0; memoryPosition <= maxLength; memoryPosition++)
+    for (uint8_t memoryPosition = 0; memoryPosition < maxLength; memoryPosition++)
     {
-        temp = EEPROM.read(address + memoryPosition);
+        char temp = EEPROM.read(address + memoryPosition);
 
         if (0x00 == temp)
         {
@@ -158,6 +134,43 @@ void Flash::fetchString(const uint8_t address, const uint8_t maxLength, String &
             output += temp;
         }
     }
+}
+
+bool Flash::saveString(const uint8_t &address, const uint8_t &maxLength, const String &input)
+{
+    bool isSuccess = false;
+    for (uint8_t memoryPosition = 0; memoryPosition < maxLength; memoryPosition++)
+    {
+        EEPROM.write(address + memoryPosition, input[memoryPosition]);
+        if (0x00 == input[memoryPosition])
+        {
+            isSuccess = true;
+            break;
+        }
+    }
+    return isSuccess;
+}
+
+bool Flash::setHeader(bool areCredentialsStored)
+{
+    bool isSuccess = false;
+
+    if (areCredentialsStored)
+    {
+        saveString(NVM_METADATA_ADDRESS, NVM_METADATA_MAX_LENGTH, NVM_METADATA_VALID);
+    }
+    else
+    {
+        clearEEPROM();
+    }
+
+    if (EEPROM.commit())
+    {
+        Serial.println("EEPROM successfully commited!");
+        isSuccess = true;
+    }
+
+    return isSuccess;
 }
 
 /******************************************************************************
