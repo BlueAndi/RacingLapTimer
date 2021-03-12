@@ -71,39 +71,8 @@ bool Flash::importCredentials(String &ssid, String &password)
 
     if (areCredentialsStored())
     {
-        char temp = 0x00;
-
-        for (uint8_t memoryPosition = 0; memoryPosition <= NVM_SSID_MAX_LENGTH; memoryPosition++)
-        {
-            temp = EEPROM.read(NVM_SSID_ADDRESS + memoryPosition);
-
-            if (0x00 == temp)
-            {
-                break;
-            }
-            else
-            {
-                ssid += temp;
-            }
-        }
-
-        if (0x00 != EEPROM.read(NVM_PASSWORD_ADDRESS))
-        {
-            for (uint8_t memoryPosition = 0; memoryPosition <= NVM_PASSWORD_MAX_LENGTH; memoryPosition++)
-            {
-                temp = EEPROM.read(NVM_PASSWORD_ADDRESS + memoryPosition);
-
-                if (0x00 == temp)
-                {
-                    break;
-                }
-                else
-                {
-                    password += temp;
-                }
-            }
-        }
-
+        fetchString(NVM_SSID_ADDRESS, NVM_SSID_MAX_LENGTH, ssid);
+        fetchString(NVM_PASSWORD_ADDRESS, NVM_PASSWORD_MAX_LENGTH, password);
         isSuccess = true;
     }
 
@@ -170,6 +139,25 @@ bool Flash::areCredentialsStored()
         areCredentialsStored = true;
     }
     return areCredentialsStored;
+}
+
+void Flash::fetchString(const uint8_t address, const uint8_t maxLength, String &output)
+{
+    char temp = 0x00;
+
+    for (uint8_t memoryPosition = 0; memoryPosition <= maxLength; memoryPosition++)
+    {
+        temp = EEPROM.read(address + memoryPosition);
+
+        if (0x00 == temp)
+        {
+            break;
+        }
+        else
+        {
+            output += temp;
+        }
+    }
 }
 
 /******************************************************************************

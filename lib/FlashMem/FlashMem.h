@@ -105,6 +105,15 @@ namespace Flash
      */
     bool areCredentialsStored();
 
+    /**
+     *  Retrieves a Null-terminated String from the EEPROM.
+     *
+     *  @param[in] address Address where the String is saved.
+     *  @param[in] maxLength Maximum Length of the String.
+     *  @param[out] output Buffer to save the String to.
+     */
+    void fetchString(const uint8_t address, const uint8_t maxLength, String &output);
+
 }; /* Flash */
 
 /******************************************************************************
