@@ -55,7 +55,7 @@
  * Public Methods
  *****************************************************************************/
 
-Competition::Competition()
+Competition::Competition() : m_startTimestamp(0), m_competitionState(COMPETITION_STATE_UNRELEASED)
 {
 }
 
@@ -68,7 +68,7 @@ bool Competition::handleCompetition(String &outputMessage)
     bool isSuccess = false;
     uint32_t duration = 0;
 
-    switch (m_CompetitionState)
+    switch (m_competitionState)
     {
     case COMPETITION_STATE_UNRELEASED:
         /* Don't care about external sensor.
@@ -80,15 +80,15 @@ bool Competition::handleCompetition(String &outputMessage)
         /* React on external sensor. */
         if (true == Board::isRobotDetected())
         {
-            m_StartTimestamp = millis();
+            m_startTimestamp = millis();
             outputMessage = "EVT;STARTED";
             isSuccess = true;
-            m_CompetitionState = COMPETITION_STATE_STARTED;
+            m_competitionState = COMPETITION_STATE_STARTED;
         }
         break;
 
     case COMPETITION_STATE_STARTED:
-        duration = millis() - m_StartTimestamp;
+        duration = millis() - m_startTimestamp;
 
         /* React on external sensor. */
         if (SENSOR_BLIND_PERIOD <= duration)
@@ -97,7 +97,7 @@ bool Competition::handleCompetition(String &outputMessage)
             {
                 outputMessage = String("EVT;FINISHED;") + duration;
                 isSuccess = true;
-                m_CompetitionState = COMPETITION_STATE_FINISHED;
+                m_competitionState = COMPETITION_STATE_FINISHED;
             }
         }
         break;
@@ -119,11 +119,11 @@ bool Competition::setReleasedState()
 {
     bool isSuccess = false;
 
-    if ((COMPETITION_STATE_UNRELEASED == m_CompetitionState) ||
-        (COMPETITION_STATE_FINISHED == m_CompetitionState))
+    if ((COMPETITION_STATE_UNRELEASED == m_competitionState) ||
+        (COMPETITION_STATE_FINISHED == m_competitionState))
     {
         isSuccess = true;
-        m_CompetitionState = COMPETITION_STATE_RELEASED;
+        m_competitionState = COMPETITION_STATE_RELEASED;
     }
     return isSuccess;
 }
