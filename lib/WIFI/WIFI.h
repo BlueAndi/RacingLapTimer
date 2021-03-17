@@ -95,22 +95,22 @@ private:
     static const unsigned long WIFI_TIMEOUT_MS = 30000;
 
     /** True if system is connected in STA mode to a Network. */
-    bool isStaAvailable = false;
+    bool m_isStaAvailable;
 
     /** WiFi AP SSID. */
-    String m_ApSSID;
+    String m_apSSID;
 
     /** WiFi AP Password. */
-    String m_ApPassword;
+    String m_apPassword;
 
     /** WiFi STA SSID. */
-    String m_Sta_SSID;
+    String m_staSSID;
 
     /** WiFi STA Password. */
-    String m_Sta_Password;
+    String m_staPassword;
 
     /** Local IP of the Device */
-    IPAddress m_LocalIP;
+    IPAddress m_localIP;
 
 private:
     /** An instance shall not be copied. 

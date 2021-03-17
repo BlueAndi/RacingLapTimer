@@ -55,7 +55,7 @@
  * Public Methods
  *****************************************************************************/
 
-WIFI::WIFI() : m_ApSSID("RacingLapTimer"), m_ApPassword("let me in"), m_Sta_SSID(""), m_Sta_Password("")
+WIFI::WIFI() : m_isStaAvailable(false), m_apSSID("RacingLapTimer"), m_apPassword("let me in"), m_staSSID(""), m_staPassword("")
 {
 }
 
@@ -69,16 +69,16 @@ bool WIFI::begin()
 
     Flash::begin();
 
-    if (Flash::importCredentials(m_Sta_SSID, m_Sta_Password))
+    if (Flash::importCredentials(m_staSSID, m_staPassword))
     {
         WiFi.mode(WIFI_STA);
-        WiFi.begin(m_Sta_SSID, m_Sta_Password);
+        WiFi.begin(m_staSSID, m_staPassword);
 
         if (connectStation())
         {
             isSuccess = true;
-            m_LocalIP = WiFi.localIP();
-            isStaAvailable = true;
+            m_localIP = WiFi.localIP();
+            m_isStaAvailable = true;
         }
         else
         {
@@ -86,8 +86,8 @@ bool WIFI::begin()
             Serial.println("Starting AP...");
 
             WiFi.mode(WIFI_AP);
-            WiFi.softAP(m_ApSSID, m_ApPassword);
-            m_LocalIP = WiFi.softAPIP();
+            WiFi.softAP(m_apSSID, m_apPassword);
+            m_localIP = WiFi.softAPIP();
             isSuccess = true;
         }
     }
@@ -97,8 +97,8 @@ bool WIFI::begin()
         Serial.println("Starting AP");
 
         WiFi.mode(WIFI_AP);
-        WiFi.softAP(m_ApSSID, m_ApPassword);
-        m_LocalIP = WiFi.softAPIP();
+        WiFi.softAP(m_apSSID, m_apPassword);
+        m_localIP = WiFi.softAPIP();
 
         isSuccess = true;
     }
@@ -112,7 +112,7 @@ bool WIFI::runCycle()
 {
     bool isSuccess = true;
 
-    if (isStaAvailable)
+    if (m_isStaAvailable)
     {
         if (WL_CONNECTED != WiFi.status())
         {
@@ -124,7 +124,7 @@ bool WIFI::runCycle()
 
 const IPAddress &WIFI::getIPAddress(void)
 {
-    return m_LocalIP;
+    return m_localIP;
 }
 
 /******************************************************************************
@@ -141,7 +141,7 @@ bool WIFI::connectStation()
 
     unsigned long startAttempTime = millis();
 
-    Serial.println("Connecting to \"" + m_Sta_SSID + "\"...");
+    Serial.println("Connecting to \"" + m_staSSID + "\"...");
     while ((WiFi.status() != WL_CONNECTED) && ((millis() - startAttempTime) < WIFI_TIMEOUT_MS))
     {
         delay(100);
@@ -151,7 +151,7 @@ bool WIFI::connectStation()
     {
         Serial.println("Connected Succesfully.");
         isSuccess = true;
-        m_LocalIP = WiFi.localIP();
+        m_localIP = WiFi.localIP();
     }
 
     return isSuccess;
