@@ -92,7 +92,7 @@ private:
     bool connectStation();
 
     /** Timeout for WiFi connection. */
-    const unsigned long WIFI_TIMEOUT_MS = 30000;
+    const unsigned long WIFI_TIMEOUT_MS;
 
     /** True if system is connected in STA mode to a Network. */
     bool isStaAvailable = false;
