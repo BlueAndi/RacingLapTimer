@@ -55,7 +55,7 @@
  * Public Methods
  *****************************************************************************/
 
-WIFI::WIFI() : WIFI_TIMEOUT_MS(30000), m_ApSSID("RacingLapTimer"), m_ApPassword("let me in"), m_Sta_SSID(""), m_Sta_Password("")
+WIFI::WIFI() : m_ApSSID("RacingLapTimer"), m_ApPassword("let me in"), m_Sta_SSID(""), m_Sta_Password("")
 {
 }
 
