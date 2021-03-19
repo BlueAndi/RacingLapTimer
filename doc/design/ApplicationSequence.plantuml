@@ -1,0 +1,92 @@
+@startuml
+
+title Application Sequence
+
+autoactivate on
+
+participant "Main Application" as mainloop
+participant "Board" as board
+participant "WIFI" as wifi
+participant "EEPROM" as nvm
+participant "Web Server" as webserver
+participant "Lap Trigger" as competition
+actor "Client" as client
+
+group Setup
+    mainloop -> board : begin()
+    return success
+
+    mainloop -> wifi :begin()
+
+    wifi -> nvm : importCredentials()
+    return success
+
+    group true == importCredentials()
+        wifi -> wifi : connect to station
+        return success
+        group false == connect to station
+            wifi -> wifi : Start AP Mode
+            return
+        end
+        else "No stored STA Credentials"
+        wifi -> wifi : Start AP Mode
+        return
+    end
+
+    return success
+
+    mainloop -> webserver : begin()
+
+    webserver -> webserver : Mount Little FS
+    return
+
+    webserver -> webserver : Start mDNS
+    return
+
+    webserver -> webserver : Register Web Pages \nand Handlers
+    return
+
+    return success
+
+end
+
+
+group Loop
+    mainloop -> webserver : cycle()
+
+    webserver -> competition : handleCompetition()
+    return success
+
+    group true == success
+        webserver ->> client : Send output message
+        return
+    end
+
+    webserver -> webserver : Update mDNS
+    return
+
+    webserver -> webserver : Handle Web Client
+    return
+
+    webserver -> webserver : Handle Web Socket
+    return
+
+    return success
+
+    mainloop -> wifi : cycle()
+
+    wifi -> wifi : Check connection
+    return
+
+    return success
+
+    group false == success
+        mainloop -> board : errorHalt()
+    end
+
+end
+
+
+
+
+@enduml
