@@ -34,6 +34,7 @@
  *****************************************************************************/
 
 #include "Board.h"
+#include "FlashMem.h"
 #include "WIFI.h"
 #include "LapTriggerWebServer.h"
 #include "Competition.h"
@@ -78,6 +79,12 @@ void setup() /* cppcheck-suppress unusedFunction */
     if (false == Board::begin())
     {
         Serial.printf("%lu: failed to start Board. \n", millis());
+        isError = true;
+    }
+    /* Mount persistent memory. */
+    else if (false == Flash::begin())
+    {
+        Serial.printf("%lu: Failed to mount persistent memory.\n", millis());
         isError = true;
     }
     /* Start Wireless Connection. */
