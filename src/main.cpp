@@ -47,13 +47,13 @@
  *****************************************************************************/
 
 /** WLAN Instance */
-static WIFI m_wlan;
+static WIFI                 gWlan;
 
 /** Competition Instance */
-static Competition m_LapTrigger;
+static Competition          gLapTrigger;
 
 /** WebServer Instance */
-static LapTriggerWebServer m_WebServer(m_LapTrigger);
+static LapTriggerWebServer  gWebServer(gLapTrigger);
 
 /******************************************************************************
  * Prototypes
@@ -81,7 +81,7 @@ void setup() /* cppcheck-suppress unusedFunction */
         isError = true;
     }
     /* Start Wireless Connection. */
-    else if (false == m_wlan.begin())
+    else if (false == gWlan.begin())
     {
         Serial.printf("%lu: Failed to start WLAN.\n", millis());
         isError = true;
@@ -93,10 +93,15 @@ void setup() /* cppcheck-suppress unusedFunction */
         isError = false;
     }
     /* Start Web Server. */
-    else if (false == m_WebServer.begin())
+    else if (false == gWebServer.begin())
     {
         Serial.printf("%lu: Failed to start Web Server.\n", millis());
         isError = true;
+    }
+    else
+    {
+        /* Successful */
+        ;
     }
 
     if (true == isError)
@@ -116,13 +121,18 @@ void loop() /* cppcheck-suppress unusedFunction */
 {
     bool isSuccess = true;
 
-    if (false == m_WebServer.runCycle())
+    if (false == gWebServer.runCycle())
     {
         isSuccess = false;
     }
-    else if (false == m_wlan.runCycle())
+    else if (false == gWlan.runCycle())
     {
         isSuccess = false;
+    }
+    else
+    {
+        /* Successful */
+        ;
     }
 
     if (false == isSuccess)
