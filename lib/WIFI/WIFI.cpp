@@ -55,7 +55,13 @@
  * Public Methods
  *****************************************************************************/
 
-WIFI::WIFI() : m_isStaAvailable(false), m_apSSID("RacingLapTimer"), m_apPassword("let me in"), m_staSSID(""), m_staPassword("")
+WIFI::WIFI() :
+    m_isStaAvailable(false),
+    m_apSSID(AP_MODE_SSID_DEFAULT),
+    m_apPassword(AP_MODE_PASSWORD_DEFAULT),
+    m_staSSID(),
+    m_staPassword(),
+    m_localIP()
 {
 }
 
@@ -65,9 +71,7 @@ WIFI::~WIFI()
 
 bool WIFI::begin()
 {
-    bool isSuccess = false;
-
-    Flash::begin();
+    bool isSuccess = true;
 
     if (Flash::importCredentials(m_staSSID, m_staPassword))
     {
@@ -76,7 +80,6 @@ bool WIFI::begin()
 
         if (connectStation())
         {
-            isSuccess = true;
             m_localIP = WiFi.localIP();
             m_isStaAvailable = true;
         }
@@ -88,9 +91,10 @@ bool WIFI::begin()
             WiFi.mode(WIFI_AP);
             WiFi.softAP(m_apSSID, m_apPassword);
             m_localIP = WiFi.softAPIP();
+        }
+
             isSuccess = true;
         }
-    }
     else
     {
         Serial.println("No stored STA Credentials!");

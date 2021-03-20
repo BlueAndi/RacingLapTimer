@@ -55,7 +55,9 @@
  * Public Methods
  *****************************************************************************/
 
-Competition::Competition() : m_startTimestamp(0), m_competitionState(COMPETITION_STATE_UNRELEASED)
+Competition::Competition() :
+    m_startTimestamp(0),
+    m_competitionState(COMPETITION_STATE_UNRELEASED)
 {
 }
 
@@ -125,6 +127,7 @@ bool Competition::setReleasedState()
         isSuccess = true;
         m_competitionState = COMPETITION_STATE_RELEASED;
     }
+
     return isSuccess;
 }
 
