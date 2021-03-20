@@ -51,6 +51,7 @@
 class WIFI
 {
 public:
+
     /**
      *  Default Constructor.
      */
@@ -83,6 +84,7 @@ public:
     const IPAddress &getIPAddress(void);
 
 private:
+
     /**
      *  Connect to Wireless Access Point.
      * 
@@ -92,27 +94,34 @@ private:
     bool connectStation();
 
     /** Timeout for WiFi connection. */
-    const unsigned long WIFI_TIMEOUT_MS = 30000;
+    static const unsigned long      WIFI_TIMEOUT_MS         = 30000;
+
+    /** Default SSID for access point mode. */
+    static constexpr const char*   AP_MODE_SSID_DEFAULT     = "RacingLapTimer";
+
+    /** Default password for access point mode. */
+    static constexpr const char*   AP_MODE_PASSWORD_DEFAULT = "let me in";
 
     /** True if system is connected in STA mode to a Network. */
     bool isStaAvailable = false;
 
     /** WiFi AP SSID. */
-    String m_ApSSID;
+    String m_apSSID;
 
     /** WiFi AP Password. */
-    String m_ApPassword;
+    String m_apPassword;
 
     /** WiFi STA SSID. */
-    String m_Sta_SSID;
+    String m_staSSID;
 
     /** WiFi STA Password. */
-    String m_Sta_Password;
+    String m_staPassword;
 
     /** Local IP of the Device */
-    IPAddress m_LocalIP;
+    IPAddress m_localIP;
 
 private:
+
     /** An instance shall not be copied. 
      *  
      *  @param[in] wifi WiFi instance to copy.
@@ -127,7 +136,7 @@ private:
      */
     WIFI &operator=(const WIFI &wifi);
 
-}; /** WIFI */
+};
 
 /******************************************************************************
  * Prototypes
@@ -145,4 +154,4 @@ private:
  * Local functions
  *****************************************************************************/
 
-#endif /*WIFI_H_*/
+#endif /* WIFI_H_ */
