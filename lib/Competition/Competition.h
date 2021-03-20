@@ -76,10 +76,10 @@ public:
     /**
      *  Handle the competition state machine, depending on the user input 
      *  from web frontend and sensor input.
-    * 
-    *  @param[out] outputMessage Message to be sent to Client through Web Socket.
-    *  @return If robot is detected during the correct competition state, returns True. Otherwise, False
-    */
+     * 
+     *  @param[out] outputMessage Message to be sent to Client through Web Socket.
+     *  @return If robot is detected during the correct competition state, returns True. Otherwise, False
+     */
     bool handleCompetition(String &outputMessage);
 
     /**
@@ -103,7 +103,7 @@ private:
     /** Current competition state. */
     CompetitionState m_competitionState;
 
-}; /** Competition */
+};
 
 /******************************************************************************
  * Prototypes
@@ -121,4 +121,4 @@ private:
  * Local functions
  *****************************************************************************/
 
-#endif /*COMPETITION_H_*/
+#endif /* COMPETITION_H_ */
