@@ -55,10 +55,11 @@
  * Public Methods
  *****************************************************************************/
 
-LapTriggerWebServer::LapTriggerWebServer(Competition &goalLine) : m_laptrigger(&goalLine)
+LapTriggerWebServer::LapTriggerWebServer(Competition &goalLine) :
+    m_laptrigger(&goalLine),
+    m_webServer(WEBSERVER_PORT),
+    m_webSocketSrv(WEBSOCKET_PORT)
 {
-    m_WebServer = new ESP8266WebServer(WEBSERVER_PORT);
-    m_WebSocketSrv = new WebSocketsServer(WEBSOCKET_PORT);
 }
 
 LapTriggerWebServer::~LapTriggerWebServer()
@@ -80,22 +81,22 @@ bool LapTriggerWebServer::begin()
     else
     {
         /* Setup webserver. */
-        m_WebServer->serveStatic("/", LittleFS, "/web/", "max-age=86400");
-        m_WebServer->on("/config.html", HTTP_POST, [this]() {
+        m_webServer.serveStatic("/", LittleFS, "/web/", "max-age=86400");
+        m_webServer.on("/config.html", HTTP_POST, [this]() {
             this->handleCredentials();
         });
-        m_WebServer->onNotFound(
+        m_webServer.onNotFound(
             [this]() {
-                this->m_WebServer->send(404, "text/plain", "File not found.");
+                this->m_webServer.send(404, "text/plain", "File not found.");
             });
-        m_WebServer->begin();
+        m_webServer.begin();
 
         /* Setup websocket server. */
-        m_WebSocketSrv->onEvent(
+        m_webSocketSrv.onEvent(
             [this](uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
                 this->webSocketEvent(num, type, payload, length);
             });
-        m_WebSocketSrv->begin();
+        m_webSocketSrv.begin();
     }
 
     return isSuccess;
@@ -104,16 +105,16 @@ bool LapTriggerWebServer::begin()
 bool LapTriggerWebServer::runCycle()
 {
     bool isSuccess = false;
-
     String outputMessage = "";
+    
     if (m_laptrigger->handleCompetition(outputMessage))
     {
-        m_WebSocketSrv->broadcastTXT(outputMessage);
+        m_webSocketSrv.broadcastTXT(outputMessage);
     }
 
     isSuccess = MDNS.update();
-    m_WebServer->handleClient();
-    m_WebSocketSrv->loop();
+    m_webServer.handleClient();
+    m_webSocketSrv.loop();
 
     return isSuccess;
 }
@@ -157,16 +158,16 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
         {
             if (m_laptrigger->setReleasedState())
             {
-                m_WebSocketSrv->sendTXT(clientId, "ACK");
+                m_webSocketSrv.sendTXT(clientId, "ACK");
             }
             else
             {
-                m_WebSocketSrv->sendTXT(clientId, "NACK");
+                m_webSocketSrv.sendTXT(clientId, "NACK");
             }
         }
         else
         {
-            m_WebSocketSrv->sendTXT(clientId, "NACK");
+            m_webSocketSrv.sendTXT(clientId, "NACK");
         }
 
         break;
@@ -206,42 +207,42 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
 
 void LapTriggerWebServer::handleCredentials()
 {
-    if (m_WebServer->method() != HTTP_POST)
+    if (m_webServer.method() != HTTP_POST)
     {
-        m_WebServer->send(405, "text/plain", "Method Not Allowed");
+        m_webServer.send(405, "text/plain", "Method Not Allowed");
     }
     else
     {
         String ssidInput = "";
         String passwordInput = "";
 
-        for (uint8_t i = 0; i < m_WebServer->args(); i++)
+        for (uint8_t i = 0; i < m_webServer.args(); i++)
         {
-            if (m_WebServer->argName(i) == "STA_SSID")
+            if (m_webServer.argName(i) == "STA_SSID")
             {
-                ssidInput = m_WebServer->arg(i);
+                ssidInput = m_webServer.arg(i);
             }
-            else if (m_WebServer->argName(i) == "STA_PASSWORD")
+            else if (m_webServer.argName(i) == "STA_PASSWORD")
             {
-                passwordInput = m_WebServer->arg(i);
+                passwordInput = m_webServer.arg(i);
             }
         }
 
         if (ssidInput.isEmpty())
         {
             String message = "POST form was:\n";
-            for (uint8_t i = 0; i < m_WebServer->args(); i++)
+            for (uint8_t i = 0; i < m_webServer.args(); i++)
             {
-                message += " " + m_WebServer->argName(i) + ": " + m_WebServer->arg(i) + "\n";
+                message += " " + m_webServer.argName(i) + ": " + m_webServer.arg(i) + "\n";
             }
-            m_WebServer->send(200, "text/plain", message);
+            m_webServer.send(200, "text/plain", message);
             Serial.println(message);
         }
         else
         {
             if (Flash::saveCredentials(ssidInput, passwordInput))
             {
-                m_WebServer->send(200, "text/plain", "Credentials Accepted.\nRestarting...");
+                m_webServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
                 delay(3000);
                 ESP.restart();
             }

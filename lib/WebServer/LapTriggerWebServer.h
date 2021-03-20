@@ -57,6 +57,7 @@
 class LapTriggerWebServer
 {
 public:
+
     /**
      *  Class Constructor.
      * 
@@ -97,10 +98,10 @@ private:
     Competition *m_laptrigger;
 
     /** Webserver on port for http protocol. */
-    ESP8266WebServer *m_WebServer;
+    ESP8266WebServer m_webServer;
 
     /** Websocket server on port for ws protocol. */
-    WebSocketsServer *m_WebSocketSrv;
+    WebSocketsServer m_webSocketSrv;
 
     /**
      *  Handler for websocket event.
@@ -114,6 +115,11 @@ private:
 
     /** Handler for POST Request for the storage of the STA Credentials. */
     void handleCredentials();
+
+    /**
+     * Default constructor is not allowed.
+     */
+    LapTriggerWebServer();
 
     /** 
      *  An instance shall not be copied. 
@@ -130,7 +136,7 @@ private:
      */
     LapTriggerWebServer &operator=(const LapTriggerWebServer &server);
 
-}; /** LapTriggerWebServer */
+};
 
 /******************************************************************************
  * Prototypes
@@ -148,4 +154,4 @@ private:
  * Local functions
  *****************************************************************************/
 
-#endif /*LAP_TRIGGER_WEB_SERVER_H_*/
+#endif /* LAP_TRIGGER_WEB_SERVER_H_ */
