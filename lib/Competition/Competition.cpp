@@ -58,7 +58,7 @@
 Competition::Competition() :
     m_startTimestamp(0),
     m_competitionState(COMPETITION_STATE_UNRELEASED),
-    m_numberOfGroups(10)
+    m_numberOfGroups(0)
 {
 }
 
