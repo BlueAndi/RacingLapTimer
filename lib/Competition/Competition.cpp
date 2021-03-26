@@ -57,7 +57,8 @@
 
 Competition::Competition() :
     m_startTimestamp(0),
-    m_competitionState(COMPETITION_STATE_UNRELEASED)
+    m_competitionState(COMPETITION_STATE_UNRELEASED),
+    m_numberOfGroups(10)
 {
 }
 
@@ -128,6 +129,17 @@ bool Competition::setReleasedState()
         m_competitionState = COMPETITION_STATE_RELEASED;
     }
 
+    return isSuccess;
+}
+
+bool Competition::getNumberofGroups(uint8_t &groups)
+{
+    bool isSuccess = false;
+    if(0 != m_numberOfGroups)
+    {
+        groups = m_numberOfGroups;
+        isSuccess = true;
+    }
     return isSuccess;
 }
 

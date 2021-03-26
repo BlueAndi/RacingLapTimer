@@ -90,6 +90,14 @@ public:
      */
     bool setReleasedState();
 
+    /**
+     *  Checks if the number of Groups is valid, and returns it.
+     * 
+     *  @param[out] groups Variable to write the number of groups to. 
+     *  @return If the number of Groups is bigger than 0, returns True. Otherwise, False.
+     */
+    bool getNumberofGroups(uint8_t &groups);
+
 private:
     /**
      *  After the first detection of the robot with the ext. sensor, this consider
@@ -102,6 +110,9 @@ private:
 
     /** Current competition state. */
     CompetitionState m_competitionState;
+
+    /** Number of Groups */
+    uint8_t m_numberOfGroups;
 
 };
 
