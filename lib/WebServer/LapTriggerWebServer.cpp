@@ -165,6 +165,15 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
                 m_webSocketSrv.sendTXT(clientId, "NACK");
             }
         }
+        else if (cmd.equals("GROUPS"))
+        {
+            /* Client requests the number of Groups */
+            uint8_t groups;
+            if(true == m_laptrigger->getNumberofGroups(groups))
+            {
+                m_webSocketSrv.sendTXT(clientId, "EVT;GROUPS;"+ String(groups));
+            }
+        }
         else
         {
             m_webSocketSrv.sendTXT(clientId, "NACK");
