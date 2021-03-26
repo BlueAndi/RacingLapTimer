@@ -106,7 +106,10 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
                 /* No further parameter */
             } else if ("FINISHED" == rsp.event) {
                 rsp.duration = parseInt(data[1]);
-            } else {
+            } else if ("GROUPS" == rsp.event) {
+                rsp.groups = parseInt(data[1]);
+            } 
+            else {
                 console.error("Unknown event: " + rsp.event);
             }
         } else {
@@ -148,6 +151,21 @@ cpjs.ws.Client.prototype.release = function() {
         } else {
             this._sendCmd({
                 name: "RELEASE",
+                par: null,
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
+
+cpjs.ws.Client.prototype.getGroups = function() {
+    return new Promise(function(resolve, reject) {
+        if (null === this.socket) {
+            reject();
+        } else {
+            this._sendCmd({
+                name: "GROUPS",
                 par: null,
                 resolve: resolve,
                 reject: reject
