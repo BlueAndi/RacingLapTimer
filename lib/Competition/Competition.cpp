@@ -34,6 +34,7 @@
  *****************************************************************************/
 #include "Competition.h"
 #include "Board.h"
+#include "FlashMem.h"
 
 /******************************************************************************
  * Macros
@@ -55,10 +56,9 @@
  * Public Methods
  *****************************************************************************/
 
-Competition::Competition() :
-    m_startTimestamp(0),
-    m_competitionState(COMPETITION_STATE_UNRELEASED),
-    m_numberOfGroups(0)
+Competition::Competition() : m_startTimestamp(0),
+                             m_competitionState(COMPETITION_STATE_UNRELEASED),
+                             m_numberOfGroups(0)
 {
 }
 
@@ -135,11 +135,16 @@ bool Competition::setReleasedState()
 bool Competition::getNumberofGroups(uint8_t &groups)
 {
     bool isSuccess = false;
-    if(0 != m_numberOfGroups)
+
+    if (Flash::importGroups(m_numberOfGroups))
     {
-        groups = m_numberOfGroups;
-        isSuccess = true;
+        if (0 != m_numberOfGroups)
+        {
+            groups = m_numberOfGroups;
+            isSuccess = true;
+        }
     }
+
     return isSuccess;
 }
 
