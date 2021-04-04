@@ -60,7 +60,7 @@ Competition::Competition() : m_startTimestamp(0),
                              m_competitionState(COMPETITION_STATE_UNRELEASED),
                              m_numberOfGroups(0)
 {
-    for (uint8_t group; group < MAX_NUMBER_OF_GROUPS; group++)
+    for (uint8_t group = 0; group < MAX_NUMBER_OF_GROUPS; group++)
     {
         m_resultTable[group] = 0;
     }
@@ -122,15 +122,21 @@ bool Competition::handleCompetition(String &outputMessage)
     return isSuccess;
 }
 
-bool Competition::setReleasedState()
+bool Competition::setReleasedState(const uint8_t &activeGroup)
 {
     bool isSuccess = false;
 
-    if ((COMPETITION_STATE_UNRELEASED == m_competitionState) ||
-        (COMPETITION_STATE_FINISHED == m_competitionState))
+    if (MAX_NUMBER_OF_GROUPS - 1 > activeGroup)
     {
-        isSuccess = true;
-        m_competitionState = COMPETITION_STATE_RELEASED;
+        m_activeGroup = activeGroup;
+        Serial.println("Active Group: " + String(m_activeGroup));
+
+        if ((COMPETITION_STATE_UNRELEASED == m_competitionState) ||
+            (COMPETITION_STATE_FINISHED == m_competitionState))
+        {
+            isSuccess = true;
+            m_competitionState = COMPETITION_STATE_RELEASED;
+        }
     }
 
     return isSuccess;

@@ -88,7 +88,7 @@ public:
      * 
      *  @return If competition is released, returns True. Otherwise, False.
      */
-    bool setReleasedState();
+    bool setReleasedState(const uint8_t &activeGroup);
 
     /**
      *  Checks if the number of Groups is valid, and returns it.
@@ -129,6 +129,9 @@ private:
 
     /** Array to contain the fastest time of each group */
     uint32_t m_resultTable[MAX_NUMBER_OF_GROUPS];
+
+    /** Group that has been RELEASED for the run */
+    uint8_t m_activeGroup;
 };
 
 /******************************************************************************
