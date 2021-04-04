@@ -107,6 +107,14 @@ public:
     bool saveNumberofGroups(const uint8_t &groups);
 
 private:
+
+    /**
+     *  Updates Result Table Array with new Lap Duration for the Active Team.
+     *
+     *  @param[in] runtime Duration of Competition Lap
+     */
+    void updateResultTable(const uint32_t &runtime);
+
     /**
      *  After the first detection of the robot with the ext. sensor, this consider
      *  the duration in ms after that the sensor will be considered again.

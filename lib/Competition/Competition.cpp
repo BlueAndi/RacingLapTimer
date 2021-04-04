@@ -105,6 +105,7 @@ bool Competition::handleCompetition(String &outputMessage)
                 outputMessage = String("EVT;FINISHED;") + duration;
                 isSuccess = true;
                 m_competitionState = COMPETITION_STATE_FINISHED;
+                updateResultTable(duration);
             }
         }
         break;
@@ -181,6 +182,20 @@ bool Competition::saveNumberofGroups(const uint8_t &groups)
 /******************************************************************************
  * Private Methods
  *****************************************************************************/
+
+void Competition::updateResultTable(const uint32_t &runtime)
+{
+    if (runtime < m_resultTable[m_activeGroup] ||
+            0 == m_resultTable[m_activeGroup])
+    {
+        m_resultTable[m_activeGroup] = runtime;
+    }
+
+    for (uint8_t group = 0; group < m_numberOfGroups; group++)
+    {
+        Serial.println("Group " + String(group) + ": " + String(m_resultTable[group]));
+    }
+}
 
 /******************************************************************************
  * External functions
