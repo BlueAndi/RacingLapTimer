@@ -127,6 +127,8 @@ private:
     /** Number of Groups */
     uint8_t m_numberOfGroups;
 
+    /** Array to contain the fastest time of each group */
+    uint32_t m_resultTable[MAX_NUMBER_OF_GROUPS];
 };
 
 /******************************************************************************

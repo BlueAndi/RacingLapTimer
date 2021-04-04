@@ -60,6 +60,10 @@ Competition::Competition() : m_startTimestamp(0),
                              m_competitionState(COMPETITION_STATE_UNRELEASED),
                              m_numberOfGroups(0)
 {
+    for (uint8_t group; group < MAX_NUMBER_OF_GROUPS; group++)
+    {
+        m_resultTable[group] = 0;
+    }
 }
 
 Competition::~Competition()
