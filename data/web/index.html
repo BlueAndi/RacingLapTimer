@@ -281,6 +281,16 @@
             });
         }
 
+        function getSavedTable(){
+            global.wsClient.getTable().then(function (rsp) {
+                console.info("Table Updated");
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        }
+
         $(document).ready(function() {
             global.wsClient.connect({
                 protocol: "ws",
@@ -292,6 +302,7 @@
             }).then(function(rsp) {
                 console.info("Connected.");
                 getGroups();
+                getSavedTable();
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);

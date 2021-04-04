@@ -129,7 +129,9 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
                 this.pendingCmd.resolve(rsp);
             } else if ("SAVE_GROUPS" === this.pendingCmd.name) {
                 this.pendingCmd.resolve(rsp);
-            } else {
+            } else if ("GET_TABLE" === this.pendingCmd.name) {
+                this.pendingCmd.resolve(rsp);
+            }else {
                 console.error("Unknown command: " + this.pendingCmd.name);
                 this.pendingCmd.reject();
             }
@@ -184,6 +186,21 @@ cpjs.ws.Client.prototype.saveGroups = function(numberOfGroups) {
             this._sendCmd({
                 name: "SAVE_GROUPS",
                 par: numberOfGroups,
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
+
+cpjs.ws.Client.prototype.getTable = function(numberOfGroups) {
+    return new Promise(function(resolve, reject) {
+        if (null === this.socket) {
+            reject();
+        } else {
+            this._sendCmd({
+                name: "GET_TABLE",
+                par: null,
                 resolve: resolve,
                 reject: reject
             });
