@@ -86,6 +86,7 @@ public:
      *  Checks the current Competition state to be either Unreleased or Finished. 
      *  Releases the competition if found in any of these states.
      * 
+     *  @param[in] activeGroup Number of currently Active Group in Client.
      *  @return If competition is released, returns True. Otherwise, False.
      */
     bool setReleasedState(const uint8_t &activeGroup);
@@ -106,8 +107,15 @@ public:
      */
     bool saveNumberofGroups(const uint8_t &groups);
 
-private:
+    /**
+    *   Retrieves the Result Table from the target.
+    * 
+    *   @param output Buffer for the Output WS Message.
+    *   @param group Number of Group to retrieve value for.
+    */
+    void getTable(String &output, const uint8_t group);
 
+private:
     /**
      *  Updates Result Table Array with new Lap Duration for the Active Team.
      *

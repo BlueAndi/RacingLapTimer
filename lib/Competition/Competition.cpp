@@ -58,7 +58,8 @@
 
 Competition::Competition() : m_startTimestamp(0),
                              m_competitionState(COMPETITION_STATE_UNRELEASED),
-                             m_numberOfGroups(0)
+                             m_numberOfGroups(0),
+                             m_activeGroup(0)
 {
     for (uint8_t group = 0; group < MAX_NUMBER_OF_GROUPS; group++)
     {
@@ -102,7 +103,7 @@ bool Competition::handleCompetition(String &outputMessage)
         {
             if (true == Board::isRobotDetected())
             {
-                outputMessage = String("EVT;FINISHED;") + duration;
+                outputMessage = String("EVT;FINISHED;") + duration + ";" + String(m_activeGroup);
                 isSuccess = true;
                 m_competitionState = COMPETITION_STATE_FINISHED;
                 updateResultTable(duration);
@@ -175,6 +176,11 @@ bool Competition::saveNumberofGroups(const uint8_t &groups)
     return isSuccess;
 }
 
+void Competition::getTable(String &output, const uint8_t group)
+{
+    output = "EVT;FINISHED;" + String(m_resultTable[group]) + ";" + String(group);
+}
+
 /******************************************************************************
  * Protected Methods
  *****************************************************************************/
@@ -186,7 +192,7 @@ bool Competition::saveNumberofGroups(const uint8_t &groups)
 void Competition::updateResultTable(const uint32_t &runtime)
 {
     if (runtime < m_resultTable[m_activeGroup] ||
-            0 == m_resultTable[m_activeGroup])
+        0 == m_resultTable[m_activeGroup])
     {
         m_resultTable[m_activeGroup] = runtime;
     }

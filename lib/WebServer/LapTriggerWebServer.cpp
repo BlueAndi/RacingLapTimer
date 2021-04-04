@@ -211,6 +211,26 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
                 m_webSocketSrv.sendTXT(clientId, "NACK");
             }
         }
+        else if (cmd.equals("GET_TABLE"))
+        {
+            uint8_t numberOfGroups = 0;
+            if (m_laptrigger->getNumberofGroups(numberOfGroups))
+            {
+                for (uint8_t group = 0; group < numberOfGroups; group++)
+                {
+                    String output;
+                    m_laptrigger->getTable(output, group);
+                    Serial.println(output);
+                    m_webSocketSrv.sendTXT(clientId, "EVT;STARTED");
+                    m_webSocketSrv.sendTXT(clientId, output);
+                }
+                m_webSocketSrv.sendTXT(clientId, "ACK;GET_TABLE");
+            }
+            else
+            {
+                m_webSocketSrv.sendTXT(clientId, "NACK");
+            }
+        }
         else
         {
             m_webSocketSrv.sendTXT(clientId, "NACK");
