@@ -72,7 +72,7 @@
             seconds: 0,
             milliseconds: 0,
             wsClient: new cpjs.ws.Client(),
-            numberOfGroups: 6,
+            numberOfGroups: 0,
             selectedGroup: 0,
             resultTable: []
         };
@@ -264,13 +264,24 @@
             }
         }
 
-        $(document).ready(function() {
-            updateTimer();
-            createGroups();
-            selectGroup(0);
-            createResultTable();
-            updateResultTable();
+        function getGroups() {
+            global.wsClient.getGroups().then(function (rsp) {
+                global.numberOfGroups = rsp.groups;
+                console.log(global.numberOfGroups + " Groups are configured.");
+                console.info("Retrieved Groups.");
+                updateTimer();
+                createGroups();
+                selectGroup(0);
+                createResultTable();
+                updateResultTable();
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        }
 
+        $(document).ready(function() {
             global.wsClient.connect({
                 protocol: "ws",
                 hostname: location.hostname,
@@ -280,6 +291,7 @@
                 onClosed: onClosed,
             }).then(function(rsp) {
                 console.info("Connected.");
+                getGroups();
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
