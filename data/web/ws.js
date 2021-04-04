@@ -165,7 +165,7 @@ cpjs.ws.Client.prototype.getGroups = function() {
             reject();
         } else {
             this._sendCmd({
-                name: "GROUPS",
+                name: "GET_GROUPS",
                 par: null,
                 resolve: resolve,
                 reject: reject
