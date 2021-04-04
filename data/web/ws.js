@@ -106,6 +106,7 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
                 /* No further parameter */
             } else if ("FINISHED" == rsp.event) {
                 rsp.duration = parseInt(data[1]);
+                rsp.activeGroup = parseInt(data[2]);
             } else {
                 console.error("Unknown event: " + rsp.event);
             }
