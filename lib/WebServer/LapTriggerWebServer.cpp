@@ -55,10 +55,9 @@
  * Public Methods
  *****************************************************************************/
 
-LapTriggerWebServer::LapTriggerWebServer(Competition &goalLine) :
-    m_laptrigger(&goalLine),
-    m_webServer(WEBSERVER_PORT),
-    m_webSocketSrv(WEBSOCKET_PORT)
+LapTriggerWebServer::LapTriggerWebServer(Competition &goalLine) : m_laptrigger(&goalLine),
+                                                                  m_webServer(WEBSERVER_PORT),
+                                                                  m_webSocketSrv(WEBSOCKET_PORT)
 {
 }
 
@@ -106,7 +105,7 @@ bool LapTriggerWebServer::runCycle()
 {
     bool isSuccess = false;
     String outputMessage = "";
-    
+
     if (m_laptrigger->handleCompetition(outputMessage))
     {
         m_webSocketSrv.broadcastTXT(outputMessage);
@@ -130,6 +129,7 @@ bool LapTriggerWebServer::runCycle()
 void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
 {
     String cmd;
+    String par;
     size_t index = 0;
 
     switch (type)
@@ -150,7 +150,29 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
 
         for (index = 0; index < length; ++index)
         {
-            cmd += reinterpret_cast<char *>(payload)[index];
+            char temp = reinterpret_cast<char *>(payload)[index];
+            if (';' == temp)
+            {
+                index++;
+                break;
+            }
+            else
+            {
+                cmd += temp;
+            }
+        }
+
+        for (uint8_t paramIndex = index; paramIndex < length; ++paramIndex)
+        {
+            char temp = reinterpret_cast<char *>(payload)[paramIndex];
+            if (';' == temp)
+            {
+                break;
+            }
+            else
+            {
+                par += temp;
+            }
         }
 
         Serial.printf("%lu: Ws client (%u): %s\n", millis(), clientId, cmd.c_str());
@@ -169,9 +191,24 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
         {
             /* Client requests the number of Groups */
             uint8_t groups;
-            if(true == m_laptrigger->getNumberofGroups(groups))
+            if (true == m_laptrigger->getNumberofGroups(groups))
             {
-                m_webSocketSrv.sendTXT(clientId, "EVT;GROUPS;"+ String(groups));
+                m_webSocketSrv.sendTXT(clientId, "ACK;GET_GROUPS;" + String(groups));
+            }
+            else
+            {
+                m_webSocketSrv.sendTXT(clientId, "NACK");
+            }
+        }
+        else if (cmd.equals("SAVE_GROUPS"))
+        {
+            if (Flash::saveGroups(par.toInt()))
+            {
+                m_webSocketSrv.sendTXT(clientId, "ACK;SAVE_GROUPS");
+            }
+            else
+            {
+                m_webSocketSrv.sendTXT(clientId, "NACK");
             }
         }
         else

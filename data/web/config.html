@@ -36,7 +36,7 @@
                 <div class="mb-3">
                     <label for="NumberOfGroups" class="form-label">Number Of Groups: </label>
                     <input type="number" class="form-range" min="0" max="10" id="NumberOfGroups">
-                    <p><button type="submit" class="btn btn-secondary" onclick="saveGroups()">Save</button></p>
+                    <p><button id="buttonSaveGroups" type="submit" class="btn btn-secondary" onclick="saveGroups()">Save</button></p>
                 </div>
             </div>
             <div class="col">
@@ -87,9 +87,11 @@
         }
 
         function saveGroups() {
+            document.getElementById("buttonSaveGroups").disabled = true;
             global.numberOfGroups = document.getElementById("NumberOfGroups").value
             global.wsClient.saveGroups(global.numberOfGroups).then(function (rsp) {
                 alert("Groups have been saved!");
+                document.getElementById("buttonSaveGroups").disabled = false;
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
