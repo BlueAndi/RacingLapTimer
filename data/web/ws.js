@@ -146,14 +146,14 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
     return;
 };
 
-cpjs.ws.Client.prototype.release = function() {
+cpjs.ws.Client.prototype.release = function(group) {
     return new Promise(function(resolve, reject) {
         if (null === this.socket) {
             reject();
         } else {
             this._sendCmd({
                 name: "RELEASE",
-                par: null,
+                par: group,
                 resolve: resolve,
                 reject: reject
             });

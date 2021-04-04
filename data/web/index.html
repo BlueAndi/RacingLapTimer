@@ -137,7 +137,7 @@
         function releaseMeasurement() {
             clearTimer();
 
-            global.wsClient.release().then(function(rsp) {
+            global.wsClient.release(global.selectedGroup).then(function(rsp) {
                 console.info("Released.");
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
