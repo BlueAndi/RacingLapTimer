@@ -106,10 +106,7 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
                 /* No further parameter */
             } else if ("FINISHED" == rsp.event) {
                 rsp.duration = parseInt(data[1]);
-            } else if ("GROUPS" == rsp.event) {
-                rsp.groups = parseInt(data[1]);
-            } 
-            else {
+            } else {
                 console.error("Unknown event: " + rsp.event);
             }
         } else {
@@ -126,6 +123,11 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
                 for(index = 0; index < data.length; ++index) {
                     rsp.data.push(parseInt(data[index], 16));
                 }
+                this.pendingCmd.resolve(rsp);
+            } else if ("GET_GROUPS" === this.pendingCmd.name) {
+                rsp.groups = parseInt(data[1]);
+                this.pendingCmd.resolve(rsp);
+            } else if ("SAVE_GROUPS" === this.pendingCmd.name) {
                 this.pendingCmd.resolve(rsp);
             } else {
                 console.error("Unknown command: " + this.pendingCmd.name);
@@ -167,6 +169,21 @@ cpjs.ws.Client.prototype.getGroups = function() {
             this._sendCmd({
                 name: "GET_GROUPS",
                 par: null,
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
+
+cpjs.ws.Client.prototype.saveGroups = function(numberOfGroups) {
+    return new Promise(function(resolve, reject) {
+        if (null === this.socket) {
+            reject();
+        } else {
+            this._sendCmd({
+                name: "SAVE_GROUPS",
+                par: numberOfGroups,
                 resolve: resolve,
                 reject: reject
             });

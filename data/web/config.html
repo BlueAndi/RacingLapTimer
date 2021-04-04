@@ -70,20 +70,26 @@
         }
 
         function onEvent(rsp) {
-            var timeMinSecMSec = null
-
-            if ("GROUPS" == rsp.event) {
-                global.numberOfGroups = rsp.groups;
-                document.getElementById("NumberOfGroups").value = global.numberOfGroups;
-                console.log(global.numberOfGroups + " Groups are configured.");
-            } else {
-                alert("Unknown event received: " + rsp.event);
-            }
+            alert("Unknown event received: " + rsp.event);
         }
 
         function getGroups() {
             global.wsClient.getGroups().then(function (rsp) {
+                global.numberOfGroups = rsp.groups;
+                document.getElementById("NumberOfGroups").value = global.numberOfGroups;
+                console.log(global.numberOfGroups + " Groups are configured.");
                 console.info("Retrieved Groups.");
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        function saveGroups() {
+            global.numberOfGroups = document.getElementById("NumberOfGroups").value
+            global.wsClient.saveGroups(global.numberOfGroups).then(function (rsp) {
+                alert("Groups have been saved!");
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
