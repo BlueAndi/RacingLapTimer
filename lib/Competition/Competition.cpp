@@ -148,6 +148,19 @@ bool Competition::getNumberofGroups(uint8_t &groups)
     return isSuccess;
 }
 
+bool Competition::saveNumberofGroups(const uint8_t &groups)
+{
+    bool isSuccess = false;
+
+    if (Flash::saveGroups(groups))
+    {
+        m_numberOfGroups = groups;
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
 /******************************************************************************
  * Protected Methods
  *****************************************************************************/

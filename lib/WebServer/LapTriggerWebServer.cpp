@@ -202,7 +202,7 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
         }
         else if (cmd.equals("SAVE_GROUPS"))
         {
-            if (Flash::saveGroups(par.toInt()))
+            if (m_laptrigger->saveNumberofGroups(par.toInt()))
             {
                 m_webSocketSrv.sendTXT(clientId, "ACK;SAVE_GROUPS");
             }

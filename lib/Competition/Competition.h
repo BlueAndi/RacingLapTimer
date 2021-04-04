@@ -98,6 +98,14 @@ public:
      */
     bool getNumberofGroups(uint8_t &groups);
 
+    /**
+     *  Saves the configured number of Groups
+     * 
+     *  @param[in] groups Client's number of Groups 
+     *  @return If the number of Groups successfully saved, returns True. Otherwise, False.
+     */
+    bool saveNumberofGroups(const uint8_t &groups);
+
 private:
     /**
      *  After the first detection of the robot with the ext. sensor, this consider
