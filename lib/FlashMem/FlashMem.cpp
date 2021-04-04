@@ -117,6 +117,28 @@ bool Flash::areCredentialsStored()
     return areCredentialsStored;
 }
 
+bool Flash::setHeader(bool areCredentialsStored)
+{
+    bool isSuccess = false;
+
+    if (areCredentialsStored)
+    {
+        saveString(NVM_METADATA_ADDRESS, NVM_METADATA_MAX_LENGTH, NVM_METADATA_VALID);
+    }
+    else
+    {
+        clearEEPROM();
+    }
+
+    if (EEPROM.commit())
+    {
+        Serial.println("EEPROM successfully commited!");
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
 void Flash::fetchString(const uint8_t &address, const uint8_t &maxLength, String &output)
 {
     output.clear();
@@ -151,23 +173,39 @@ bool Flash::saveString(const uint8_t &address, const uint8_t &maxLength, const S
     return isSuccess;
 }
 
-bool Flash::setHeader(bool areCredentialsStored)
+bool Flash::fetchInt(const uint8_t &address, uint8_t &value)
 {
     bool isSuccess = false;
-
-    if (areCredentialsStored)
+    for (uint8_t memoryPosition = 0; memoryPosition < NVM_INTEGER_LENGTH; memoryPosition++)
     {
-        saveString(NVM_METADATA_ADDRESS, NVM_METADATA_MAX_LENGTH, NVM_METADATA_VALID);
-    }
-    else
-    {
-        clearEEPROM();
-    }
-
-    if (EEPROM.commit())
-    {
-        Serial.println("EEPROM successfully commited!");
+        value = EEPROM.read(address + memoryPosition);
         isSuccess = true;
+    }
+    return isSuccess;
+}
+
+bool Flash::saveInt(const uint8_t &address, const uint8_t &value)
+{
+    bool isSuccess = false;
+    for (uint8_t memoryPosition = 0; memoryPosition < NVM_INTEGER_LENGTH; memoryPosition++)
+    {
+        EEPROM.write(address + memoryPosition, value);
+        isSuccess = true;
+    }
+    return isSuccess;
+}
+
+bool Flash::importGroups(uint8_t &groups)
+{
+    return fetchInt(NVM_GROUPS_ADDRESS, groups);
+}
+
+bool Flash::saveGroups(const uint8_t &groups)
+{
+    bool isSuccess = false;
+    if (saveInt(NVM_GROUPS_ADDRESS, groups))
+    {
+        isSuccess = EEPROM.commit();
     }
 
     return isSuccess;

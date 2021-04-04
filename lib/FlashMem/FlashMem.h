@@ -72,6 +72,12 @@ namespace Flash
     /** Maximum length for saved Credentials. */
     static const uint8_t CREDENTIALS_MAX_LENGTH = NVM_PASSWORD_ADDRESS + NVM_PASSWORD_MAX_LENGTH;
 
+    /** Address of saved Groups in EEPROM. */
+    static const uint8_t NVM_GROUPS_ADDRESS = CREDENTIALS_MAX_LENGTH;
+
+    /** Length of saved Groups in EEPROM. */
+    static const uint8_t NVM_INTEGER_LENGTH = 1;
+
     /** Size of the EEPROM destined to store credentials*/
     static const uint16_t EEPROM_SIZE = 512;
 
@@ -140,6 +146,42 @@ namespace Flash
      */
     bool saveString(const uint8_t &address, const uint8_t &maxLength, const String &input);
 
+    /**
+     *  Retrieves an Unsigned Integer from the EEPROM.
+     *
+     *  @param[in] address Address where the String is saved.
+     *  @param[out] value Buffer to save the Integer to.
+     *  @return If Integer succesfully retrieved from EEPROM, returns True. 
+     *          Otherwise False.
+     */
+    bool fetchInt(const uint8_t &address, uint8_t &value);
+
+    /**
+     *  Saves an Unsigned Integer in the EEPROM.
+     *
+     *  @param[in] address Address where the String will be saved.
+     *  @param[in] value String to save in EEPROM.
+     *  @return If integer written in EEPROM, returns True. Otherwise False.
+     */
+    bool saveInt(const uint8_t &address, const uint8_t &value);
+
+    /**
+     *  Retrieves the Number of Groups from the EEPROM.
+     * 
+     *  @param[out] groups Buffer to save the Number of Groups to.
+     *  @return If the value is succesfully retrieved from EEPROM, returns True. 
+     *          Otherwise False.
+     */
+    bool importGroups(uint8_t &groups);
+
+    /**
+     *  Saves the Number of Groups in the EEPROM.
+     *
+     *  @param[in] groups Number of Groups to save in EEPROM.
+     *  @return If the value is written in EEPROM, returns True. 
+     *          Otherwise False.
+     */
+    bool saveGroups(const uint8_t &groups);
 };
 
 /******************************************************************************
