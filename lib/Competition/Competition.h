@@ -113,6 +113,11 @@ private:
      */
     static const uint32_t SENSOR_BLIND_PERIOD = 400;
 
+    /**
+     *  Maximum Number of Participating Groups 
+     */
+    static const uint8_t MAX_NUMBER_OF_GROUPS = 10;
+
     /** Competition start timestamp in ms. */
     uint32_t m_startTimestamp;
 

@@ -152,10 +152,13 @@ bool Competition::saveNumberofGroups(const uint8_t &groups)
 {
     bool isSuccess = false;
 
-    if (Flash::saveGroups(groups))
+    if (MAX_NUMBER_OF_GROUPS >= groups)
     {
-        m_numberOfGroups = groups;
-        isSuccess = true;
+        if (Flash::saveGroups(groups))
+        {
+            m_numberOfGroups = groups;
+            isSuccess = true;
+        }
     }
 
     return isSuccess;
