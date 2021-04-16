@@ -160,7 +160,7 @@ bool Competition::getNumberofGroups(uint8_t &groups)
     return isSuccess;
 }
 
-bool Competition::saveNumberofGroups(const uint8_t &groups)
+bool Competition::setNumberofGroups(const uint8_t &groups)
 {
     bool isSuccess = false;
 

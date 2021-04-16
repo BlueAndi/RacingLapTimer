@@ -105,7 +105,7 @@ public:
      *  @param[in] groups Client's number of Groups 
      *  @return If the number of Groups successfully saved, returns True. Otherwise, False.
      */
-    bool saveNumberofGroups(const uint8_t &groups);
+    bool setNumberofGroups(const uint8_t &groups);
 
     /**
     *   Retrieves the Result Table from the target.
