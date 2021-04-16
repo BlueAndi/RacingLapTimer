@@ -81,7 +81,7 @@ bool LapTriggerWebServer::begin()
     {
         /* Setup webserver. */
         m_webServer.serveStatic("/", LittleFS, "/web/", "max-age=86400");
-        m_webServer.on("/config.html", HTTP_POST, [this]() {
+        m_webServer.on("/settings.html", HTTP_POST, [this]() {
             this->handleCredentials();
         });
         m_webServer.onNotFound(
