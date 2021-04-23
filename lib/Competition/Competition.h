@@ -121,7 +121,7 @@ private:
      *
      *  @param[in] runtime Duration of Competition Lap
      */
-    void updateResultTable(uint32_t &runtime);
+    void updateLapTime(uint32_t &runtime);
 
     /**
      *  After the first detection of the robot with the ext. sensor, this consider

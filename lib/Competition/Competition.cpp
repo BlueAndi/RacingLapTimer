@@ -103,10 +103,13 @@ bool Competition::handleCompetition(String &outputMessage)
         {
             if (true == Board::isRobotDetected())
             {
-                outputMessage = String("EVT;FINISHED;") + duration + ";" + String(m_activeGroup);
+                outputMessage = "EVT;FINISHED;";
+                outputMessage += duration;
+                outputMessage += ';';
+                outputMessage += m_activeGroup;
                 isSuccess = true;
                 m_competitionState = COMPETITION_STATE_FINISHED;
-                updateResultTable(duration);
+                updateLapTime(duration);
             }
         }
         break;
@@ -189,10 +192,10 @@ void Competition::getLaptime(uint32_t &output, const uint8_t group)
  * Private Methods
  *****************************************************************************/
 
-void Competition::updateResultTable(uint32_t &runtime)
+void Competition::updateLapTime(uint32_t &runtime)
 {
-    if (runtime < m_resultTable[m_activeGroup] ||
-        0 == m_resultTable[m_activeGroup])
+    if ((runtime < m_resultTable[m_activeGroup]) ||
+        (0 == m_resultTable[m_activeGroup]))
     {
         m_resultTable[m_activeGroup] = runtime;
     }
