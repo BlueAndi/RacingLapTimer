@@ -117,7 +117,7 @@ public:
 
 private:
     /**
-     *  Updates Result Table Array with new Lap Duration for the Active Team.
+     *  Updates fastest Lap Time of the currently Active Group.
      *
      *  @param[in] runtime Duration of Competition Lap
      */

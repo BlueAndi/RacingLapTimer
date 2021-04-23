@@ -134,7 +134,7 @@ bool Competition::setReleasedState(const uint8_t &activeGroup)
     if (MAX_NUMBER_OF_GROUPS - 1 > activeGroup)
     {
         m_activeGroup = activeGroup;
-        Serial.println("Active Group: " + String(m_activeGroup));
+        Serial.printf("Active Group: %d \n", m_activeGroup);
 
         if ((COMPETITION_STATE_UNRELEASED == m_competitionState) ||
             (COMPETITION_STATE_FINISHED == m_competitionState))
@@ -202,7 +202,7 @@ void Competition::updateLapTime(uint32_t &runtime)
 
     for (uint8_t group = 0; group < m_numberOfGroups; group++)
     {
-        Serial.println("Group " + String(group) + ": " + String(m_resultTable[group]));
+        Serial.printf("Group %d: %d \n", group, m_resultTable[group]);
     }
 }
 
