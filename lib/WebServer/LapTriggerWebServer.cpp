@@ -200,11 +200,11 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
                 m_webSocketSrv.sendTXT(clientId, "NACK");
             }
         }
-        else if (cmd.equals("SAVE_GROUPS"))
+        else if (cmd.equals("SET_GROUPS"))
         {
             if (m_laptrigger->setNumberofGroups(par.toInt()))
             {
-                m_webSocketSrv.sendTXT(clientId, "ACK;SAVE_GROUPS");
+                m_webSocketSrv.sendTXT(clientId, "ACK;SET_GROUPS");
             }
             else
             {
@@ -306,7 +306,7 @@ void LapTriggerWebServer::handleCredentials()
         }
         else
         {
-            if (Flash::saveCredentials(ssidInput, passwordInput))
+            if (Flash::setCredentials(ssidInput, passwordInput))
             {
                 m_webServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
                 delay(3000);

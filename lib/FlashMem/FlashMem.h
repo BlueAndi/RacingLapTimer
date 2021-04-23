@@ -104,7 +104,7 @@ namespace Flash
      *  @param[in] password Password of host network to connect to.
      *  @return If Credentials succesfully saved, return True. Otherwise, False.
      */
-    bool saveCredentials(const String &ssid, const String &password);
+    bool setCredentials(const String &ssid, const String &password);
 
     /**
      *  Deletes stored Data in the EEPROM.
@@ -144,7 +144,7 @@ namespace Flash
      *  @param[in] input String to save in EEPROM.
      *  @return If string written in EEPROM, returns True. Otherwise False.
      */
-    bool saveString(const uint8_t &address, const uint8_t &maxLength, const String &input);
+    bool setString(const uint8_t &address, const uint8_t &maxLength, const String &input);
 
     /**
      *  Retrieves an Unsigned Integer from the EEPROM.
@@ -163,7 +163,7 @@ namespace Flash
      *  @param[in] value String to save in EEPROM.
      *  @return If integer written in EEPROM, returns True. Otherwise False.
      */
-    bool saveInt(const uint8_t &address, const uint8_t &value);
+    bool setInt(const uint8_t &address, const uint8_t &value);
 
     /**
      *  Retrieves the Number of Groups from the EEPROM.
@@ -181,7 +181,7 @@ namespace Flash
      *  @return If the value is written in EEPROM, returns True. 
      *          Otherwise False.
      */
-    bool saveGroups(const uint8_t &groups);
+    bool setGroups(const uint8_t &groups);
 };
 
 /******************************************************************************

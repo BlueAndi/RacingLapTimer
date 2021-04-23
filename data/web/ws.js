@@ -128,7 +128,7 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
             } else if ("GET_GROUPS" === this.pendingCmd.name) {
                 rsp.groups = parseInt(data[1]);
                 this.pendingCmd.resolve(rsp);
-            } else if ("SAVE_GROUPS" === this.pendingCmd.name) {
+            } else if ("SET_GROUPS" === this.pendingCmd.name) {
                 this.pendingCmd.resolve(rsp);
             } else if ("GET_TABLE" === this.pendingCmd.name) {
                 this.pendingCmd.resolve(rsp);
@@ -179,13 +179,13 @@ cpjs.ws.Client.prototype.getGroups = function() {
     }.bind(this));
 };
 
-cpjs.ws.Client.prototype.saveGroups = function(numberOfGroups) {
+cpjs.ws.Client.prototype.setGroups = function(numberOfGroups) {
     return new Promise(function(resolve, reject) {
         if (null === this.socket) {
             reject();
         } else {
             this._sendCmd({
-                name: "SAVE_GROUPS",
+                name: "SET_GROUPS",
                 par: numberOfGroups,
                 resolve: resolve,
                 reject: reject

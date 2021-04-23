@@ -79,15 +79,15 @@ bool Flash::importCredentials(String &ssid, String &password)
     return isSuccess;
 }
 
-bool Flash::saveCredentials(const String &ssid, const String &password)
+bool Flash::setCredentials(const String &ssid, const String &password)
 {
     bool isSuccess = false;
 
     /* Save SSID */
-    if (saveString(NVM_SSID_ADDRESS, NVM_SSID_MAX_LENGTH, ssid))
+    if (setString(NVM_SSID_ADDRESS, NVM_SSID_MAX_LENGTH, ssid))
     {
         /* Save Password */
-        if (saveString(NVM_PASSWORD_ADDRESS, NVM_PASSWORD_MAX_LENGTH, password))
+        if (setString(NVM_PASSWORD_ADDRESS, NVM_PASSWORD_MAX_LENGTH, password))
         {
             isSuccess = true;
         }
@@ -123,7 +123,7 @@ bool Flash::setHeader(bool areCredentialsStored)
 
     if (areCredentialsStored)
     {
-        saveString(NVM_METADATA_ADDRESS, NVM_METADATA_MAX_LENGTH, NVM_METADATA_VALID);
+        setString(NVM_METADATA_ADDRESS, NVM_METADATA_MAX_LENGTH, NVM_METADATA_VALID);
     }
     else
     {
@@ -158,7 +158,7 @@ void Flash::fetchString(const uint8_t &address, const uint8_t &maxLength, String
     }
 }
 
-bool Flash::saveString(const uint8_t &address, const uint8_t &maxLength, const String &input)
+bool Flash::setString(const uint8_t &address, const uint8_t &maxLength, const String &input)
 {
     bool isSuccess = false;
     for (uint8_t memoryPosition = 0; memoryPosition < maxLength; memoryPosition++)
@@ -184,7 +184,7 @@ bool Flash::fetchInt(const uint8_t &address, uint8_t &value)
     return isSuccess;
 }
 
-bool Flash::saveInt(const uint8_t &address, const uint8_t &value)
+bool Flash::setInt(const uint8_t &address, const uint8_t &value)
 {
     bool isSuccess = false;
     for (uint8_t memoryPosition = 0; memoryPosition < NVM_INTEGER_LENGTH; memoryPosition++)
@@ -200,10 +200,10 @@ bool Flash::importGroups(uint8_t &groups)
     return fetchInt(NVM_GROUPS_ADDRESS, groups);
 }
 
-bool Flash::saveGroups(const uint8_t &groups)
+bool Flash::setGroups(const uint8_t &groups)
 {
     bool isSuccess = false;
-    if (saveInt(NVM_GROUPS_ADDRESS, groups))
+    if (setInt(NVM_GROUPS_ADDRESS, groups))
     {
         isSuccess = EEPROM.commit();
     }
