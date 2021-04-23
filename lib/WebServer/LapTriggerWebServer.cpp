@@ -303,8 +303,13 @@ void LapTriggerWebServer::parseWSTextEvent(uint8_t clientId, WStype_t type, uint
         {
             for (uint8_t group = 0; group < numberOfGroups; group++)
             {
-                String output;
-                m_laptrigger->getTable(output, group);
+                String output = "EVT;FINISHED;";
+                uint32_t laptime = 0;
+                m_laptrigger->getLaptime(laptime, group);
+                output += laptime;
+                output += ';';
+                output += group;
+                output += ';';
                 Serial.println(output);
                 m_webSocketSrv.sendTXT(clientId, "EVT;STARTED");
                 m_webSocketSrv.sendTXT(clientId, output);

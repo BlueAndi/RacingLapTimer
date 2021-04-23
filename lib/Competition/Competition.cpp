@@ -176,9 +176,9 @@ bool Competition::setNumberofGroups(const uint8_t &groups)
     return isSuccess;
 }
 
-void Competition::getTable(String &output, const uint8_t group)
+void Competition::getLaptime(uint32_t &output, const uint8_t group)
 {
-    output = "EVT;FINISHED;" + String(m_resultTable[group]) + ";" + String(group);
+    output = m_resultTable[group];
 }
 
 /******************************************************************************

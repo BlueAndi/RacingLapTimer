@@ -108,12 +108,12 @@ public:
     bool setNumberofGroups(const uint8_t &groups);
 
     /**
-    *   Retrieves the Result Table from the target.
+    *   Retrieves the laptime from a group.
     * 
-    *   @param output Buffer for the Output WS Message.
+    *   @param output Buffer to write the Group's laptime to.
     *   @param group Number of Group to retrieve value for.
     */
-    void getTable(String &output, const uint8_t group);
+    void getLaptime(uint32_t &output, const uint8_t group);
 
 private:
     /**
