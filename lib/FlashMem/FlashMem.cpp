@@ -176,7 +176,7 @@ bool Flash::setString(const uint8_t &address, const uint8_t &maxLength, const St
 bool Flash::fetchInt(const uint8_t &address, uint8_t &value)
 {
     bool isSuccess = false;
-    for (uint8_t memoryPosition = 0; memoryPosition < NVM_INTEGER_LENGTH; memoryPosition++)
+    for (uint8_t memoryPosition = 0; memoryPosition < NVM_GROUPS_LENGTH; memoryPosition++)
     {
         value = EEPROM.read(address + memoryPosition);
         isSuccess = true;
@@ -187,7 +187,7 @@ bool Flash::fetchInt(const uint8_t &address, uint8_t &value)
 bool Flash::setInt(const uint8_t &address, const uint8_t &value)
 {
     bool isSuccess = false;
-    for (uint8_t memoryPosition = 0; memoryPosition < NVM_INTEGER_LENGTH; memoryPosition++)
+    for (uint8_t memoryPosition = 0; memoryPosition < NVM_GROUPS_LENGTH; memoryPosition++)
     {
         EEPROM.write(address + memoryPosition, value);
         isSuccess = true;

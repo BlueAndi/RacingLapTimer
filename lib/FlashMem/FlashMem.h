@@ -73,10 +73,10 @@ namespace Flash
     static const uint8_t CREDENTIALS_MAX_LENGTH = NVM_PASSWORD_ADDRESS + NVM_PASSWORD_MAX_LENGTH;
 
     /** Address of saved Groups in EEPROM. */
-    static const uint8_t NVM_GROUPS_ADDRESS = CREDENTIALS_MAX_LENGTH;
+    static const uint8_t NVM_GROUPS_ADDRESS = NVM_SSID_ADDRESS + CREDENTIALS_MAX_LENGTH;
 
     /** Length of saved Groups in EEPROM. */
-    static const uint8_t NVM_INTEGER_LENGTH = 1;
+    static const uint8_t NVM_GROUPS_LENGTH = 1;
 
     /** Size of the EEPROM destined to store credentials*/
     static const uint16_t EEPROM_SIZE = 512;
