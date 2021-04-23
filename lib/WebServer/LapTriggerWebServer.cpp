@@ -130,7 +130,6 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
 {
     String cmd;
     String par;
-    size_t index = 0;
 
     switch (type)
     {
@@ -147,95 +146,7 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
         break;
 
     case WStype_TEXT:
-
-        for (index = 0; index < length; ++index)
-        {
-            char temp = reinterpret_cast<char *>(payload)[index];
-            if (';' == temp)
-            {
-                index++;
-                break;
-            }
-            else
-            {
-                cmd += temp;
-            }
-        }
-
-        for (uint8_t paramIndex = index; paramIndex < length; ++paramIndex)
-        {
-            char temp = reinterpret_cast<char *>(payload)[paramIndex];
-            if (';' == temp)
-            {
-                break;
-            }
-            else
-            {
-                par += temp;
-            }
-        }
-
-        Serial.printf("%lu: Ws client (%u): %s\n", millis(), clientId, cmd.c_str());
-        if (cmd.equals("RELEASE"))
-        {
-            if (m_laptrigger->setReleasedState(par.toInt()))
-            {
-                m_webSocketSrv.sendTXT(clientId, "ACK");
-            }
-            else
-            {
-                m_webSocketSrv.sendTXT(clientId, "NACK");
-            }
-        }
-        else if (cmd.equals("GET_GROUPS"))
-        {
-            /* Client requests the number of Groups */
-            uint8_t groups;
-            if (true == m_laptrigger->getNumberofGroups(groups))
-            {
-                m_webSocketSrv.sendTXT(clientId, "ACK;GET_GROUPS;" + String(groups));
-            }
-            else
-            {
-                m_webSocketSrv.sendTXT(clientId, "NACK");
-            }
-        }
-        else if (cmd.equals("SET_GROUPS"))
-        {
-            if (m_laptrigger->setNumberofGroups(par.toInt()))
-            {
-                m_webSocketSrv.sendTXT(clientId, "ACK;SET_GROUPS");
-            }
-            else
-            {
-                m_webSocketSrv.sendTXT(clientId, "NACK");
-            }
-        }
-        else if (cmd.equals("GET_TABLE"))
-        {
-            uint8_t numberOfGroups = 0;
-            if (m_laptrigger->getNumberofGroups(numberOfGroups))
-            {
-                for (uint8_t group = 0; group < numberOfGroups; group++)
-                {
-                    String output;
-                    m_laptrigger->getTable(output, group);
-                    Serial.println(output);
-                    m_webSocketSrv.sendTXT(clientId, "EVT;STARTED");
-                    m_webSocketSrv.sendTXT(clientId, output);
-                }
-                m_webSocketSrv.sendTXT(clientId, "ACK;GET_TABLE");
-            }
-            else
-            {
-                m_webSocketSrv.sendTXT(clientId, "NACK");
-            }
-        }
-        else
-        {
-            m_webSocketSrv.sendTXT(clientId, "NACK");
-        }
-
+        parseWSTextEvent(clientId, type, payload, length);
         break;
 
     case WStype_BIN:
@@ -313,6 +224,101 @@ void LapTriggerWebServer::handleCredentials()
                 ESP.restart();
             }
         }
+    }
+}
+
+void LapTriggerWebServer::parseWSTextEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
+{
+    String cmd;
+    String par;
+    size_t index = 0;
+
+    for (index = 0; index < length; ++index)
+    {
+        char temp = reinterpret_cast<char *>(payload)[index];
+        if (';' == temp)
+        {
+            index++;
+            break;
+        }
+        else
+        {
+            cmd += temp;
+        }
+    }
+
+    for (uint8_t paramIndex = index; paramIndex < length; ++paramIndex)
+    {
+        char temp = reinterpret_cast<char *>(payload)[paramIndex];
+        if (';' == temp)
+        {
+            break;
+        }
+        else
+        {
+            par += temp;
+        }
+    }
+
+    Serial.printf("%lu: Ws client (%u): %s\n", millis(), clientId, cmd.c_str());
+    if (cmd.equals("RELEASE"))
+    {
+        if (m_laptrigger->setReleasedState(par.toInt()))
+        {
+            m_webSocketSrv.sendTXT(clientId, "ACK");
+        }
+        else
+        {
+            m_webSocketSrv.sendTXT(clientId, "NACK");
+        }
+    }
+    else if (cmd.equals("GET_GROUPS"))
+    {
+        /* Client requests the number of Groups */
+        uint8_t groups;
+        if (true == m_laptrigger->getNumberofGroups(groups))
+        {
+            m_webSocketSrv.sendTXT(clientId, "ACK;GET_GROUPS;" + String(groups));
+        }
+        else
+        {
+            m_webSocketSrv.sendTXT(clientId, "NACK");
+        }
+    }
+    else if (cmd.equals("SET_GROUPS"))
+    {
+        if (m_laptrigger->setNumberofGroups(par.toInt()))
+        {
+            m_webSocketSrv.sendTXT(clientId, "ACK;SET_GROUPS");
+        }
+        else
+        {
+            m_webSocketSrv.sendTXT(clientId, "NACK");
+        }
+    }
+    else if (cmd.equals("GET_TABLE"))
+    {
+        uint8_t numberOfGroups = 0;
+        if (m_laptrigger->getNumberofGroups(numberOfGroups))
+        {
+            for (uint8_t group = 0; group < numberOfGroups; group++)
+            {
+                String output;
+                m_laptrigger->getTable(output, group);
+                Serial.println(output);
+                m_webSocketSrv.sendTXT(clientId, "EVT;STARTED");
+                m_webSocketSrv.sendTXT(clientId, output);
+            }
+            m_webSocketSrv.sendTXT(clientId, "ACK;GET_TABLE");
+        }
+        else
+        {
+            m_webSocketSrv.sendTXT(clientId, "NACK");
+        }
+    }
+    else
+    {
+        m_webSocketSrv.sendTXT(clientId, "NACK");
     }
 }
 

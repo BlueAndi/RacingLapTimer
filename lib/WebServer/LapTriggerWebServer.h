@@ -117,6 +117,16 @@ private:
     void handleCredentials();
 
     /**
+     *  Parses incoming Web Socket Event of Type TEXT.
+     * 
+     *  @param[in] clientId  Websocket client id.
+     *  @param[in] type      Event type.
+     *  @param[in] payload   Event payload.
+     *  @param[in] length    Event payload length.
+     */
+    void parseWSTextEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
+
+    /**
      * Default constructor is not allowed.
      */
     LapTriggerWebServer();
