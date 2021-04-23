@@ -148,7 +148,7 @@ bool Competition::getNumberofGroups(uint8_t &groups)
 {
     bool isSuccess = false;
 
-    if (Flash::importGroups(m_numberOfGroups))
+    if (Flash::getGroups(m_numberOfGroups))
     {
         if (0 != m_numberOfGroups)
         {

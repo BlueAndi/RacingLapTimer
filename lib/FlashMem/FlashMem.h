@@ -89,13 +89,13 @@ namespace Flash
     bool begin();
 
     /**
-     *  Imports the Station Credentials from the EEPROM.
+     *  Retrieves the Station Credentials from the EEPROM.
      * 
      *  @param[out] ssid SSID of host network to connect to.
      *  @param[out] password Password of host network to connect to.
-     *  @return If Credentials successfully imported, returns True. Otherwise, False.
+     *  @return If Credentials successfully retrieved, returns True. Otherwise, False.
      */
-    bool importCredentials(String &ssid, String &password);
+    bool getCredentials(String &ssid, String &password);
 
     /**
      *  Saves new STA Credentials.
@@ -134,7 +134,7 @@ namespace Flash
      *  @param[in] maxLength Maximum Length of the String.
      *  @param[out] output Buffer to save the String to.
      */
-    void fetchString(const uint8_t &address, const uint8_t &maxLength, String &output);
+    void getString(const uint8_t &address, const uint8_t &maxLength, String &output);
 
     /**
      *  Saves a Null-terminated String in the EEPROM.
@@ -147,23 +147,23 @@ namespace Flash
     bool setString(const uint8_t &address, const uint8_t &maxLength, const String &input);
 
     /**
-     *  Retrieves an Unsigned Integer from the EEPROM.
+     *  Retrieves an 8-bit Unsigned Integer from the EEPROM.
      *
-     *  @param[in] address Address where the String is saved.
-     *  @param[out] value Buffer to save the Integer to.
-     *  @return If Integer succesfully retrieved from EEPROM, returns True. 
+     *  @param[in] address Address where the 8-bit Unsigned Integer is saved.
+     *  @param[out] value Buffer to save the 8-bit Unsigned Integer to.
+     *  @return If 8-bit Unsigned Integer succesfully retrieved from EEPROM, returns True. 
      *          Otherwise False.
      */
-    bool fetchInt(const uint8_t &address, uint8_t &value);
+    bool getUInt8(const uint8_t &address, uint8_t &value);
 
     /**
-     *  Saves an Unsigned Integer in the EEPROM.
+     *  Saves an 8-bit Unsigned Integer in the EEPROM.
      *
-     *  @param[in] address Address where the String will be saved.
-     *  @param[in] value String to save in EEPROM.
-     *  @return If integer written in EEPROM, returns True. Otherwise False.
+     *  @param[in] address Address where the 8-bit Unsigned Integer will be saved.
+     *  @param[in] value 8-bit Unsigned Integer to save in EEPROM.
+     *  @return If 8-bit Unsigned Integer written in EEPROM, returns True. Otherwise False.
      */
-    bool setInt(const uint8_t &address, const uint8_t &value);
+    bool setUInt8(const uint8_t &address, const uint8_t &value);
 
     /**
      *  Retrieves the Number of Groups from the EEPROM.
@@ -172,7 +172,7 @@ namespace Flash
      *  @return If the value is succesfully retrieved from EEPROM, returns True. 
      *          Otherwise False.
      */
-    bool importGroups(uint8_t &groups);
+    bool getGroups(uint8_t &groups);
 
     /**
      *  Saves the Number of Groups in the EEPROM.

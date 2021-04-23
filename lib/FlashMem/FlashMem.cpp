@@ -65,14 +65,14 @@ bool Flash::begin()
     return isSuccess;
 }
 
-bool Flash::importCredentials(String &ssid, String &password)
+bool Flash::getCredentials(String &ssid, String &password)
 {
     bool isSuccess = false;
 
     if (areCredentialsStored())
     {
-        fetchString(NVM_SSID_ADDRESS, NVM_SSID_MAX_LENGTH, ssid);
-        fetchString(NVM_PASSWORD_ADDRESS, NVM_PASSWORD_MAX_LENGTH, password);
+        getString(NVM_SSID_ADDRESS, NVM_SSID_MAX_LENGTH, ssid);
+        getString(NVM_PASSWORD_ADDRESS, NVM_PASSWORD_MAX_LENGTH, password);
         isSuccess = true;
     }
 
@@ -107,7 +107,7 @@ bool Flash::areCredentialsStored()
 
     String storedHeader;
 
-    fetchString(NVM_METADATA_ADDRESS, NVM_METADATA_MAX_LENGTH, storedHeader);
+    getString(NVM_METADATA_ADDRESS, NVM_METADATA_MAX_LENGTH, storedHeader);
 
     if (NVM_METADATA_VALID.equals(storedHeader))
     {
@@ -139,7 +139,7 @@ bool Flash::setHeader(bool areCredentialsStored)
     return isSuccess;
 }
 
-void Flash::fetchString(const uint8_t &address, const uint8_t &maxLength, String &output)
+void Flash::getString(const uint8_t &address, const uint8_t &maxLength, String &output)
 {
     output.clear();
 
@@ -173,7 +173,7 @@ bool Flash::setString(const uint8_t &address, const uint8_t &maxLength, const St
     return isSuccess;
 }
 
-bool Flash::fetchInt(const uint8_t &address, uint8_t &value)
+bool Flash::getUInt8(const uint8_t &address, uint8_t &value)
 {
     bool isSuccess = false;
     for (uint8_t memoryPosition = 0; memoryPosition < NVM_GROUPS_LENGTH; memoryPosition++)
@@ -184,7 +184,7 @@ bool Flash::fetchInt(const uint8_t &address, uint8_t &value)
     return isSuccess;
 }
 
-bool Flash::setInt(const uint8_t &address, const uint8_t &value)
+bool Flash::setUInt8(const uint8_t &address, const uint8_t &value)
 {
     bool isSuccess = false;
     for (uint8_t memoryPosition = 0; memoryPosition < NVM_GROUPS_LENGTH; memoryPosition++)
@@ -195,15 +195,15 @@ bool Flash::setInt(const uint8_t &address, const uint8_t &value)
     return isSuccess;
 }
 
-bool Flash::importGroups(uint8_t &groups)
+bool Flash::getGroups(uint8_t &groups)
 {
-    return fetchInt(NVM_GROUPS_ADDRESS, groups);
+    return getUInt8(NVM_GROUPS_ADDRESS, groups);
 }
 
 bool Flash::setGroups(const uint8_t &groups)
 {
     bool isSuccess = false;
-    if (setInt(NVM_GROUPS_ADDRESS, groups))
+    if (setUInt8(NVM_GROUPS_ADDRESS, groups))
     {
         isSuccess = EEPROM.commit();
     }

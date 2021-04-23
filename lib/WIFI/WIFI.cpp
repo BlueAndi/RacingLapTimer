@@ -73,7 +73,7 @@ bool WIFI::begin()
 {
     bool isSuccess = true;
 
-    if (Flash::importCredentials(m_staSSID, m_staPassword))
+    if (Flash::getCredentials(m_staSSID, m_staPassword))
     {
         WiFi.mode(WIFI_STA);
         WiFi.begin(m_staSSID, m_staPassword);
