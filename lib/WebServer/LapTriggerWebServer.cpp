@@ -230,9 +230,11 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
     String par = "";
     size_t index = 0;
 
+    const char *strPayload = reinterpret_cast<const char *>(payload);
+
     for (index = 0; index < length; ++index)
     {
-        char temp = payload[index];
+        char temp = strPayload[index];
         if (';' == temp)
         {
             index++;
@@ -246,7 +248,7 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
 
     for (uint8_t paramIndex = index; paramIndex < length; ++paramIndex)
     {
-        char temp = payload[paramIndex];
+        char temp = strPayload[paramIndex];
 
         if (';' == temp)
         {
