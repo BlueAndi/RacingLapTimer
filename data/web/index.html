@@ -317,15 +317,6 @@
         }
 
         $(document).ready(function () {
-            getGroups();
-            updateTimer();
-            createGroups();
-            selectGroup(0);
-            createResultTable();
-            getSavedTable();
-            updateResultTable();
-
-
             global.wsClient.connect({
                 protocol: "ws",
                 hostname: location.hostname,
@@ -335,8 +326,15 @@
                 onClosed: onClosed,
             }).then(function(rsp) {
                 console.info("Connected.");
+                
                 getGroups();
+                updateTimer();
+                createGroups();
+                selectGroup(0);
+                createResultTable();              
                 getSavedTable();
+                updateResultTable();
+                
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
