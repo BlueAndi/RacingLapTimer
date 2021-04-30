@@ -131,7 +131,7 @@ bool Competition::setReleasedState(const uint8_t &activeGroup)
 {
     bool isSuccess = false;
 
-    if (MAX_NUMBER_OF_GROUPS - 1 > activeGroup)
+    if ((MAX_NUMBER_OF_GROUPS - 1) > activeGroup)
     {
         m_activeGroup = activeGroup;
         Serial.printf("Active Group: %d \n", m_activeGroup);
