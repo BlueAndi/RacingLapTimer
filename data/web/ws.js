@@ -151,7 +151,7 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
 
 cpjs.ws.Client.prototype.release = function(group) {
     return new Promise(function(resolve, reject) {
-        if (null === this.socket) {
+        if (null === this.socket || undefined === group) {
             reject();
         } else {
             this._sendCmd({
@@ -181,7 +181,7 @@ cpjs.ws.Client.prototype.getGroups = function() {
 
 cpjs.ws.Client.prototype.setGroups = function(numberOfGroups) {
     return new Promise(function(resolve, reject) {
-        if (null === this.socket) {
+        if (null === this.socket || undefined === numberOfGroups) {
             reject();
         } else {
             this._sendCmd({
@@ -194,7 +194,7 @@ cpjs.ws.Client.prototype.setGroups = function(numberOfGroups) {
     }.bind(this));
 };
 
-cpjs.ws.Client.prototype.getTable = function(numberOfGroups) {
+cpjs.ws.Client.prototype.getTable = function() {
     return new Promise(function(resolve, reject) {
         if (null === this.socket) {
             reject();
