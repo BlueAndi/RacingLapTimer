@@ -24,6 +24,7 @@ A racing lap timer, based on a laser sensor.
   - [System Context](#system-context)
 - [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
 - [License](#license)
+  - [Contribution](#contribution)
 
 # Motivation
 For line follower competitions a racing lap timer shall be used. It doesn't only measure the lap time, it shows it nice via web interface, inclusive automatically result table generation.
@@ -87,3 +88,7 @@ If you have further ideas or you found some bugs, great! Create a [issue](https:
 
 # License
 The whole source code is published under the [MIT license](http://choosealicense.com/licenses/mit/).
+
+## Contribution
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, shall be licensed as above, without any
+additional terms or conditions.
