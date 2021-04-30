@@ -165,14 +165,6 @@ namespace Flash
      */
     bool setUInt8(const uint8_t &address, const uint8_t &value);
 
-    /**
-     *  Saves the Number of Groups in the EEPROM.
-     *
-     *  @param[in] groups Number of Groups to save in EEPROM.
-     *  @return If the value is written in EEPROM, returns true. 
-     *          Otherwise false.
-     */
-    bool setGroups(const uint8_t &groups);
 };
 
 /******************************************************************************

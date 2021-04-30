@@ -187,20 +187,12 @@ bool Flash::getUInt8(const uint8_t &address, uint8_t &value)
 bool Flash::setUInt8(const uint8_t &address, const uint8_t &value)
 {
     bool isSuccess = false;
-    for (uint8_t memoryPosition = 0; memoryPosition < NVM_GROUPS_LENGTH; memoryPosition++)
-    {
-        EEPROM.write(address + memoryPosition, value);
-        isSuccess = true;
-    }
-    return isSuccess;
-}
 
-bool Flash::setGroups(const uint8_t &groups)
-{
-    bool isSuccess = false;
-    if (setUInt8(NVM_GROUPS_ADDRESS, groups))
+    EEPROM.write(address, value);
+
+    if (EEPROM.commit())
     {
-        isSuccess = EEPROM.commit();
+        isSuccess = true;
     }
 
     return isSuccess;

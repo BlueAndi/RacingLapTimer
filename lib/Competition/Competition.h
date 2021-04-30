@@ -92,7 +92,7 @@ public:
     bool setReleasedState(const uint8_t &activeGroup);
 
     /**
-     *  Checks if the number of Groups is valid, and returns it.
+     *  Retrieves if the number of Groups is valid, and returns it.
      * 
      *  @param[out] groups Variable to write the number of groups to. 
      *  @return If the number of Groups has been succesfully retrieved, returns true. Otherwise, false.
@@ -100,10 +100,10 @@ public:
     bool getNumberofGroups(uint8_t &groups);
 
     /**
-     *  Saves the configured number of Groups
+     *  Sets the configured number of Groups
      * 
      *  @param[in] groups Client's number of Groups 
-     *  @return If the number of Groups successfully saved, returns true. Otherwise, false.
+     *  @return If the number of Groups successfully set, returns true. Otherwise, false.
      */
     bool setNumberofGroups(const uint8_t &groups);
 

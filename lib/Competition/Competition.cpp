@@ -161,7 +161,7 @@ bool Competition::getNumberofGroups(uint8_t &groups)
         {
             m_numberOfGroups = MAX_NUMBER_OF_GROUPS;
         }
-        
+
         groups = m_numberOfGroups;
         isSuccess = true;
     }
@@ -173,13 +173,25 @@ bool Competition::setNumberofGroups(const uint8_t &groups)
 {
     bool isSuccess = false;
 
-    if (MAX_NUMBER_OF_GROUPS >= groups)
+    uint8_t validGroups = 0;
+
+    if (MIN_NUMBER_OF_GROUPS > groups)
     {
-        if (Flash::setGroups(groups))
-        {
-            m_numberOfGroups = groups;
-            isSuccess = true;
-        }
+        validGroups = MIN_NUMBER_OF_GROUPS;
+    }
+    else if (MAX_NUMBER_OF_GROUPS < groups)
+    {
+        validGroups = MAX_NUMBER_OF_GROUPS;
+    }
+    else
+    {
+        validGroups = groups;
+    }
+
+    if (Flash::setUInt8(Flash::NVM_GROUPS_ADDRESS, validGroups))
+    {
+        m_numberOfGroups = validGroups;
+        isSuccess = true;
     }
 
     return isSuccess;
