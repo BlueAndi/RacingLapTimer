@@ -95,7 +95,7 @@ public:
      *  Checks if the number of Groups is valid, and returns it.
      * 
      *  @param[out] groups Variable to write the number of groups to. 
-     *  @return If the number of Groups is bigger than 0, returns true. Otherwise, false.
+     *  @return If the number of Groups has been succesfully retrieved, returns true. Otherwise, false.
      */
     bool getNumberofGroups(uint8_t &groups);
 
@@ -133,6 +133,11 @@ private:
      *  Maximum Number of Participating Groups 
      */
     static const uint8_t MAX_NUMBER_OF_GROUPS = 10;
+
+    /**
+     *  Minimum Number of Participating Groups 
+     */
+    static const uint8_t MIN_NUMBER_OF_GROUPS = 1;
 
     /** Competition start timestamp in ms. */
     uint32_t m_startTimestamp;

@@ -151,13 +151,19 @@ bool Competition::getNumberofGroups(uint8_t &groups)
 {
     bool isSuccess = false;
 
-    if (Flash::getGroups(m_numberOfGroups))
+    if (Flash::getUInt8(Flash::NVM_GROUPS_ADDRESS, m_numberOfGroups))
     {
-        if (0 != m_numberOfGroups)
+        if (MIN_NUMBER_OF_GROUPS > m_numberOfGroups)
         {
-            groups = m_numberOfGroups;
-            isSuccess = true;
+            m_numberOfGroups = MIN_NUMBER_OF_GROUPS;
         }
+        else if (MAX_NUMBER_OF_GROUPS < m_numberOfGroups)
+        {
+            m_numberOfGroups = MAX_NUMBER_OF_GROUPS;
+        }
+        
+        groups = m_numberOfGroups;
+        isSuccess = true;
     }
 
     return isSuccess;

@@ -166,15 +166,6 @@ namespace Flash
     bool setUInt8(const uint8_t &address, const uint8_t &value);
 
     /**
-     *  Retrieves the Number of Groups from the EEPROM.
-     * 
-     *  @param[out] groups Buffer to save the Number of Groups to.
-     *  @return If the value is succesfully retrieved from EEPROM, returns true. 
-     *          Otherwise false.
-     */
-    bool getGroups(uint8_t &groups);
-
-    /**
      *  Saves the Number of Groups in the EEPROM.
      *
      *  @param[in] groups Number of Groups to save in EEPROM.

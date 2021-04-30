@@ -195,11 +195,6 @@ bool Flash::setUInt8(const uint8_t &address, const uint8_t &value)
     return isSuccess;
 }
 
-bool Flash::getGroups(uint8_t &groups)
-{
-    return getUInt8(NVM_GROUPS_ADDRESS, groups);
-}
-
 bool Flash::setGroups(const uint8_t &groups)
 {
     bool isSuccess = false;
