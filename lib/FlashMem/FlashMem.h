@@ -84,7 +84,7 @@ namespace Flash
     /**
      *  Initialization of the EEPROM Module
      * 
-     *  @return If Initialization is successful, return True. Otherwise False.
+     *  @return If Initialization is successful, return true. Otherwise false.
      */
     bool begin();
 
@@ -93,7 +93,7 @@ namespace Flash
      * 
      *  @param[out] ssid SSID of host network to connect to.
      *  @param[out] password Password of host network to connect to.
-     *  @return If Credentials successfully retrieved, returns True. Otherwise, False.
+     *  @return If Credentials successfully retrieved, returns true. Otherwise, false.
      */
     bool getCredentials(String &ssid, String &password);
 
@@ -102,7 +102,7 @@ namespace Flash
      * 
      *  @param[in] ssid SSID of host network to connect to.
      *  @param[in] password Password of host network to connect to.
-     *  @return If Credentials succesfully saved, return True. Otherwise, False.
+     *  @return If Credentials succesfully saved, return true. Otherwise, false.
      */
     bool setCredentials(const String &ssid, const String &password);
 
@@ -114,7 +114,7 @@ namespace Flash
     /**
      *  Checks if there are Credentials stored in the EEPROM
      * 
-     *  @return If Credentials are stored in EEPROM, returns True. Otherwise False.
+     *  @return If Credentials are stored in EEPROM, returns true. Otherwise false.
      */
     bool areCredentialsStored();
 
@@ -123,7 +123,7 @@ namespace Flash
      * 
      *  @param[in] areCredentialsStored If true, Credentials stored are valid 
      *  and Header is set to.
-     *  @return If Header succesfully set, returns True. Otherwise False.
+     *  @return If Header succesfully set, returns true. Otherwise false.
      */
     bool setHeader(bool areCredentialsStored);
 
@@ -142,7 +142,7 @@ namespace Flash
      *  @param[in] address Address where the String will be saved.
      *  @param[in] maxLength Maximum Length of the String.
      *  @param[in] input String to save in EEPROM.
-     *  @return If string written in EEPROM, returns True. Otherwise False.
+     *  @return If string written in EEPROM, returns true. Otherwise false.
      */
     bool setString(const uint8_t &address, const uint8_t &maxLength, const String &input);
 
@@ -151,8 +151,8 @@ namespace Flash
      *
      *  @param[in] address Address where the 8-bit Unsigned Integer is saved.
      *  @param[out] value Buffer to save the 8-bit Unsigned Integer to.
-     *  @return If 8-bit Unsigned Integer succesfully retrieved from EEPROM, returns True. 
-     *          Otherwise False.
+     *  @return If 8-bit Unsigned Integer succesfully retrieved from EEPROM, returns true. 
+     *          Otherwise false.
      */
     bool getUInt8(const uint8_t &address, uint8_t &value);
 
@@ -161,7 +161,7 @@ namespace Flash
      *
      *  @param[in] address Address where the 8-bit Unsigned Integer will be saved.
      *  @param[in] value 8-bit Unsigned Integer to save in EEPROM.
-     *  @return If 8-bit Unsigned Integer written in EEPROM, returns True. Otherwise False.
+     *  @return If 8-bit Unsigned Integer written in EEPROM, returns true. Otherwise false.
      */
     bool setUInt8(const uint8_t &address, const uint8_t &value);
 
@@ -169,8 +169,8 @@ namespace Flash
      *  Retrieves the Number of Groups from the EEPROM.
      * 
      *  @param[out] groups Buffer to save the Number of Groups to.
-     *  @return If the value is succesfully retrieved from EEPROM, returns True. 
-     *          Otherwise False.
+     *  @return If the value is succesfully retrieved from EEPROM, returns true. 
+     *          Otherwise false.
      */
     bool getGroups(uint8_t &groups);
 
@@ -178,8 +178,8 @@ namespace Flash
      *  Saves the Number of Groups in the EEPROM.
      *
      *  @param[in] groups Number of Groups to save in EEPROM.
-     *  @return If the value is written in EEPROM, returns True. 
-     *          Otherwise False.
+     *  @return If the value is written in EEPROM, returns true. 
+     *          Otherwise false.
      */
     bool setGroups(const uint8_t &groups);
 };

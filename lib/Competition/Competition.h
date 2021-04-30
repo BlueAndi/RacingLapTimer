@@ -78,7 +78,7 @@ public:
      *  from web frontend and sensor input.
      * 
      *  @param[out] outputMessage Message to be sent to Client through Web Socket.
-     *  @return If robot is detected during the correct competition state, returns True. Otherwise, False
+     *  @return If robot is detected during the correct competition state, returns true. Otherwise, false
      */
     bool handleCompetition(String &outputMessage);
 
@@ -87,7 +87,7 @@ public:
      *  Releases the competition if found in any of these states.
      * 
      *  @param[in] activeGroup Number of currently Active Group in Client.
-     *  @return If competition is released, returns True. Otherwise, False.
+     *  @return If competition is released, returns true. Otherwise, false.
      */
     bool setReleasedState(const uint8_t &activeGroup);
 
@@ -95,7 +95,7 @@ public:
      *  Checks if the number of Groups is valid, and returns it.
      * 
      *  @param[out] groups Variable to write the number of groups to. 
-     *  @return If the number of Groups is bigger than 0, returns True. Otherwise, False.
+     *  @return If the number of Groups is bigger than 0, returns true. Otherwise, false.
      */
     bool getNumberofGroups(uint8_t &groups);
 
@@ -103,7 +103,7 @@ public:
      *  Saves the configured number of Groups
      * 
      *  @param[in] groups Client's number of Groups 
-     *  @return If the number of Groups successfully saved, returns True. Otherwise, False.
+     *  @return If the number of Groups successfully saved, returns true. Otherwise, false.
      */
     bool setNumberofGroups(const uint8_t &groups);
 

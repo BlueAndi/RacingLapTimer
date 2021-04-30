@@ -73,14 +73,14 @@ public:
     /**
      *  Initialization of Module.
      * 
-     *  @return If initialization is successful, returns True. Otherwise, false.
+     *  @return If initialization is successful, returns true. Otherwise, false.
      */
     bool begin();
 
     /**
      *  Executes Loop Cycle.
      * 
-     *  @return If WebServer successfully handled, returns True. Otherwise, false..
+     *  @return If WebServer successfully handled, returns true. Otherwise, false..
      */
     bool runCycle();
 
