@@ -227,7 +227,7 @@ void LapTriggerWebServer::handleCredentials()
     }
 }
 
-void LapTriggerWebServer::parseWSTextEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
+void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_t type, const uint8_t *payload, const size_t length)
 {
     String cmd;
     String par;
@@ -235,7 +235,7 @@ void LapTriggerWebServer::parseWSTextEvent(uint8_t clientId, WStype_t type, uint
 
     for (index = 0; index < length; ++index)
     {
-        char temp = reinterpret_cast<char *>(payload)[index];
+        char temp = reinterpret_cast<const char *>(payload)[index];
         if (';' == temp)
         {
             index++;
@@ -249,7 +249,7 @@ void LapTriggerWebServer::parseWSTextEvent(uint8_t clientId, WStype_t type, uint
 
     for (uint8_t paramIndex = index; paramIndex < length; ++paramIndex)
     {
-        char temp = reinterpret_cast<char *>(payload)[paramIndex];
+        char temp = reinterpret_cast<const char *>(payload)[paramIndex];
         if (';' == temp)
         {
             break;

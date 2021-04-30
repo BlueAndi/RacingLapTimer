@@ -210,7 +210,7 @@ void Competition::getLaptime(uint32_t &output, const uint8_t group)
  * Private Methods
  *****************************************************************************/
 
-void Competition::updateLapTime(uint32_t &runtime)
+void Competition::updateLapTime(const uint32_t runtime)
 {
     if ((runtime < m_resultTable[m_activeGroup]) ||
         (0 == m_resultTable[m_activeGroup]))

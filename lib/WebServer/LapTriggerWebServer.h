@@ -124,7 +124,7 @@ private:
      *  @param[in] payload   Event payload.
      *  @param[in] length    Event payload length.
      */
-    void parseWSTextEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
+    void parseWSTextEvent(const uint8_t clientId, const WStype_t type, const uint8_t *payload, const size_t length);
 
     /**
      * Default constructor is not allowed.
