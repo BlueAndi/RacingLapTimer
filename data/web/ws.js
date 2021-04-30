@@ -131,6 +131,7 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
             } else if ("SET_GROUPS" === this.pendingCmd.name) {
                 this.pendingCmd.resolve(rsp);
             } else if ("GET_TABLE" === this.pendingCmd.name) {
+                rsp.groups = parseInt(data[1]);
                 this.pendingCmd.resolve(rsp);
             }else {
                 console.error("Unknown command: " + this.pendingCmd.name);

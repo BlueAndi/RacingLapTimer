@@ -74,6 +74,7 @@
             wsClient: new cpjs.ws.Client(),
             numberOfGroups: 0,
             selectedGroup: 0,
+            expectedEvents: 0,
             resultTable: []
         };
 
@@ -269,11 +270,6 @@
                 global.numberOfGroups = rsp.groups;
                 console.log(global.numberOfGroups + " Groups are configured.");
                 console.info("Retrieved Groups.");
-                updateTimer();
-                createGroups();
-                selectGroup(0);
-                createResultTable();
-                updateResultTable();
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
@@ -281,10 +277,10 @@
             });
         }
 
-        function getSavedTable(){
+        function getSavedTable() {
             global.wsClient.getTable().then(function (rsp) {
-                console.info("Table Updated");
-                selectGroup(0);
+                global.expectedEvents = rsp.groups;
+                console.log(global.expectedEvents);
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
@@ -292,7 +288,16 @@
             });
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
+            getGroups();
+            updateTimer();
+            createGroups();
+            selectGroup(0);
+            createResultTable();
+            getSavedTable();
+            updateResultTable();
+
+
             global.wsClient.connect({
                 protocol: "ws",
                 hostname: location.hostname,

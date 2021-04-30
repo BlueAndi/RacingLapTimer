@@ -301,21 +301,12 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
 
         if (m_laptrigger->getNumberofGroups(numberOfGroups))
         {
-            for (uint8_t group = 0; group < numberOfGroups; group++)
-            {
-                String output = "EVT;FINISHED;";
-                uint32_t laptime = 0;
-                
-                m_laptrigger->getLaptime(laptime, group);
-                output += laptime;
-                output += ';';
-                output += group;
-                output += ';';
-                Serial.println(output);
-                m_webSocketSrv.sendTXT(clientId, "EVT;STARTED");
-                m_webSocketSrv.sendTXT(clientId, output);
-            }
-            m_webSocketSrv.sendTXT(clientId, "ACK;GET_TABLE");
+            m_webSocketSrv.sendTXT(clientId, "ACK;GET_TABLE" + String(numberOfGroups));
+            /*  TODO: Send Table as Events
+                Format:
+                    EVT;TABLE;nameGroup1;1231233
+                    EVT;TABLE;nameGroup2;2521 
+            */
         }
         else
         {
