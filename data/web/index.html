@@ -296,8 +296,19 @@
 
         function getSavedTable() {
             global.wsClient.getTable().then(function (rsp) {
-                global.expectedEvents = rsp.groups;
-                console.log(global.expectedEvents);
+                
+                if(rsp.groups === global.numberOfGroups)
+                {
+                    global.expectedEvents = rsp.groups;
+                    console.log("Expected Groups: " + global.expectedEvents);
+                } else {
+                    console.error("Expected Groups differs from Configured Groups");
+                }
+                
+                /*  TODO
+                 *  Wait for global.expectedEvents to be 0, or to timeout
+                 */
+
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
