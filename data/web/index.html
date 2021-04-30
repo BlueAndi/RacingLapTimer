@@ -163,6 +163,26 @@
             alert("Websocket connection closed.");
         }
 
+        function processTime(activeGroup, laptime) {
+            /* Adjust elapsed time according to received duration,
+             * because of a better accuracy.
+             */
+            timeMinSecMSec          = timestamp2MinSecMSec(laptime);
+            global.minutes          = timeMinSecMSec.minutes;
+            global.seconds          = timeMinSecMSec.seconds;
+            global.milliseconds     = timeMinSecMSec.milliseconds;
+            updateTimer();
+
+            global.selectedGroup = activeGroup;
+            if ((0 == global.resultTable[global.selectedGroup].duration) ||
+                (laptime < global.resultTable[global.selectedGroup].duration)) {
+
+                global.resultTable[global.selectedGroup].duration = laptime;
+
+                updateResultTable();
+            }
+        }
+
         function onEvent(rsp) {
             var timeMinSecMSec = null
 
@@ -174,24 +194,21 @@
 
                 triggerTimer();
 
-                /* Adjust elapsed time according to received duration,
-                 * because of a better accuracy.
-                 */
-                timeMinSecMSec          = timestamp2MinSecMSec(rsp.duration);
-                global.minutes          = timeMinSecMSec.minutes;
-                global.seconds          = timeMinSecMSec.seconds;
-                global.milliseconds     = timeMinSecMSec.milliseconds;
-                updateTimer();
+                processTime(rsp.activeGroup, rsp.duration);
 
-                global.selectedGroup = rsp.activeGroup;
-                if ((0 == global.resultTable[global.selectedGroup].duration) ||
-                    (rsp.duration < global.resultTable[global.selectedGroup].duration)) {
-
-                    global.resultTable[global.selectedGroup].duration = rsp.duration;
-
-                    updateResultTable();
+            } else if("TABLE" == rsp.event){
+                if(0 < global.expectedEvents)
+                {
+                    console.log("Group " + rsp.activeGroup + ": " + rsp.duration);
+                    processTime(rsp.activeGroup, rsp.duration);
+                    global.expectedEvents--;
+                    if(0 == global.expectedEvents)
+                    {
+                        selectGroup(0);
+                    }
+                } else {
+                    console.error("Inconsistency with Saved Table");
                 }
-
             } else {
                 alert("Unknown event received: " + rsp.event);
             }

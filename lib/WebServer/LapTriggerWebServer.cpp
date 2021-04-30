@@ -303,12 +303,18 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
 
         if (m_laptrigger->getNumberofGroups(numberOfGroups))
         {
-            m_webSocketSrv.sendTXT(clientId, "ACK;GET_TABLE" + String(numberOfGroups));
-            /*  TODO: Send Table as Events
-                Format:
-                    EVT;TABLE;nameGroup1;1231233
-                    EVT;TABLE;nameGroup2;2521 
-            */
+            m_webSocketSrv.sendTXT(clientId, "ACK;GET_TABLE;" + String(numberOfGroups));
+            
+            for (uint8_t currentGroup = 0; currentGroup < numberOfGroups; currentGroup++)
+            {
+                uint32_t groupLaptime = 0;
+                m_laptrigger->getLaptime(groupLaptime, currentGroup);
+                String output = "EVT;TABLE;";
+                output += currentGroup;
+                output += ';';
+                output += groupLaptime;
+                m_webSocketSrv.sendTXT(clientId, output);
+            }
         }
         else
         {
