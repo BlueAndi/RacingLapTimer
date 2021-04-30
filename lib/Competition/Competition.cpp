@@ -172,7 +172,6 @@ bool Competition::getNumberofGroups(uint8_t &groups)
 bool Competition::setNumberofGroups(const uint8_t &groups)
 {
     bool isSuccess = false;
-
     uint8_t validGroups = 0;
 
     if (MIN_NUMBER_OF_GROUPS > groups)

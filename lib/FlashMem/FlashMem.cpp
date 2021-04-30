@@ -61,6 +61,7 @@
 bool Flash::begin()
 {
     bool isSuccess = true;
+    
     EEPROM.begin(EEPROM_SIZE);
     return isSuccess;
 }
@@ -104,8 +105,7 @@ void Flash::clearEEPROM()
 bool Flash::areCredentialsStored()
 {
     bool areCredentialsStored = false;
-
-    String storedHeader;
+    String storedHeader = "";
 
     getString(NVM_METADATA_ADDRESS, NVM_METADATA_MAX_LENGTH, storedHeader);
 
@@ -161,6 +161,7 @@ void Flash::getString(const uint8_t &address, const uint8_t &maxLength, String &
 bool Flash::setString(const uint8_t &address, const uint8_t &maxLength, const String &input)
 {
     bool isSuccess = false;
+
     for (uint8_t memoryPosition = 0; memoryPosition < maxLength; memoryPosition++)
     {
         EEPROM.write(address + memoryPosition, input[memoryPosition]);
@@ -176,6 +177,7 @@ bool Flash::setString(const uint8_t &address, const uint8_t &maxLength, const St
 bool Flash::getUInt8(const uint8_t &address, uint8_t &value)
 {
     bool isSuccess = false;
+
     for (uint8_t memoryPosition = 0; memoryPosition < NVM_GROUPS_LENGTH; memoryPosition++)
     {
         value = EEPROM.read(address + memoryPosition);

@@ -142,7 +142,6 @@ const IPAddress &WIFI::getIPAddress(void)
 bool WIFI::connectStation()
 {
     bool isSuccess = false;
-
     unsigned long startAttempTime = millis();
 
     Serial.println("Connecting to \"" + m_staSSID + "\"...");

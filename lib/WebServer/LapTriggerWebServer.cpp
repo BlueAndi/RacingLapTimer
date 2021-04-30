@@ -128,9 +128,6 @@ bool LapTriggerWebServer::runCycle()
 
 void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
 {
-    String cmd;
-    String par;
-
     switch (type)
     {
     case WStype_ERROR:
@@ -229,8 +226,8 @@ void LapTriggerWebServer::handleCredentials()
 
 void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_t type, const uint8_t *payload, const size_t length)
 {
-    String cmd;
-    String par;
+    String cmd = "";
+    String par = "";
     size_t index = 0;
 
     for (index = 0; index < length; ++index)
@@ -250,6 +247,7 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
     for (uint8_t paramIndex = index; paramIndex < length; ++paramIndex)
     {
         char temp = reinterpret_cast<const char *>(payload)[paramIndex];
+
         if (';' == temp)
         {
             break;
@@ -275,7 +273,8 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
     else if (cmd.equals("GET_GROUPS"))
     {
         /* Client requests the number of Groups */
-        uint8_t groups;
+        uint8_t groups = 0;
+
         if (true == m_laptrigger->getNumberofGroups(groups))
         {
             m_webSocketSrv.sendTXT(clientId, "ACK;GET_GROUPS;" + String(groups));
@@ -299,12 +298,14 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
     else if (cmd.equals("GET_TABLE"))
     {
         uint8_t numberOfGroups = 0;
+
         if (m_laptrigger->getNumberofGroups(numberOfGroups))
         {
             for (uint8_t group = 0; group < numberOfGroups; group++)
             {
                 String output = "EVT;FINISHED;";
                 uint32_t laptime = 0;
+                
                 m_laptrigger->getLaptime(laptime, group);
                 output += laptime;
                 output += ';';
