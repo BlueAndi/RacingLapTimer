@@ -127,7 +127,7 @@ bool Competition::handleCompetition(String &outputMessage)
     return isSuccess;
 }
 
-bool Competition::setReleasedState(const uint8_t &activeGroup)
+bool Competition::setReleasedState(uint8_t activeGroup)
 {
     bool isSuccess = false;
 
@@ -169,7 +169,7 @@ bool Competition::getNumberofGroups(uint8_t &groups)
     return isSuccess;
 }
 
-bool Competition::setNumberofGroups(const uint8_t &groups)
+bool Competition::setNumberofGroups(uint8_t groups)
 {
     bool isSuccess = false;
     uint8_t validGroups = 0;
@@ -216,7 +216,7 @@ uint32_t Competition::getLaptime(uint8_t group)
  * Private Methods
  *****************************************************************************/
 
-void Competition::updateLapTime(const uint32_t runtime)
+void Competition::updateLapTime(uint32_t runtime)
 {
     if ((runtime < m_resultTable[m_activeGroup]) ||
         (0 == m_resultTable[m_activeGroup]))

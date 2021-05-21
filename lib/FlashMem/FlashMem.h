@@ -163,7 +163,7 @@ namespace Flash
      *  @param[in] value 8-bit Unsigned Integer to save in EEPROM.
      *  @return If 8-bit Unsigned Integer written in EEPROM, returns true. Otherwise false.
      */
-    bool setUInt8(const uint8_t &address, const uint8_t &value);
+    bool setUInt8(const uint8_t &address, uint8_t value);
 
 };
 

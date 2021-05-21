@@ -186,7 +186,7 @@ bool Flash::getUInt8(const uint8_t &address, uint8_t &value)
     return isSuccess;
 }
 
-bool Flash::setUInt8(const uint8_t &address, const uint8_t &value)
+bool Flash::setUInt8(const uint8_t &address, uint8_t value)
 {
     bool isSuccess = false;
 

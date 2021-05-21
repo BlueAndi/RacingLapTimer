@@ -89,7 +89,7 @@ public:
      *  @param[in] activeGroup Number of currently Active Group in Client.
      *  @return If competition is released, returns true. Otherwise, false.
      */
-    bool setReleasedState(const uint8_t &activeGroup);
+    bool setReleasedState(uint8_t activeGroup);
 
     /**
      *  Retrieves if the number of Groups is valid, and returns it.
@@ -105,7 +105,7 @@ public:
      *  @param[in] groups Client's number of Groups 
      *  @return If the number of Groups successfully set, returns true. Otherwise, false.
      */
-    bool setNumberofGroups(const uint8_t &groups);
+    bool setNumberofGroups(uint8_t groups);
 
     /**
     *   Retrieves the laptime from a group.
@@ -120,7 +120,7 @@ private:
      *
      *  @param[in] runtime Duration of Competition Lap
      */
-    void updateLapTime(const uint32_t runtime);
+    void updateLapTime(uint32_t runtime);
 
     /**
      *  After the first detection of the robot with the ext. sensor, this consider
