@@ -246,7 +246,7 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
         }
     }
 
-    for (uint8_t paramIndex = index; paramIndex < length; ++paramIndex)
+    for (size_t paramIndex = index; paramIndex < length; ++paramIndex)
     {
         char temp = strPayload[paramIndex];
 
