@@ -283,14 +283,12 @@
         }
 
         function getGroups() {
-            global.wsClient.getGroups().then(function (rsp) {
+            return global.wsClient.getGroups().then(function (rsp) {
                 global.numberOfGroups = rsp.groups;
                 console.log(global.numberOfGroups + " Groups are configured.");
                 console.info("Retrieved Groups.");
-            }).catch(function (err) {
-                if ("undefined" !== typeof err) {
-                    console.error(err);
-                }
+            
+                return Promise.resolve();
             });
         }
 
@@ -327,14 +325,18 @@
             }).then(function(rsp) {
                 console.info("Connected.");
                 
-                getGroups();
-                updateTimer();
-                createGroups();
-                selectGroup(0);
-                createResultTable();              
-                getSavedTable();
-                updateResultTable();
-                
+                return getGroups().then(function() {
+                    updateTimer();
+                    createGroups();
+                    selectGroup(0);
+                    createResultTable();              
+                    return getSavedTable();
+                }).then(function() {
+                    updateResultTable();
+                    return Promise.resolve();
+                }).catch(function(err) {
+                    return Promise.reject();
+                });
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
