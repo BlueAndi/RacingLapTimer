@@ -155,7 +155,7 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
 
 cpjs.ws.Client.prototype.release = function(group) {
     return new Promise(function(resolve, reject) {
-        if (null === this.socket || undefined === group) {
+        if ((null === this.socket) || (typeof(group) === undefined)) {
             reject();
         } else {
             this._sendCmd({
@@ -185,7 +185,7 @@ cpjs.ws.Client.prototype.getGroups = function() {
 
 cpjs.ws.Client.prototype.setGroups = function(numberOfGroups) {
     return new Promise(function(resolve, reject) {
-        if (null === this.socket || undefined === numberOfGroups) {
+        if ((null === this.socket) || (typeof(numberOfGroups) === undefined)) {
             reject();
         } else {
             this._sendCmd({
