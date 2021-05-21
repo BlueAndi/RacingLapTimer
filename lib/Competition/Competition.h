@@ -109,11 +109,10 @@ public:
 
     /**
     *   Retrieves the laptime from a group.
-    * 
-    *   @param[out] output Buffer to write the Group's laptime to.
     *   @param[in] group Number of Group to retrieve value for.
+    *   @return If number of group is valid, returns the saved laptime. Else, returns 0.
     */
-    void getLaptime(uint32_t &output, const uint8_t group);
+    uint32_t getLaptime(uint8_t group);
 
 private:
     /**

@@ -196,9 +196,16 @@ bool Competition::setNumberofGroups(const uint8_t &groups)
     return isSuccess;
 }
 
-void Competition::getLaptime(uint32_t &output, const uint8_t group)
+uint32_t Competition::getLaptime(uint8_t group)
 {
-    output = m_resultTable[group];
+    uint32_t result = 0;
+
+    if((m_numberOfGroups > group))
+    {
+        result = m_resultTable[group];
+    }
+
+    return result;
 }
 
 /******************************************************************************
