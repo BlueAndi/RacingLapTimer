@@ -34,6 +34,7 @@
  *****************************************************************************/
 #include "Competition.h"
 #include "Board.h"
+#include "FlashMem.h"
 
 /******************************************************************************
  * Macros
@@ -55,10 +56,16 @@
  * Public Methods
  *****************************************************************************/
 
-Competition::Competition() :
-    m_startTimestamp(0),
-    m_competitionState(COMPETITION_STATE_UNRELEASED)
+Competition::Competition() : m_startTimestamp(0),
+                             m_competitionState(COMPETITION_STATE_UNRELEASED),
+                             m_numberOfGroups(0),
+                             m_resultTable(),
+                             m_activeGroup(0)
 {
+    for (uint8_t group = 0; group < MAX_NUMBER_OF_GROUPS; group++)
+    {
+        m_resultTable[group] = 0;
+    }
 }
 
 Competition::~Competition()
@@ -97,9 +104,13 @@ bool Competition::handleCompetition(String &outputMessage)
         {
             if (true == Board::isRobotDetected())
             {
-                outputMessage = String("EVT;FINISHED;") + duration;
+                outputMessage = "EVT;FINISHED;";
+                outputMessage += duration;
+                outputMessage += ';';
+                outputMessage += m_activeGroup;
                 isSuccess = true;
                 m_competitionState = COMPETITION_STATE_FINISHED;
+                updateLapTime(duration);
             }
         }
         break;
@@ -117,18 +128,85 @@ bool Competition::handleCompetition(String &outputMessage)
     return isSuccess;
 }
 
-bool Competition::setReleasedState()
+bool Competition::setReleasedState(uint8_t activeGroup)
 {
     bool isSuccess = false;
 
-    if ((COMPETITION_STATE_UNRELEASED == m_competitionState) ||
-        (COMPETITION_STATE_FINISHED == m_competitionState))
+    if ((MAX_NUMBER_OF_GROUPS - 1) > activeGroup)
     {
-        isSuccess = true;
-        m_competitionState = COMPETITION_STATE_RELEASED;
+        m_activeGroup = activeGroup;
+        Serial.printf("Active Group: %d \n", m_activeGroup);
+
+        if ((COMPETITION_STATE_UNRELEASED == m_competitionState) ||
+            (COMPETITION_STATE_FINISHED == m_competitionState))
+        {
+            isSuccess = true;
+            m_competitionState = COMPETITION_STATE_RELEASED;
+        }
     }
 
     return isSuccess;
+}
+
+bool Competition::getNumberofGroups(uint8_t &groups)
+{
+    bool isSuccess = false;
+
+    if (Flash::getUInt8(Flash::NVM_GROUPS_ADDRESS, m_numberOfGroups))
+    {
+        if (MIN_NUMBER_OF_GROUPS > m_numberOfGroups)
+        {
+            m_numberOfGroups = MIN_NUMBER_OF_GROUPS;
+        }
+        else if (MAX_NUMBER_OF_GROUPS < m_numberOfGroups)
+        {
+            m_numberOfGroups = MAX_NUMBER_OF_GROUPS;
+        }
+
+        groups = m_numberOfGroups;
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
+bool Competition::setNumberofGroups(uint8_t groups)
+{
+    bool isSuccess = false;
+    uint8_t validGroups = 0;
+
+    if (MIN_NUMBER_OF_GROUPS > groups)
+    {
+        validGroups = MIN_NUMBER_OF_GROUPS;
+    }
+    else if (MAX_NUMBER_OF_GROUPS < groups)
+    {
+        validGroups = MAX_NUMBER_OF_GROUPS;
+    }
+    else
+    {
+        validGroups = groups;
+    }
+
+    if (Flash::setUInt8(Flash::NVM_GROUPS_ADDRESS, validGroups))
+    {
+        m_numberOfGroups = validGroups;
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
+uint32_t Competition::getLaptime(uint8_t group)
+{
+    uint32_t result = 0;
+
+    if((m_numberOfGroups > group))
+    {
+        result = m_resultTable[group];
+    }
+
+    return result;
 }
 
 /******************************************************************************
@@ -138,6 +216,20 @@ bool Competition::setReleasedState()
 /******************************************************************************
  * Private Methods
  *****************************************************************************/
+
+void Competition::updateLapTime(uint32_t runtime)
+{
+    if ((runtime < m_resultTable[m_activeGroup]) ||
+        (0 == m_resultTable[m_activeGroup]))
+    {
+        m_resultTable[m_activeGroup] = runtime;
+    }
+
+    for (uint8_t group = 0; group < m_numberOfGroups; group++)
+    {
+        Serial.printf("Group %d: %d \n", group, m_resultTable[group]);
+    }
+}
 
 /******************************************************************************
  * External functions

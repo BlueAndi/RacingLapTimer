@@ -73,14 +73,14 @@ public:
     /**
      *  Initialization of Module.
      * 
-     *  @return If initialization is successful, returns True. Otherwise, false.
+     *  @return If initialization is successful, returns true. Otherwise, false.
      */
     bool begin();
 
     /**
      *  Executes Loop Cycle.
      * 
-     *  @return If WebServer successfully handled, returns True. Otherwise, false..
+     *  @return If WebServer successfully handled, returns true. Otherwise, false..
      */
     bool runCycle();
 
@@ -115,6 +115,16 @@ private:
 
     /** Handler for POST Request for the storage of the STA Credentials. */
     void handleCredentials();
+
+    /**
+     *  Parses incoming Web Socket Event of Type TEXT.
+     * 
+     *  @param[in] clientId  Websocket client id.
+     *  @param[in] type      Event type.
+     *  @param[in] payload   Event payload.
+     *  @param[in] length    Event payload length.
+     */
+    void parseWSTextEvent(const uint8_t clientId, const WStype_t type, const uint8_t *payload, const size_t length);
 
     /**
      * Default constructor is not allowed.

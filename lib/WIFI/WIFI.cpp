@@ -56,6 +56,7 @@
  *****************************************************************************/
 
 WIFI::WIFI() :
+    m_isStaAvailable(false),
     m_apSSID(AP_MODE_SSID_DEFAULT),
     m_apPassword(AP_MODE_PASSWORD_DEFAULT),
     m_staSSID(),
@@ -72,7 +73,7 @@ bool WIFI::begin()
 {
     bool isSuccess = true;
 
-    if (Flash::importCredentials(m_staSSID, m_staPassword))
+    if (Flash::getCredentials(m_staSSID, m_staPassword))
     {
         WiFi.mode(WIFI_STA);
         WiFi.begin(m_staSSID, m_staPassword);
@@ -80,7 +81,7 @@ bool WIFI::begin()
         if (connectStation())
         {
             m_localIP = WiFi.localIP();
-            isStaAvailable = true;
+            m_isStaAvailable = true;
         }
         else
         {
@@ -92,8 +93,8 @@ bool WIFI::begin()
             m_localIP = WiFi.softAPIP();
         }
 
-        isSuccess = true;
-    }
+            isSuccess = true;
+        }
     else
     {
         Serial.println("No stored STA Credentials!");
@@ -115,7 +116,7 @@ bool WIFI::runCycle()
 {
     bool isSuccess = true;
 
-    if (isStaAvailable)
+    if (m_isStaAvailable)
     {
         if (WL_CONNECTED != WiFi.status())
         {
@@ -141,7 +142,6 @@ const IPAddress &WIFI::getIPAddress(void)
 bool WIFI::connectStation()
 {
     bool isSuccess = false;
-
     unsigned long startAttempTime = millis();
 
     Serial.println("Connecting to \"" + m_staSSID + "\"...");

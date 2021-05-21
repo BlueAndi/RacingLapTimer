@@ -78,7 +78,7 @@ public:
      *  from web frontend and sensor input.
      * 
      *  @param[out] outputMessage Message to be sent to Client through Web Socket.
-     *  @return If robot is detected during the correct competition state, returns True. Otherwise, False
+     *  @return If robot is detected during the correct competition state, returns true. Otherwise, false
      */
     bool handleCompetition(String &outputMessage);
 
@@ -86,16 +86,57 @@ public:
      *  Checks the current Competition state to be either Unreleased or Finished. 
      *  Releases the competition if found in any of these states.
      * 
-     *  @return If competition is released, returns True. Otherwise, False.
+     *  @param[in] activeGroup Number of currently Active Group in Client.
+     *  @return If competition is released, returns true. Otherwise, false.
      */
-    bool setReleasedState();
+    bool setReleasedState(uint8_t activeGroup);
+
+    /**
+     *  Retrieves if the number of Groups is valid, and returns it.
+     * 
+     *  @param[out] groups Variable to write the number of groups to. 
+     *  @return If the number of Groups has been succesfully retrieved, returns true. Otherwise, false.
+     */
+    bool getNumberofGroups(uint8_t &groups);
+
+    /**
+     *  Sets the configured number of Groups
+     * 
+     *  @param[in] groups Client's number of Groups 
+     *  @return If the number of Groups successfully set, returns true. Otherwise, false.
+     */
+    bool setNumberofGroups(uint8_t groups);
+
+    /**
+    *   Retrieves the laptime from a group.
+    *   @param[in] group Number of Group to retrieve value for.
+    *   @return If number of group is valid, returns the saved laptime. Else, returns 0.
+    */
+    uint32_t getLaptime(uint8_t group);
 
 private:
+    /**
+     *  Updates fastest Lap Time of the currently Active Group.
+     *
+     *  @param[in] runtime Duration of Competition Lap
+     */
+    void updateLapTime(uint32_t runtime);
+
     /**
      *  After the first detection of the robot with the ext. sensor, this consider
      *  the duration in ms after that the sensor will be considered again.
      */
     static const uint32_t SENSOR_BLIND_PERIOD = 400;
+
+    /**
+     *  Maximum Number of Participating Groups 
+     */
+    static const uint8_t MAX_NUMBER_OF_GROUPS = 10;
+
+    /**
+     *  Minimum Number of Participating Groups 
+     */
+    static const uint8_t MIN_NUMBER_OF_GROUPS = 1;
 
     /** Competition start timestamp in ms. */
     uint32_t m_startTimestamp;
@@ -103,6 +144,14 @@ private:
     /** Current competition state. */
     CompetitionState m_competitionState;
 
+    /** Number of Groups */
+    uint8_t m_numberOfGroups;
+
+    /** Array to contain the fastest time of each group */
+    uint32_t m_resultTable[MAX_NUMBER_OF_GROUPS];
+
+    /** Group that has been RELEASED for the run */
+    uint8_t m_activeGroup;
 };
 
 /******************************************************************************

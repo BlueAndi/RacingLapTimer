@@ -53,14 +53,14 @@ namespace Board
     /**
      *  Board Initialization.
      * 
-     *  @return If initialization is successful, returns True. Otherwise, false.
+     *  @return If initialization is successful, returns true. Otherwise, false.
      */
     bool begin();
 
     /**
      *  Is a roboter detected or not?.
      * 
-     *  @return If Robot is detected, returns True. Otherwise, false.
+     *  @return If Robot is detected, returns true. Otherwise, false.
      */
     bool isRobotDetected();
 

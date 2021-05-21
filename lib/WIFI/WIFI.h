@@ -65,7 +65,7 @@ public:
     /**
      *  Initialize WIFI Module.
      * 
-     *  @return If initialization is successful, returns True. Otherwise, false.
+     *  @return If initialization is successful, returns true. Otherwise, false.
      */
     bool begin();
 
@@ -89,7 +89,7 @@ private:
      *  Connect to Wireless Access Point.
      * 
      *  @return If the device is succesfully connected to the Wireless Network, 
-     *  returns True. Otherwise False.
+     *  returns true. Otherwise false.
      */
     bool connectStation();
 
@@ -102,8 +102,8 @@ private:
     /** Default password for access point mode. */
     static constexpr const char*   AP_MODE_PASSWORD_DEFAULT = "let me in";
 
-    /** True if system is connected in STA mode to a Network. */
-    bool isStaAvailable = false;
+    /** true if system is connected in STA mode to a Network. */
+    bool m_isStaAvailable;
 
     /** WiFi AP SSID. */
     String m_apSSID;

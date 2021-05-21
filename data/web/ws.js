@@ -106,6 +106,10 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
                 /* No further parameter */
             } else if ("FINISHED" == rsp.event) {
                 rsp.duration = parseInt(data[1]);
+                rsp.activeGroup = parseInt(data[2]);
+            } else if("TABLE" == rsp.event){
+                rsp.activeGroup = parseInt(data[1]);
+                rsp.duration = parseInt(data[2]);
             } else {
                 console.error("Unknown event: " + rsp.event);
             }
@@ -124,7 +128,15 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
                     rsp.data.push(parseInt(data[index], 16));
                 }
                 this.pendingCmd.resolve(rsp);
-            } else {
+            } else if ("GET_GROUPS" === this.pendingCmd.name) {
+                rsp.groups = parseInt(data[1]);
+                this.pendingCmd.resolve(rsp);
+            } else if ("SET_GROUPS" === this.pendingCmd.name) {
+                this.pendingCmd.resolve(rsp);
+            } else if ("GET_TABLE" === this.pendingCmd.name) {
+                rsp.groups = parseInt(data[1]);
+                this.pendingCmd.resolve(rsp);
+            }else {
                 console.error("Unknown command: " + this.pendingCmd.name);
                 this.pendingCmd.reject();
             }
@@ -141,13 +153,58 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
     return;
 };
 
-cpjs.ws.Client.prototype.release = function() {
+cpjs.ws.Client.prototype.release = function(group) {
+    return new Promise(function(resolve, reject) {
+        if ((null === this.socket) || (typeof(group) === undefined)) {
+            reject();
+        } else {
+            this._sendCmd({
+                name: "RELEASE",
+                par: group,
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
+
+cpjs.ws.Client.prototype.getGroups = function() {
     return new Promise(function(resolve, reject) {
         if (null === this.socket) {
             reject();
         } else {
             this._sendCmd({
-                name: "RELEASE",
+                name: "GET_GROUPS",
+                par: null,
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
+
+cpjs.ws.Client.prototype.setGroups = function(numberOfGroups) {
+    return new Promise(function(resolve, reject) {
+        if ((null === this.socket) || (typeof(numberOfGroups) === undefined)) {
+            reject();
+        } else {
+            this._sendCmd({
+                name: "SET_GROUPS",
+                par: numberOfGroups,
+                resolve: resolve,
+                reject: reject
+            });
+        }
+    }.bind(this));
+};
+
+cpjs.ws.Client.prototype.getTable = function() {
+    return new Promise(function(resolve, reject) {
+        if (null === this.socket) {
+            reject();
+        } else {
+            this._sendCmd({
+                name: "GET_TABLE",
                 par: null,
                 resolve: resolve,
                 reject: reject

@@ -22,7 +22,7 @@
                     <a class="nav-link hover" href="index.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link hover" href="config.html">Configuration</a>
+                    <a class="nav-link hover" href="settings.html">Settings</a>
                 </li>
             </ul>
         </div>
@@ -31,7 +31,7 @@
     <main role="main" class="container">
 
         <div class="row justify-content-center">
-            <div id="goupSelectionBar" class="btn-toolbar" role="group" aria-label="Choose group">
+            <div id="groupSelectionBar" class="btn-toolbar" role="group" aria-label="Choose group">
             </div>
         </div>
 
@@ -72,8 +72,9 @@
             seconds: 0,
             milliseconds: 0,
             wsClient: new cpjs.ws.Client(),
-            numberOfGroups: 6,
+            numberOfGroups: 0,
             selectedGroup: 0,
+            expectedEvents: 0,
             resultTable: []
         };
 
@@ -136,8 +137,7 @@
 
         function releaseMeasurement() {
             clearTimer();
-
-            global.wsClient.release().then(function(rsp) {
+            global.wsClient.release(global.selectedGroup).then(function(rsp) {
                 console.info("Released.");
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
@@ -163,6 +163,26 @@
             alert("Websocket connection closed.");
         }
 
+        function processTime(activeGroup, laptime) {
+            /* Adjust elapsed time according to received duration,
+             * because of a better accuracy.
+             */
+            timeMinSecMSec          = timestamp2MinSecMSec(laptime);
+            global.minutes          = timeMinSecMSec.minutes;
+            global.seconds          = timeMinSecMSec.seconds;
+            global.milliseconds     = timeMinSecMSec.milliseconds;
+            updateTimer();
+
+            global.selectedGroup = activeGroup;
+            if ((0 == global.resultTable[global.selectedGroup].duration) ||
+                (laptime < global.resultTable[global.selectedGroup].duration)) {
+
+                global.resultTable[global.selectedGroup].duration = laptime;
+
+                updateResultTable();
+            }
+        }
+
         function onEvent(rsp) {
             var timeMinSecMSec = null
 
@@ -174,23 +194,21 @@
 
                 triggerTimer();
 
-                /* Adjust elapsed time according to received duration,
-                 * because of a better accuracy.
-                 */
-                timeMinSecMSec          = timestamp2MinSecMSec(rsp.duration);
-                global.minutes          = timeMinSecMSec.minutes;
-                global.seconds          = timeMinSecMSec.seconds;
-                global.milliseconds     = timeMinSecMSec.milliseconds;
-                updateTimer();
+                processTime(rsp.activeGroup, rsp.duration);
 
-                if ((0 == global.resultTable[global.selectedGroup].duration) ||
-                    (rsp.duration < global.resultTable[global.selectedGroup].duration)) {
-
-                    global.resultTable[global.selectedGroup].duration = rsp.duration;
-
-                    updateResultTable();
+            } else if("TABLE" == rsp.event){
+                if(0 < global.expectedEvents)
+                {
+                    console.log("Group " + rsp.activeGroup + ": " + rsp.duration);
+                    processTime(rsp.activeGroup, rsp.duration);
+                    global.expectedEvents--;
+                    if(0 == global.expectedEvents)
+                    {
+                        selectGroup(0);
+                    }
+                } else {
+                    console.error("Inconsistency with Saved Table");
                 }
-
             } else {
                 alert("Unknown event received: " + rsp.event);
             }
@@ -200,7 +218,7 @@
             var index = 0;
 
             for (index = 0; index < global.numberOfGroups; ++index) {
-                $("#goupSelectionBar").append("<button type=\"button\" class=\"btn btn-primary mx-2\" onclick=\"selectGroup(" + index + ")\">Group " + String.fromCharCode(65 + index) + "</button>");
+                $("#groupSelectionBar").append("<button type=\"button\" class=\"btn btn-primary mx-2\" onclick=\"selectGroup(" + index + ")\">Group " + String.fromCharCode(65 + index) + "</button>");
             }
         }
 
@@ -264,13 +282,39 @@
             }
         }
 
-        $(document).ready(function() {
-            updateTimer();
-            createGroups();
-            selectGroup(0);
-            createResultTable();
-            updateResultTable();
+        function getGroups() {
+            return global.wsClient.getGroups().then(function (rsp) {
+                global.numberOfGroups = rsp.groups;
+                console.log(global.numberOfGroups + " Groups are configured.");
+                console.info("Retrieved Groups.");
+            
+                return Promise.resolve();
+            });
+        }
 
+        function getSavedTable() {
+            global.wsClient.getTable().then(function (rsp) {
+                
+                if(rsp.groups === global.numberOfGroups)
+                {
+                    global.expectedEvents = rsp.groups;
+                    console.log("Expected Groups: " + global.expectedEvents);
+                } else {
+                    console.error("Expected Groups differs from Configured Groups");
+                }
+                
+                /*  TODO
+                 *  Wait for global.expectedEvents to be 0, or to timeout
+                 */
+
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        $(document).ready(function () {
             global.wsClient.connect({
                 protocol: "ws",
                 hostname: location.hostname,
@@ -280,6 +324,19 @@
                 onClosed: onClosed,
             }).then(function(rsp) {
                 console.info("Connected.");
+                
+                return getGroups().then(function() {
+                    updateTimer();
+                    createGroups();
+                    selectGroup(0);
+                    createResultTable();              
+                    return getSavedTable();
+                }).then(function() {
+                    updateResultTable();
+                    return Promise.resolve();
+                }).catch(function(err) {
+                    return Promise.reject();
+                });
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
