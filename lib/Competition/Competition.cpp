@@ -59,6 +59,7 @@
 Competition::Competition() : m_startTimestamp(0),
                              m_competitionState(COMPETITION_STATE_UNRELEASED),
                              m_numberOfGroups(0),
+                             m_resultTable(),
                              m_activeGroup(0)
 {
     for (uint8_t group = 0; group < MAX_NUMBER_OF_GROUPS; group++)
