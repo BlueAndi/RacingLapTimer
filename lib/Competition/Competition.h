@@ -108,11 +108,19 @@ public:
     bool setNumberofGroups(uint8_t groups);
 
     /**
-    *   Retrieves the laptime from a group.
-    *   @param[in] group Number of Group to retrieve value for.
-    *   @return If number of group is valid, returns the saved laptime. Else, returns 0.
-    */
+     *   Retrieves the laptime from a group.
+     *   @param[in] group Number of Group to retrieve value for.
+     *   @return If number of group is valid, returns the saved laptime. Else, returns 0.
+     */
     uint32_t getLaptime(uint8_t group);
+
+    /**
+     *  Sets the Laptime of the selected group to 0 as a default value.
+     * 
+     *  @param[in] group Number of Group to clear the laptime for.
+     *  @return If succesfully cleared returns true. Otherwise, false.
+     */
+    bool clearLaptime(uint8_t group);
 
 private:
     /**

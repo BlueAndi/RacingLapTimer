@@ -327,7 +327,7 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
     }
     else if (cmd.equals("CLEAR"))
     {
-        if (true)
+        if (m_laptrigger->clearLaptime(par.toInt()))
         {
             m_webSocketSrv.sendTXT(clientId, "ACK;CLEAR;" + par);
         }
