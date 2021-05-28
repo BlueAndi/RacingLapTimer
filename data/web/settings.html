@@ -38,6 +38,13 @@
                     <input type="number" class="form-range" min="0" max="10" id="NumberOfGroups" />
                     <p><button id="buttonSaveGroups" type="submit" class="btn btn-secondary" onclick="setGroups()">Save</button></p>
                 </div>
+                <div class="row justify-content-center">
+                    <div class="col align-middle">
+                        <h2>Clear Laptime</h2>
+                        <div id="groupClearColumn" class="btn-group-vertical">
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col">
                 <h1>Change Station Credentials</h1>
@@ -50,6 +57,9 @@
                 </form>
             </div>
         </div>
+
+        
+
     </main>
     <!-- /.container -->
 
@@ -74,15 +84,12 @@
         }
 
         function getGroups() {
-            global.wsClient.getGroups().then(function (rsp) {
+            return global.wsClient.getGroups().then(function (rsp) {
                 global.numberOfGroups = rsp.groups;
-                document.getElementById("NumberOfGroups").value = global.numberOfGroups;
                 console.log(global.numberOfGroups + " Groups are configured.");
                 console.info("Retrieved Groups.");
-            }).catch(function (err) {
-                if ("undefined" !== typeof err) {
-                    console.error(err);
-                }
+
+                return Promise.resolve();
             });
         }
 
@@ -100,6 +107,20 @@
             });
         }
 
+        function setClearButtons() {
+            for (index = 0; index < global.numberOfGroups; ++index) {
+                $("#groupClearColumn").append("<button type=\"button\" class=\"btn btn-info mx-2\" onclick=\"clearGroup(" + index + ")\">Group " + String.fromCharCode(65 + index) + "</button>");
+            }
+            $("#groupClearColumn").append("<button type=\"button\" class=\"btn btn-danger mx-2\" onclick=\"clearAll()\">Clear All </button>");
+        }
+
+        function clearGroup(selectedGroup){
+            console.log("Cleared Group " + selectedGroup);
+        }
+        function clearAll(){
+            console.log("Cleared All");
+        }
+
         $(document).ready(function () {
             global.wsClient.connect({
                 protocol: "ws",
@@ -110,7 +131,15 @@
                 onClosed: onClosed,
             }).then(function (rsp) {
                 console.info("Connected.");
-                getGroups();
+
+                return getGroups().then(function () {
+                    document.getElementById("NumberOfGroups").value = global.numberOfGroups;
+                    setClearButtons();
+                    return Promise.resolve();
+                }).catch(function(err) {
+                    return Promise.reject();
+                });
+
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
