@@ -115,8 +115,15 @@
         }
 
         function clearGroup(selectedGroup){
-            console.log("Cleared Group " + selectedGroup);
+            global.wsClient.clearGroup(selectedGroup).then(function(rsp) {
+                console.info("Cleared Group " + rsp.cleared);
+            }).catch(function(err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
         }
+
         function clearAll(){
             console.log("Cleared All");
         }

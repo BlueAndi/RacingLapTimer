@@ -304,9 +304,7 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
         if (m_laptrigger->getNumberofGroups(numberOfGroups))
         {
             m_webSocketSrv.sendTXT(clientId, "ACK;GET_TABLE;" + String(numberOfGroups));
-            
-            
-            
+
             for (uint8_t currentGroup = 0; currentGroup < numberOfGroups; currentGroup++)
             {
                 uint32_t groupLaptime = 0;
@@ -321,6 +319,17 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
                 
                 m_webSocketSrv.sendTXT(clientId, output);
             }
+        }
+        else
+        {
+            m_webSocketSrv.sendTXT(clientId, "NACK");
+        }
+    }
+    else if (cmd.equals("CLEAR"))
+    {
+        if (true)
+        {
+            m_webSocketSrv.sendTXT(clientId, "ACK;CLEAR;" + par);
         }
         else
         {
