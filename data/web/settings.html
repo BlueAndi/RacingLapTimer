@@ -108,6 +108,7 @@
         }
 
         function setClearButtons() {
+            var index = 0;
             for (index = 0; index < global.numberOfGroups; ++index) {
                 $("#groupClearColumn").append("<button type=\"button\" class=\"btn btn-info mx-2\" onclick=\"clearGroup(" + index + ")\">Group " + String.fromCharCode(65 + index) + "</button>");
             }
@@ -125,7 +126,10 @@
         }
 
         function clearAll(){
-            console.log("Cleared All");
+            var index = 0;
+            for (index = 0; index < global.numberOfGroups; ++index) {
+                clearGroup(index);
+            }
         }
 
         $(document).ready(function () {
