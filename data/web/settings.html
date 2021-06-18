@@ -95,7 +95,7 @@
 
         function setGroups() {
             document.getElementById("buttonSaveGroups").disabled = true;
-            global.numberOfGroups = document.getElementById("NumberOfGroups").value
+            global.numberOfGroups = parseInt(document.getElementById("NumberOfGroups").value);
             global.wsClient.setGroups(global.numberOfGroups).then(function (rsp) {
                 alert("Groups have been saved!");
                 document.getElementById("buttonSaveGroups").disabled = false;
