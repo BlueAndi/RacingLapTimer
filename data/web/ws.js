@@ -136,7 +136,10 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
             } else if ("GET_TABLE" === this.pendingCmd.name) {
                 rsp.groups = parseInt(data[1]);
                 this.pendingCmd.resolve(rsp);
-            }else {
+            } else if ("CLEAR" === this.pendingCmd.name) {
+                rsp.cleared = parseInt(data[1]);
+                this.pendingCmd.resolve(rsp);
+            } else {
                 console.error("Unknown command: " + this.pendingCmd.name);
                 this.pendingCmd.reject();
             }
@@ -185,15 +188,17 @@ cpjs.ws.Client.prototype.getGroups = function() {
 
 cpjs.ws.Client.prototype.setGroups = function(numberOfGroups) {
     return new Promise(function(resolve, reject) {
-        if ((null === this.socket) || (typeof(numberOfGroups) === undefined)) {
+        if (null === this.socket) {
             reject();
-        } else {
+        } else if ((typeof numberOfGroups === 'number') && (isFinite(numberOfGroups))) {
             this._sendCmd({
                 name: "SET_GROUPS",
                 par: numberOfGroups,
                 resolve: resolve,
                 reject: reject
             });
+        } else {
+            reject();
         }
     }.bind(this));
 };
@@ -209,6 +214,23 @@ cpjs.ws.Client.prototype.getTable = function() {
                 resolve: resolve,
                 reject: reject
             });
+        }
+    }.bind(this));
+};
+
+cpjs.ws.Client.prototype.clearGroup = function(group) {
+    return new Promise(function(resolve, reject) {
+        if (null === this.socket){
+            reject();
+        } else if ((typeof group === 'number') && (isFinite(group))) {
+            this._sendCmd({
+                name: "CLEAR",
+                par: group,
+                resolve: resolve,
+                reject: reject
+            });
+        } else {
+            reject();
         }
     }.bind(this));
 };

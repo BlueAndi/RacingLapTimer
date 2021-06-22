@@ -209,6 +209,19 @@ uint32_t Competition::getLaptime(uint8_t group)
     return result;
 }
 
+bool Competition::clearLaptime(uint8_t group)
+{
+    bool isSuccess = false;
+
+    if(m_numberOfGroups > group)
+    {
+        m_resultTable[group] = 0;
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
 /******************************************************************************
  * Protected Methods
  *****************************************************************************/
