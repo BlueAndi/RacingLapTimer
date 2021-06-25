@@ -88,7 +88,7 @@ void setup() /* cppcheck-suppress unusedFunction */
         isError = true;
     }
     /* Start Wireless Connection. */
-    else if (false == gWlan.begin())
+    else if (false == gWlan.beginWPA())
     {
         Serial.printf("%lu: Failed to start WLAN.\n", millis());
         isError = true;
@@ -118,6 +118,7 @@ void setup() /* cppcheck-suppress unusedFunction */
     else
     {
         Serial.printf("%lu: Ready.\n", millis());
+        Serial.println(gWlan.getIPAddress());
     }
 }
 

@@ -70,6 +70,13 @@ public:
     bool begin();
 
     /**
+     *  Initialize WPA2 Enterprise Connection
+     *
+     *  @return If initialization is successful, returns true. Otherwise, false.
+     */
+    bool beginWPA();
+
+    /**
      *  Executes WIFI Connection Check.
      * 
      *  @return success.

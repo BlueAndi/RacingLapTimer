@@ -35,6 +35,12 @@
 #include "WIFI.h"
 #include "FlashMem.h"
 
+extern "C"
+{
+#include "user_interface.h"
+#include "wpa2_enterprise.h"
+}
+
 /******************************************************************************
  * Macros
  *****************************************************************************/
@@ -55,13 +61,12 @@
  * Public Methods
  *****************************************************************************/
 
-WIFI::WIFI() :
-    m_isStaAvailable(false),
-    m_apSSID(AP_MODE_SSID_DEFAULT),
-    m_apPassword(AP_MODE_PASSWORD_DEFAULT),
-    m_staSSID(),
-    m_staPassword(),
-    m_localIP()
+WIFI::WIFI() : m_isStaAvailable(false),
+               m_apSSID(AP_MODE_SSID_DEFAULT),
+               m_apPassword(AP_MODE_PASSWORD_DEFAULT),
+               m_staSSID(),
+               m_staPassword(),
+               m_localIP()
 {
 }
 
@@ -93,8 +98,8 @@ bool WIFI::begin()
             m_localIP = WiFi.softAPIP();
         }
 
-            isSuccess = true;
-        }
+        isSuccess = true;
+    }
     else
     {
         Serial.println("No stored STA Credentials!");
@@ -112,10 +117,72 @@ bool WIFI::begin()
     return isSuccess;
 }
 
+bool WIFI::beginWPA()
+{
+    bool isSuccess = false;
+
+    // SSID to connect to
+    static const char *ssid = "eduroam";
+    // Username for authentification
+    static const char *username = "username";
+    // Identity for authentification
+    static const char *identity = "username@hs-ulm.de";
+    // Password for authentication
+    static const char *password = "password";
+
+    WiFi.mode(WIFI_STA);
+    wifi_set_opmode(STATION_MODE);
+    wifi_station_dhcpc_stop();
+
+    //Static IP address configuration
+    IPAddress staticIP(141, 59, 135, 184); //ESP static ip
+    IPAddress gateway(141, 59, 128, 254);  //IP Address of your WiFi Router (Gateway)
+    IPAddress subnet(255, 255, 240, 0);    //Subnet mask
+    IPAddress dns1(141, 59, 85, 20);       //DNS1
+    IPAddress dns2(141, 59, 85, 21);       //DNS2
+    WiFi.config(staticIP, gateway, subnet, dns1, dns2);
+
+    struct station_config wifi_config;
+
+    memset(&wifi_config, 0, sizeof(wifi_config));
+    strcpy((char *)wifi_config.ssid, ssid);
+    strcpy((char *)wifi_config.password, password);
+
+    wifi_station_set_config(&wifi_config);
+
+    wifi_station_set_wpa2_enterprise_auth(1);
+
+    // Clean up to be sure no old data is still inside
+    wifi_station_clear_cert_key();
+    wifi_station_clear_enterprise_ca_cert();
+    wifi_station_clear_enterprise_identity();
+    wifi_station_clear_enterprise_username();
+    wifi_station_clear_enterprise_password();
+    wifi_station_clear_enterprise_new_password();
+
+    wifi_station_set_enterprise_identity((uint8 *)identity, strlen(identity));
+    wifi_station_set_enterprise_username((uint8 *)username, strlen(username));
+    wifi_station_set_enterprise_password((uint8 *)password, strlen((char *)password));
+
+    wifi_station_connect();
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(1000);
+        Serial.print(".");
+    }
+
+    m_localIP = WiFi.localIP();
+    m_isStaAvailable = true;
+    isSuccess = true;
+
+    return isSuccess;
+}
+
 bool WIFI::runCycle()
 {
     bool isSuccess = true;
-
+/*
     if (m_isStaAvailable)
     {
         if (WL_CONNECTED != WiFi.status())
@@ -123,6 +190,7 @@ bool WIFI::runCycle()
             isSuccess = connectStation();
         }
     }
+    */
     return isSuccess;
 }
 
