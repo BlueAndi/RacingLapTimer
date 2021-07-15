@@ -25,92 +25,85 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of ESP8266 Board.
- * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
+ * @brief  Logger for debug purposes
+ * @author Andreas Merkle <web@blue-andi.de>
  */
+
+#ifndef LOG_H_
+#define LOG_H_
 
 /******************************************************************************
  * Includes
  *****************************************************************************/
-#include "Board.h"
-
-/******************************************************************************
- * Compiler Switches
- *****************************************************************************/
+#include <Arduino.h>
 
 /******************************************************************************
  * Macros
  *****************************************************************************/
 
+/** Log information, which is useful for the normal user. */
+#define LOG_INFO(...)       Log::print(__FILE__, __LINE__, Log::LOG_INFO, __VA_ARGS__)
+
+/** Log warning in case there is something the user should know, but the system can continoue without limitation. */
+#define LOG_WARNING(...)    Log::print(__FILE__, __LINE__, Log::LOG_WARNING, __VA_ARGS__)
+
+/** Log error in case a failure happened, but the system can continoue with limitation. */
+#define LOG_ERROR(...)      Log::print(__FILE__, __LINE__, Log::LOG_ERROR, __VA_ARGS__)
+
+/** Log fatal error in case a failure happened and the system can not continoue. */
+#define LOG_FATAL(...)      Log::print(__FILE__, __LINE__, Log::LOG_FATAL, __VA_ARGS__)
+
 /******************************************************************************
- * Types and classes
+ * Types and Classes
  *****************************************************************************/
+/**
+ *  Logging functionality
+ */
+namespace Log
+{
+
+/** Supported log levels. */
+typedef enum
+{
+    LOG_INFO = 0,   /**< Level: Information */
+    LOG_WARNING,    /**< Level: Warning */
+    LOG_ERROR,      /**< Level: Error */
+    LOG_FATAL       /**< Level: Fatal error */
+
+} Level;
 
 /******************************************************************************
  * Prototypes
  *****************************************************************************/
 
 /******************************************************************************
- * Local Variables
- *****************************************************************************/
-
-/** Serial interface baudrate. */
-static const uint32_t   SERIAL_BAUDRATE         = 115200U;
-
-/** Digital input pin (arduino pin) for the laser obstacle detection sensor. */
-static const uint8_t    SENSOR_DIN_PIN          = 5U;
-
-/** Duration in ms before the MCU will be reset, caused by fatal error halt. */
-static const uint32_t   FATAL_ERROR_WAIT_TIME   = 30000U;
-
-/******************************************************************************
- * Public Methods
- *****************************************************************************/
-
-bool Board::begin()
-{
-    bool isSuccess = true;
-
-    /* Setup serial interface */
-    Serial.begin(SERIAL_BAUDRATE);
-
-    /* Prepare sensor input pin */
-    pinMode(SENSOR_DIN_PIN, INPUT);
-
-    return isSuccess;
-}
-
-bool Board::isRobotDetected()
-{
-    bool isDetected = false;
-    int state = digitalRead(SENSOR_DIN_PIN);
-
-    if (HIGH == state)
-    {
-        isDetected = true;
-    }
-
-    return isDetected;
-}
-
-void Board::errorHalt()
-{
-    delay(FATAL_ERROR_WAIT_TIME);
-    ESP.restart();
-}
-
-/******************************************************************************
- * Protected Methods
+ * Variables
  *****************************************************************************/
 
 /******************************************************************************
- * Private Methods
+ * External functions
  *****************************************************************************/
 
-/******************************************************************************
- * External Functions
- *****************************************************************************/
+/**
+ * Print log message.
+ * 
+ * @param[in] filename      The name of the file, where the log message is located.
+ * @param[in] lineNumber    The line number in the file, where the log message is located.
+ * @param[in] level         The severity level.
+ * @param[in] format        The format with the variable argument list.
+ */
+void print(const char* filename, int lineNumber, Level level, const char* format, ...);
 
-/******************************************************************************
- * Local Functions
- *****************************************************************************/
+/**
+ * Print log message.
+ * 
+ * @param[in] filename      The name of the file, where the log message is located.
+ * @param[in] lineNumber    The line number in the file, where the log message is located.
+ * @param[in] level         The severity level.
+ * @param[in] msg           The log message content.
+ */
+void print(const char* filename, int lineNumber, Level level, const String& msg);
+
+};
+
+#endif /* LOG_H_ */

@@ -35,6 +35,8 @@
 #include "LapTriggerWebServer.h"
 #include "FlashMem.h"
 
+#include <Log.h>
+
 /******************************************************************************
  * Macros
  *****************************************************************************/
@@ -74,7 +76,7 @@ bool LapTriggerWebServer::begin()
     /* Setup mDNS service. */
     if (false == MDNS.begin(HOSTNAME))
     {
-        Serial.printf("%lu: Failed to start mDNS service.", millis());
+        LOG_ERROR("Failed to start mDNS service.");
         isSuccess = false;
     }
     else
@@ -131,15 +133,15 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
     switch (type)
     {
     case WStype_ERROR:
-        Serial.printf("%lu: Ws client (%u) error.\n", millis(), clientId);
+        LOG_INFO("Ws client (%u) error.\n", clientId);
         break;
 
     case WStype_DISCONNECTED:
-        Serial.printf("%lu: Ws client (%u) disconnected.\n", millis(), clientId);
+        LOG_INFO("Ws client (%u) disconnected.\n", clientId);
         break;
 
     case WStype_CONNECTED:
-        Serial.printf("%lu: Ws client (%u) connected.\n", millis(), clientId);
+        LOG_INFO("Ws client (%u) connected.\n", clientId);
         break;
 
     case WStype_TEXT:
@@ -210,7 +212,7 @@ void LapTriggerWebServer::handleCredentials()
                 message += " " + m_webServer.argName(i) + ": " + m_webServer.arg(i) + "\n";
             }
             m_webServer.send(200, "text/plain", message);
-            Serial.println(message);
+            LOG_WARNING(message);
         }
         else
         {

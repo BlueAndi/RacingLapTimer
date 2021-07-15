@@ -35,6 +35,8 @@
 #include "WIFI.h"
 #include "FlashMem.h"
 
+#include <Log.h>
+
 /******************************************************************************
  * Macros
  *****************************************************************************/
@@ -85,8 +87,8 @@ bool WIFI::begin()
         }
         else
         {
-            Serial.println("Network not in range or Unvalid Credentials.");
-            Serial.println("Starting AP...");
+            LOG_INFO("Network not in range or Unvalid Credentials.");
+            LOG_INFO("Starting AP...");
 
             WiFi.mode(WIFI_AP);
             WiFi.softAP(m_apSSID, m_apPassword);
@@ -97,8 +99,8 @@ bool WIFI::begin()
         }
     else
     {
-        Serial.println("No stored STA Credentials!");
-        Serial.println("Starting AP");
+        LOG_INFO("No stored STA Credentials!");
+        LOG_INFO("Starting AP");
 
         WiFi.mode(WIFI_AP);
         WiFi.softAP(m_apSSID, m_apPassword);
@@ -144,7 +146,7 @@ bool WIFI::connectStation()
     bool isSuccess = false;
     unsigned long startAttempTime = millis();
 
-    Serial.println("Connecting to \"" + m_staSSID + "\"...");
+    LOG_INFO(String("Connecting to \"") + m_staSSID + "\"...");
     while ((WiFi.status() != WL_CONNECTED) && ((millis() - startAttempTime) < WIFI_TIMEOUT_MS))
     {
         delay(100);
@@ -152,7 +154,7 @@ bool WIFI::connectStation()
 
     if (WL_CONNECTED == WiFi.status())
     {
-        Serial.println("Connected Succesfully.");
+        LOG_INFO("Connected Succesfully.");
         isSuccess = true;
         m_localIP = WiFi.localIP();
     }

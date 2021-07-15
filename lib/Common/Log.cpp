@@ -25,14 +25,14 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of ESP8266 Board.
- * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
+ * @brief  Logger for debug purposes
+ * @author Andreas Merkle <web@blue-andi.de>
  */
 
 /******************************************************************************
  * Includes
  *****************************************************************************/
-#include "Board.h"
+#include "Log.h"
 
 /******************************************************************************
  * Compiler Switches
@@ -50,54 +50,15 @@
  * Prototypes
  *****************************************************************************/
 
+static void printHead(const char* filename, int lineNumber, Log::Level level);
+
 /******************************************************************************
  * Local Variables
  *****************************************************************************/
 
-/** Serial interface baudrate. */
-static const uint32_t   SERIAL_BAUDRATE         = 115200U;
-
-/** Digital input pin (arduino pin) for the laser obstacle detection sensor. */
-static const uint8_t    SENSOR_DIN_PIN          = 5U;
-
-/** Duration in ms before the MCU will be reset, caused by fatal error halt. */
-static const uint32_t   FATAL_ERROR_WAIT_TIME   = 30000U;
-
 /******************************************************************************
  * Public Methods
  *****************************************************************************/
-
-bool Board::begin()
-{
-    bool isSuccess = true;
-
-    /* Setup serial interface */
-    Serial.begin(SERIAL_BAUDRATE);
-
-    /* Prepare sensor input pin */
-    pinMode(SENSOR_DIN_PIN, INPUT);
-
-    return isSuccess;
-}
-
-bool Board::isRobotDetected()
-{
-    bool isDetected = false;
-    int state = digitalRead(SENSOR_DIN_PIN);
-
-    if (HIGH == state)
-    {
-        isDetected = true;
-    }
-
-    return isDetected;
-}
-
-void Board::errorHalt()
-{
-    delay(FATAL_ERROR_WAIT_TIME);
-    ESP.restart();
-}
 
 /******************************************************************************
  * Protected Methods
@@ -111,6 +72,55 @@ void Board::errorHalt()
  * External Functions
  *****************************************************************************/
 
+void Log::print(const char* filename, int lineNumber, Log::Level level, const char* format, ...)
+{
+    const size_t    MESSAGE_BUFFER_SIZE = 512;
+    char            buffer[MESSAGE_BUFFER_SIZE];
+    va_list         args;
+
+    printHead(filename, lineNumber, level);
+
+    va_start(args, format);
+    vsnprintf(buffer, MESSAGE_BUFFER_SIZE, format, args);
+    va_end(args);
+
+    Serial.printf("\n");
+}
+
+void Log::print(const char* filename, int lineNumber, Log::Level level, const String& msg)
+{
+    printHead(filename, lineNumber, level);
+
+    Serial.printf("%s\n", msg.c_str());
+}
+
 /******************************************************************************
  * Local Functions
  *****************************************************************************/
+
+static void printHead(const char* filename, int lineNumber, Log::Level level)
+{
+    Serial.printf("%lu %s (%u)", millis(), filename, lineNumber);
+
+    switch(level)
+    {
+    case Log::LOG_INFO:
+        Serial.printf("Info");
+        break;
+
+    case Log::LOG_WARNING:
+        Serial.printf("Warning");
+        break;
+
+    case Log::LOG_ERROR:
+        Serial.printf("Error");
+        break;
+
+    case Log::LOG_FATAL:
+        Serial.printf("Fatal");
+        break;
+
+    default:
+        break;
+    }
+}

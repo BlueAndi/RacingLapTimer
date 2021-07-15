@@ -132,7 +132,6 @@ bool Flash::setHeader(bool areCredentialsStored)
 
     if (EEPROM.commit())
     {
-        Serial.println("EEPROM successfully commited!");
         isSuccess = true;
     }
 

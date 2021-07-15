@@ -39,6 +39,8 @@
 #include "LapTriggerWebServer.h"
 #include "Competition.h"
 
+#include <Log.h>
+
 /******************************************************************************
  * Macros
  *****************************************************************************/
@@ -78,31 +80,31 @@ void setup() /* cppcheck-suppress unusedFunction */
     /* Initialize HAL. */
     if (false == Board::begin())
     {
-        Serial.printf("%lu: failed to start Board. \n", millis());
+        LOG_FATAL("Failed to initialize the HAL.");
         isError = true;
     }
     /* Mount persistent memory. */
     else if (false == Flash::begin())
     {
-        Serial.printf("%lu: Failed to mount persistent memory.\n", millis());
+        LOG_FATAL("Failed to mount persistent memory.");
         isError = true;
     }
     /* Start Wireless Connection. */
     else if (false == gWlan.begin())
     {
-        Serial.printf("%lu: Failed to start WLAN.\n", millis());
+        LOG_FATAL("Failed to start wifi.");
         isError = true;
     }
     /* Mount filesystem. */
     else if (false == LittleFS.begin())
     {
-        Serial.printf("%lu: Failed to mount filesystem.\n", millis());
+        LOG_FATAL("Failed to mount filesystem.");
         isError = false;
     }
     /* Start Web Server. */
     else if (false == gWebServer.begin())
     {
-        Serial.printf("%lu: Failed to start Web Server.\n", millis());
+        LOG_FATAL("Failed to start webserver.");
         isError = true;
     }
     else
@@ -117,7 +119,7 @@ void setup() /* cppcheck-suppress unusedFunction */
     }
     else
     {
-        Serial.printf("%lu: Ready.\n", millis());
+        LOG_INFO("Ready.");
     }
 }
 
