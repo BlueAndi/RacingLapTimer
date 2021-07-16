@@ -134,48 +134,36 @@ private:
      *  After the first detection of the robot with the ext. sensor, this consider
      *  the duration in ms after that the sensor will be considered again.
      */
-    static const uint32_t SENSOR_BLIND_PERIOD = 400;
+    static const uint32_t SENSOR_BLIND_PERIOD   = 400;
 
     /**
      *  Maximum Number of Participating Groups 
      */
-    static const uint8_t MAX_NUMBER_OF_GROUPS = 10;
+    static const uint8_t MAX_NUMBER_OF_GROUPS   = 10;
 
     /**
      *  Minimum Number of Participating Groups 
      */
-    static const uint8_t MIN_NUMBER_OF_GROUPS = 1;
+    static const uint8_t MIN_NUMBER_OF_GROUPS   = 1;
 
     /** Competition start timestamp in ms. */
-    uint32_t m_startTimestamp;
+    uint32_t            m_startTimestamp;
 
     /** Current competition state. */
-    CompetitionState m_competitionState;
+    CompetitionState    m_competitionState;
 
     /** Number of Groups */
-    uint8_t m_numberOfGroups;
+    uint8_t             m_numberOfGroups;
 
     /** Array to contain the fastest time of each group */
-    uint32_t m_resultTable[MAX_NUMBER_OF_GROUPS];
+    uint32_t            m_resultTable[MAX_NUMBER_OF_GROUPS];
 
     /** Group that has been RELEASED for the run */
-    uint8_t m_activeGroup;
+    uint8_t             m_activeGroup;
 };
 
 /******************************************************************************
- * Prototypes
- *****************************************************************************/
-
-/******************************************************************************
- * Variables
- *****************************************************************************/
-
-/******************************************************************************
- * External functions
- *****************************************************************************/
-
-/******************************************************************************
- * Local functions
+ * Functions
  *****************************************************************************/
 
 #endif /* COMPETITION_H_ */

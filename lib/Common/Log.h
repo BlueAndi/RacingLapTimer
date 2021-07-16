@@ -25,12 +25,12 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of ESP8266 Board.
- * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
+ * @brief  Logger for debug purposes
+ * @author Andreas Merkle <web@blue-andi.de>
  */
 
-#ifndef BOARD_H_
-#define BOARD_H_
+#ifndef LOG_H_
+#define LOG_H_
 
 /******************************************************************************
  * Includes
@@ -41,38 +41,62 @@
  * Macros
  *****************************************************************************/
 
+/** Log information, which is useful for the normal user. */
+#define LOG_INFO(...)       Log::print(__FILE__, __LINE__, Log::LOG_INFO, __VA_ARGS__)
+
+/** Log warning in case there is something the user should know, but the system can continoue without limitation. */
+#define LOG_WARNING(...)    Log::print(__FILE__, __LINE__, Log::LOG_WARNING, __VA_ARGS__)
+
+/** Log error in case a failure happened, but the system can continoue with limitation. */
+#define LOG_ERROR(...)      Log::print(__FILE__, __LINE__, Log::LOG_ERROR, __VA_ARGS__)
+
+/** Log fatal error in case a failure happened and the system can not continoue. */
+#define LOG_FATAL(...)      Log::print(__FILE__, __LINE__, Log::LOG_FATAL, __VA_ARGS__)
+
 /******************************************************************************
  * Types and Classes
  *****************************************************************************/
 
 /**
- *  D1 Mini board abstraction.
+ *  Logging functionality
  */
-namespace Board
+namespace Log
 {
-    /**
-     *  Board Initialization.
-     * 
-     *  @return If initialization is successful, returns true. Otherwise, false.
-     */
-    bool begin();
 
-    /**
-     *  Is a roboter detected or not?.
-     * 
-     *  @return If Robot is detected, returns true. Otherwise, false.
-     */
-    bool isRobotDetected();
+/** Supported log levels. */
+typedef enum
+{
+    LOG_INFO = 0,   /**< Level: Information */
+    LOG_WARNING,    /**< Level: Warning */
+    LOG_ERROR,      /**< Level: Error */
+    LOG_FATAL       /**< Level: Fatal error */
 
-    /**
-     *  Halts the device for 30 Seconds and restarts the device.
-     */
-    void errorHalt();
-
-};
+} Level;
 
 /******************************************************************************
  * Functions
  *****************************************************************************/
 
-#endif /* BOARD_H_ */
+/**
+ * Print log message.
+ * 
+ * @param[in] filename      The name of the file, where the log message is located.
+ * @param[in] lineNumber    The line number in the file, where the log message is located.
+ * @param[in] level         The severity level.
+ * @param[in] format        The format with the variable argument list.
+ */
+void print(const char* filename, int lineNumber, Level level, const char* format, ...);
+
+/**
+ * Print log message.
+ * 
+ * @param[in] filename      The name of the file, where the log message is located.
+ * @param[in] lineNumber    The line number in the file, where the log message is located.
+ * @param[in] level         The severity level.
+ * @param[in] msg           The log message content.
+ */
+void print(const char* filename, int lineNumber, Level level, const String& msg);
+
+};
+
+#endif /* LOG_H_ */
