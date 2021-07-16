@@ -87,7 +87,7 @@ bool WIFI::begin()
         }
         else
         {
-            LOG_INFO("Network not in range or Unvalid Credentials.");
+            LOG_INFO("Network not in range or invalid credentials.");
             LOG_INFO("Starting AP...");
 
             WiFi.mode(WIFI_AP);
@@ -109,7 +109,7 @@ bool WIFI::begin()
         isSuccess = true;
     }
 
-    Serial.println(getIPAddress());
+    LOG_INFO(getIPAddress().toString());
 
     return isSuccess;
 }

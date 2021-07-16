@@ -84,7 +84,7 @@ void Log::print(const char* filename, int lineNumber, Log::Level level, const ch
     vsnprintf(buffer, MESSAGE_BUFFER_SIZE, format, args);
     va_end(args);
 
-    Serial.printf("\n");
+    Serial.printf("%s\n", buffer);
 }
 
 void Log::print(const char* filename, int lineNumber, Log::Level level, const String& msg)
@@ -100,27 +100,29 @@ void Log::print(const char* filename, int lineNumber, Log::Level level, const St
 
 static void printHead(const char* filename, int lineNumber, Log::Level level)
 {
-    Serial.printf("%lu %s (%u)", millis(), filename, lineNumber);
+    const char* levelStr = "Unknown";
 
     switch(level)
     {
     case Log::LOG_INFO:
-        Serial.printf("Info");
+        levelStr = "Info";
         break;
 
     case Log::LOG_WARNING:
-        Serial.printf("Warning");
+        levelStr = "Warning";
         break;
 
     case Log::LOG_ERROR:
-        Serial.printf("Error");
+        levelStr = "Error";
         break;
 
     case Log::LOG_FATAL:
-        Serial.printf("Fatal");
+        levelStr = "Fatal";
         break;
 
     default:
         break;
     }
+
+    Serial.printf("%6lu %16s (%5u) %7s ", millis(), filename, lineNumber, levelStr);
 }

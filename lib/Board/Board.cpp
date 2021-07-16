@@ -73,6 +73,7 @@ bool Board::begin()
 
     /* Setup serial interface */
     Serial.begin(SERIAL_BAUDRATE);
+    Serial.printf("\n");
 
     /* Prepare sensor input pin */
     pinMode(SENSOR_DIN_PIN, INPUT);
