@@ -124,5 +124,5 @@ static void printHead(const char* filename, int lineNumber, Log::Level level)
         break;
     }
 
-    Serial.printf("%6lu %16s (%5u) %7s ", millis(), filename, lineNumber, levelStr);
+    Serial.printf("%6lu %24s (%5u) %7s ", millis(), filename, lineNumber, levelStr);
 }

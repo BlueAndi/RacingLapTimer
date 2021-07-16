@@ -133,15 +133,15 @@ void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_
     switch (type)
     {
     case WStype_ERROR:
-        LOG_INFO("Ws client (%u) error.\n", clientId);
+        LOG_INFO("Ws client (%u) error.", clientId);
         break;
 
     case WStype_DISCONNECTED:
-        LOG_INFO("Ws client (%u) disconnected.\n", clientId);
+        LOG_INFO("Ws client (%u) disconnected.", clientId);
         break;
 
     case WStype_CONNECTED:
-        LOG_INFO("Ws client (%u) connected.\n", clientId);
+        LOG_INFO("Ws client (%u) connected.", clientId);
         break;
 
     case WStype_TEXT:
@@ -262,7 +262,8 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
         }
     }
 
-    Serial.printf("%lu: Ws client (%u): %s\n", millis(), clientId, cmd.c_str());
+    LOG_INFO("Ws client (%u): %s", clientId, cmd.c_str());
+
     if (cmd.equals("RELEASE"))
     {
         if (m_laptrigger->setReleasedState(par.toInt()))
