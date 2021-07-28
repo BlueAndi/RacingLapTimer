@@ -40,6 +40,10 @@
             <button id="buttonSaveGroups" type="submit" class="btn btn-secondary" onclick="setGroups()">Set</button>
         </div>
 
+        <div class="container" id="groupNameTable">
+        </div>
+
+
 
 
     </main>
@@ -81,6 +85,7 @@
             global.wsClient.setGroups(global.numberOfGroups).then(function (rsp) {
                 alert("Groups have been saved!");
                 document.getElementById("buttonSaveGroups").disabled = false;
+                window.location.reload();
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
@@ -92,7 +97,7 @@
         function setClearButtons() {
             var index = 0;
             for (index = 0; index < global.numberOfGroups; ++index) {
-                $("#groupClearColumn").append("<button type=\"button\" class=\"btn btn-info mx-2\" onclick=\"clearGroup(" + index + ")\">Group " + String.fromCharCode(65 + index) + "</button>");
+                $("#groupClearColumn").append();
             }
             $("#groupClearColumn").append("<button type=\"button\" class=\"btn btn-danger mx-2\" onclick=\"clearAll()\">Clear All </button>");
         }
@@ -114,6 +119,13 @@
             }
         }
 
+        function setSettingsTable() {
+            var index = 0;
+            for (index = 0; index < global.numberOfGroups; ++index) {
+                $("#groupNameTable").append("<div class=\"row\"><div class=\"column\">Group "+ String.fromCharCode(65 + index) +": </div></div><div class=\"row\"><div class=\"column\"> <input type=\"text\" id=\"group" + index + "\"/></div><div class=\"column\"><button type=\"button\" onclick=\"setName(" + index + ")\" class=\"btn btn-secondary mx-2\">Set Name</button\></div><div class=\"column\"><button type=\"button\" onclick=\"deleteName(" + index + ")\" class=\"btn btn-secondary mx-2\">Delete Name</button></div><div class=\"column\"><button type=\"button\" class=\"btn btn-info mx-2\" onclick=\"clearGroup(" + index + ")\">Clear Laptime</button></div></div>");
+            }
+        }
+
         $(document).ready(function () {
             global.wsClient.connect({
                 protocol: "ws",
@@ -128,6 +140,7 @@
                 return getGroups().then(function () {
                     document.getElementById("NumberOfGroups").value = global.numberOfGroups;
                     setClearButtons();
+                    setSettingsTable();
                     return Promise.resolve();
                 }).catch(function (err) {
                     return Promise.reject();
