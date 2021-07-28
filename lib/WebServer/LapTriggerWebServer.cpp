@@ -342,6 +342,20 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
             m_webSocketSrv.sendTXT(clientId, "NACK");
         }
     }
+    else if (cmd.equals("SET_NAME"))
+    {
+        LOG_INFO(par);
+        
+        /* To Do:
+            Separate parameters: group number and name.
+            Implementation of name into group structure.
+            write name in structure.
+            send back chosen name for chosen group as confirmation.
+        */
+
+        String outputMessage = "ACK;SET_NAME;0;Speedsters";
+        m_webSocketSrv.sendTXT(clientId, outputMessage);
+    }
     else
     {
         m_webSocketSrv.sendTXT(clientId, "NACK");
