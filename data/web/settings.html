@@ -35,12 +35,6 @@
     <main role="main" class="container">
         <div class="row row-cols-2">
             <div class="col">
-                <h1>Edit Groups</h1>
-                <div class="mb-3">
-                    <label for="NumberOfGroups" class="form-label">Number Of Groups: </label>
-                    <input type="number" class="form-range" min="0" max="10" id="NumberOfGroups" />
-                    <p><button id="buttonSaveGroups" type="submit" class="btn btn-secondary" onclick="setGroups()">Save</button></p>
-                </div>
                 <div class="row justify-content-center">
                     <div class="col align-middle">
                         <h2>Clear Laptime</h2>
@@ -96,20 +90,6 @@
             });
         }
 
-        function setGroups() {
-            document.getElementById("buttonSaveGroups").disabled = true;
-            global.numberOfGroups = parseInt(document.getElementById("NumberOfGroups").value);
-            global.wsClient.setGroups(global.numberOfGroups).then(function (rsp) {
-                alert("Groups have been saved!");
-                document.getElementById("buttonSaveGroups").disabled = false;
-            }).catch(function (err) {
-                if ("undefined" !== typeof err) {
-                    console.error(err);
-                }
-                document.getElementById("buttonSaveGroups").disabled = false;
-            });
-        }
-
         function setClearButtons() {
             var index = 0;
             for (index = 0; index < global.numberOfGroups; ++index) {
@@ -147,7 +127,6 @@
                 console.info("Connected.");
 
                 return getGroups().then(function () {
-                    document.getElementById("NumberOfGroups").value = global.numberOfGroups;
                     setClearButtons();
                     return Promise.resolve();
                 }).catch(function(err) {
