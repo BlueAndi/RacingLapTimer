@@ -139,7 +139,6 @@
 
                 return getGroups().then(function () {
                     document.getElementById("NumberOfGroups").value = global.numberOfGroups;
-                    setClearButtons();
                     setSettingsTable();
                     return Promise.resolve();
                 }).catch(function (err) {
