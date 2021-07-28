@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-    <title>Credential Configuration</title>
+    <title>Racing Lap Timer</title>
     <link rel="stylesheet" href="./bootstrap/4.0.0/css/bootstrap.min.css" />
     <link href="starter-template.css" rel="stylesheet" />
 </head>
@@ -22,10 +22,10 @@
                 <li class="nav-item">
                     <a class="nav-link hover" href="index.html">Home</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link hover" href="groupConfig.html">Group Configuration</a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link hover" href="settings.html">Settings</a>
                 </li>
             </ul>
@@ -33,35 +33,14 @@
     </nav>
 
     <main role="main" class="container">
-        <div class="row row-cols-2">
-            <div class="col">
-                <h1>Edit Groups</h1>
-                <div class="mb-3">
-                    <label for="NumberOfGroups" class="form-label">Number Of Groups: </label>
-                    <input type="number" class="form-range" min="0" max="10" id="NumberOfGroups" />
-                    <p><button id="buttonSaveGroups" type="submit" class="btn btn-secondary" onclick="setGroups()">Save</button></p>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col align-middle">
-                        <h2>Clear Laptime</h2>
-                        <div id="groupClearColumn" class="btn-group-vertical">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <h1>Change Station Credentials</h1>
-                <form action="" method="post">
-                    <p><input class="form-control" type="text" placeholder="SSID" required name="STA_SSID" />
-                    </p>
-                    <p><input class="form-control" type="password" placeholder="Password" name="STA_PASSWORD" />
-                    </p>
-                    <p><button type="submit" class="btn btn-secondary">Save and Restart</button></p>
-                </form>
-            </div>
+
+        <div class="mb-3">
+            <label for="NumberOfGroups" class="form-label">Number Of Groups: </label>
+            <input type="number" class="form-range" min="0" max="10" id="NumberOfGroups" />
+            <button id="buttonSaveGroups" type="submit" class="btn btn-secondary" onclick="setGroups()">Set</button>
         </div>
 
-        
+
 
     </main>
     <!-- /.container -->
@@ -118,17 +97,17 @@
             $("#groupClearColumn").append("<button type=\"button\" class=\"btn btn-danger mx-2\" onclick=\"clearAll()\">Clear All </button>");
         }
 
-        function clearGroup(selectedGroup){
-            global.wsClient.clearGroup(selectedGroup).then(function(rsp) {
+        function clearGroup(selectedGroup) {
+            global.wsClient.clearGroup(selectedGroup).then(function (rsp) {
                 console.info("Cleared Group " + rsp.cleared);
-            }).catch(function(err) {
+            }).catch(function (err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
                 }
             });
         }
 
-        function clearAll(){
+        function clearAll() {
             var index = 0;
             for (index = 0; index < global.numberOfGroups; ++index) {
                 clearGroup(index);
@@ -150,7 +129,7 @@
                     document.getElementById("NumberOfGroups").value = global.numberOfGroups;
                     setClearButtons();
                     return Promise.resolve();
-                }).catch(function(err) {
+                }).catch(function (err) {
                     return Promise.reject();
                 });
 
@@ -163,6 +142,7 @@
             });
         });
     </script>
+
 </body>
 
 </html>
