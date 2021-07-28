@@ -94,14 +94,6 @@
             });
         }
 
-        function setClearButtons() {
-            var index = 0;
-            for (index = 0; index < global.numberOfGroups; ++index) {
-                $("#groupClearColumn").append();
-            }
-            $("#groupClearColumn").append("<button type=\"button\" class=\"btn btn-danger mx-2\" onclick=\"clearAll()\">Clear All </button>");
-        }
-
         function clearGroup(selectedGroup) {
             global.wsClient.clearGroup(selectedGroup).then(function (rsp) {
                 console.info("Cleared Group " + rsp.cleared);
@@ -122,8 +114,30 @@
         function setSettingsTable() {
             var index = 0;
             for (index = 0; index < global.numberOfGroups; ++index) {
-                $("#groupNameTable").append("<div class=\"row\"><div class=\"column\">Group "+ String.fromCharCode(65 + index) +": </div></div><div class=\"row\"><div class=\"column\"> <input type=\"text\" id=\"group" + index + "\"/></div><div class=\"column\"><button type=\"button\" onclick=\"setName(" + index + ")\" class=\"btn btn-secondary mx-2\">Set Name</button\></div><div class=\"column\"><button type=\"button\" onclick=\"deleteName(" + index + ")\" class=\"btn btn-secondary mx-2\">Delete Name</button></div><div class=\"column\"><button type=\"button\" class=\"btn btn-info mx-2\" onclick=\"clearGroup(" + index + ")\">Clear Laptime</button></div></div>");
+                $("#groupNameTable").append("<div class=\"row\"><div class=\"column\">Group " + String.fromCharCode(65 + index) + ": </div></div><div class=\"row\"><div class=\"column\"> <input type=\"text\" id=\"group" + index + "\"/></div><div class=\"column\"><button type=\"button\" onclick=\"setName(" + index + ")\" class=\"btn btn-secondary mx-2\">Set Name</button\></div><div class=\"column\"><button type=\"button\" onclick=\"deleteName(" + index + ")\" class=\"btn btn-secondary mx-2\">Delete Name</button></div><div class=\"column\"><button type=\"button\" class=\"btn btn-info mx-2\" onclick=\"clearGroup(" + index + ")\">Clear Laptime</button></div></div>");
             }
+        }
+
+        function setName(group) {
+            var name = ""; 
+            name = document.getElementById("group" + group).value;
+
+            if ("" == name) {
+                alert("Empty Name Field");
+            } else {
+                global.wsClient.setName(group, name).then(function (rsp) {
+                    console.info("Set Name \"" + rsp.name + "\" for Group " + rsp.group);
+                }).catch(function (err) {
+                    if ("undefined" !== typeof err) {
+                        console.error(err);
+                    }
+                });
+
+            }
+        }
+
+        function deleteName(group) {
+            console.log("Name Deleted");
         }
 
         $(document).ready(function () {

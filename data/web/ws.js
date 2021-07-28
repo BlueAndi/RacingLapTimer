@@ -139,6 +139,10 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
             } else if ("CLEAR" === this.pendingCmd.name) {
                 rsp.cleared = parseInt(data[1]);
                 this.pendingCmd.resolve(rsp);
+            } else if ("SET_NAME" === this.pendingCmd.name) {
+                rsp.group = parseInt(data[1]);
+                rsp.name = data[2];
+                this.pendingCmd.resolve(rsp);
             } else {
                 console.error("Unknown command: " + this.pendingCmd.name);
                 this.pendingCmd.reject();
@@ -226,6 +230,23 @@ cpjs.ws.Client.prototype.clearGroup = function(group) {
             this._sendCmd({
                 name: "CLEAR",
                 par: group,
+                resolve: resolve,
+                reject: reject
+            });
+        } else {
+            reject();
+        }
+    }.bind(this));
+};
+
+cpjs.ws.Client.prototype.setName =  function (group, groupName) {
+    return new Promise( function (resolve, reject) {
+        if (null === this.socket){
+            reject();
+        } else if ((typeof group === 'number') && (isFinite(group))) {
+            this._sendCmd({
+                name: "SET_NAME",
+                par: group + ":" + groupName,
                 resolve: resolve,
                 reject: reject
             });
