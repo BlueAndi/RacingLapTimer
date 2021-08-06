@@ -67,6 +67,7 @@ Competition::Competition() : m_startTimestamp(0),
     for (uint8_t group = 0; group < MAX_NUMBER_OF_GROUPS; group++)
     {
         m_resultTable[group] = 0;
+        m_nameTable[group] = "";
     }
 }
 
@@ -204,7 +205,7 @@ uint32_t Competition::getLaptime(uint8_t group)
 {
     uint32_t result = 0;
 
-    if((m_numberOfGroups > group))
+    if ((m_numberOfGroups > group))
     {
         result = m_resultTable[group];
     }
@@ -216,9 +217,37 @@ bool Competition::clearLaptime(uint8_t group)
 {
     bool isSuccess = false;
 
-    if(m_numberOfGroups > group)
+    if (m_numberOfGroups > group)
     {
         m_resultTable[group] = 0;
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
+bool Competition::setGroupName(uint8_t group, const String &groupName)
+{
+    bool isSuccess = false;
+
+    if (!groupName.isEmpty())
+    {
+        m_nameTable[group] = groupName;
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
+bool Competition::getGroupName(uint8_t group, String &groupName)
+{
+    bool isSuccess = false;
+
+    String retrievedName = m_nameTable[group];
+
+    if (!retrievedName.isEmpty())
+    {
+        groupName = retrievedName;
         isSuccess = true;
     }
 

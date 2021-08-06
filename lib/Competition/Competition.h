@@ -122,6 +122,24 @@ public:
      */
     bool clearLaptime(uint8_t group);
 
+    /**
+     *  Sets the Name of the selected group
+     *
+     *  @param[in] group Number of Group to set the name for.
+     *  @param[in] groupName Chosen Name of the group
+     *  @return If the name of the groups is successfully set, returns true. Otherwise, false.
+     */
+    bool setGroupName(uint8_t group, const String &groupName);
+
+    /**
+     *  Retrieves the name of the selected group
+     *  
+     *  @param[in] group Number of Group to get Name for.
+     *  @param[out] groupName Name of selected group.
+     *  @return  If the name of the groups is successfully retrieved, returns true. Otherwise, false.
+     */
+    bool getGroupName(uint8_t group, String &groupName);
+
 private:
     /**
      *  Updates fastest Lap Time of the currently Active Group.
@@ -160,6 +178,9 @@ private:
 
     /** Group that has been RELEASED for the run */
     uint8_t             m_activeGroup;
+
+    /** Array to contain the name of each group */
+    String            m_nameTable[MAX_NUMBER_OF_GROUPS];
 };
 
 /******************************************************************************
