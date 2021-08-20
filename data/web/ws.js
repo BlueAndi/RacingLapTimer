@@ -147,6 +147,9 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
                 rsp.group = parseInt(data[1]);
                 rsp.name = data[2];
                 this.pendingCmd.resolve(rsp);
+            } else if ("CLEAR_NAME" === this.pendingCmd.name) {
+                rsp.group = parseInt(data[1]);
+                this.pendingCmd.resolve(rsp);
             } else {
                 console.error("Unknown command: " + this.pendingCmd.name);
                 this.pendingCmd.reject();
@@ -267,6 +270,23 @@ cpjs.ws.Client.prototype.getName =  function (group) {
         } else if ((typeof group === 'number') && (isFinite(group))) {
             this._sendCmd({
                 name: "GET_NAME",
+                par: group,
+                resolve: resolve,
+                reject: reject
+            });
+        } else {
+            reject();
+        }
+    }.bind(this));
+};
+
+cpjs.ws.Client.prototype.clearName =  function (group) {
+    return new Promise( function (resolve, reject) {
+        if (null === this.socket){
+            reject();
+        } else if ((typeof group === 'number') && (isFinite(group))) {
+            this._sendCmd({
+                name: "CLEAR_NAME",
                 par: group,
                 resolve: resolve,
                 reject: reject

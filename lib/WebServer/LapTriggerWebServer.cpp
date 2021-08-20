@@ -386,6 +386,18 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
 
         m_webSocketSrv.sendTXT(clientId, outputMessage);
     }
+    else if (cmd.equals("CLEAR_NAME"))
+    {
+        if (m_laptrigger->clearName(par.toInt()))
+        {
+            String outputMessage = "ACK;CLEAR_NAME;" + par;
+            m_webSocketSrv.sendTXT(clientId, outputMessage);
+        }
+        else
+        {
+            m_webSocketSrv.sendTXT(clientId, "NACK");
+        }
+    }
     else
     {
         m_webSocketSrv.sendTXT(clientId, "NACK");

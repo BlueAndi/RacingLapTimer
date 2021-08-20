@@ -254,6 +254,18 @@ bool Competition::getGroupName(uint8_t group, String &groupName)
     return isSuccess;
 }
 
+bool Competition::clearName(uint8_t group)
+{
+    bool isSuccess = true;
+
+    if (!m_nameTable[group].isEmpty())
+    {
+        m_nameTable[group].clear();
+    }
+
+    return isSuccess;
+}
+
 /******************************************************************************
  * Protected Methods
  *****************************************************************************/

@@ -140,6 +140,14 @@ public:
      */
     bool getGroupName(uint8_t group, String &groupName);
 
+    /**
+     *  Sets the Name of the selected group to "" as a default value.
+     * 
+     *  @param[in] group Number of Group to clear the Name for.
+     *  @return If succesfully cleared returns true. Otherwise, false.
+     */
+    bool clearName(uint8_t group);
+
 private:
     /**
      *  Updates fastest Lap Time of the currently Active Group.
