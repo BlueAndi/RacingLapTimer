@@ -348,7 +348,6 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
         String selectedName = "";
         uint8_t namePos = 0;
         String outputMessage = "NACK";
-        LOG_INFO(par);
 
         selectedGroup = par.toInt();
         namePos = par.indexOf(":");
@@ -360,6 +359,29 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
             outputMessage += selectedGroup;
             outputMessage += ';';
             outputMessage += selectedName;
+        }
+
+        m_webSocketSrv.sendTXT(clientId, outputMessage);
+    }
+    else if (cmd.equals("GET_NAME"))
+    {
+        uint8_t selectedGroup = 0;
+        String selectedName = "";
+        String outputMessage = "NACK";
+        selectedGroup = par.toInt();
+
+        outputMessage = "ACK;GET_NAME;";
+        outputMessage += selectedGroup;
+        outputMessage += ';';
+
+        if (m_laptrigger->getGroupName(selectedGroup, selectedName))
+        {
+            outputMessage += selectedName;
+        }
+        else
+        {
+            outputMessage += "Group ";
+            outputMessage += (char)(selectedGroup + 65);
         }
 
         m_webSocketSrv.sendTXT(clientId, outputMessage);
