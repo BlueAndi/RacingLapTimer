@@ -246,7 +246,7 @@ cpjs.ws.Client.prototype.setName =  function (group, groupName) {
         } else if ((typeof group === 'number') && (isFinite(group))) {
             this._sendCmd({
                 name: "SET_NAME",
-                par: group + ";" + groupName,
+                par: group + ":" + groupName,
                 resolve: resolve,
                 reject: reject
             });
