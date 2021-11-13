@@ -321,7 +321,20 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
                 output += currentGroup;
                 output += ';';
                 output += groupLaptime;
-                
+                output += ';';
+
+                String selectedName = "";
+
+                if (m_laptrigger->getGroupName(currentGroup, selectedName))
+                {
+                    output += selectedName;
+                }
+                else
+                {
+                    output += "Group ";
+                    output += (char)(currentGroup + 65);
+                }
+
                 m_webSocketSrv.sendTXT(clientId, output);
             }
         }

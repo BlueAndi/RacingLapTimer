@@ -110,6 +110,7 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
             } else if("TABLE" == rsp.event){
                 rsp.activeGroup = parseInt(data[1]);
                 rsp.duration = parseInt(data[2]);
+                rsp.name = data[3];
             } else {
                 console.error("Unknown event: " + rsp.event);
             }
