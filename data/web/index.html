@@ -38,11 +38,11 @@
             </div>
         </div>
 
-        <div class="starter-template">
+        <div class="starter-template" id="counterArea">
             <h1 id="showSelectedGroup"></h1>
             <p class="lead">Elapsed time:</p>
             <p id="elapsedTime" class="display-1 text-monospace"></p>
-            <button type="button" class="btn btn-secondary" onclick="releaseMeasurement()">Release</button>
+            <button type="button" class="btn btn-secondary" id="releaseButton" onclick="releaseMeasurement()">Release</button>
         </div>
 
         <div class="row justify-content-center">
@@ -78,7 +78,8 @@
             numberOfGroups: 0,
             selectedGroup: 0,
             expectedEvents: 0,
-            resultTable: []
+            resultTable: [],
+            previousRunAccepted: true
         };
 
         function pad(num, size) {
@@ -139,14 +140,46 @@
         }
 
         function releaseMeasurement() {
-            clearTimer();
-            global.wsClient.release(global.selectedGroup).then(function(rsp) {
-                console.info("Released.");
-            }).catch(function(err) {
-                if ("undefined" !== typeof err) {
-                    console.error(err);
-                }
-            });
+            if(true == global.previousRunAccepted)
+            {
+                clearTimer();
+                global.wsClient.release(global.selectedGroup).then(function(rsp) {
+                    global.isReleased = true;
+                    document.getElementById("releaseButton").innerHTML = "Released";
+                    document.getElementById("releaseButton").className = "btn btn-warning";
+                    console.info("Released.");
+                }).catch(function(err) {
+                    if ("undefined" !== typeof err) {
+                        console.error(err);
+                    }
+                });
+            }
+            else
+            {
+                console.log("Previous run has not been accepted yet");
+            }
+        }
+
+        function acceptRun(successButton, activeGroup, laptime) {
+            tableInput(activeGroup, laptime);
+
+            document.getElementById("releaseButton").innerHTML = "Release";
+            document.getElementById("releaseButton").className = "btn btn-secondary";
+            successButton.parentNode.removeChild(successButton);
+            global.previousRunAccepted = true;
+            console.log("Run Accepted");
+        }
+
+        function tableInput(activeGroup, laptime)
+        {
+            global.selectedGroup = activeGroup;
+            if ((0 == global.resultTable[global.selectedGroup].duration) ||
+                (laptime < global.resultTable[global.selectedGroup].duration)) {
+
+                global.resultTable[global.selectedGroup].duration = laptime;
+
+                updateResultTable();
+            }
         }
 
         function timestamp2MinSecMSec(timestamp) {
@@ -175,15 +208,6 @@
             global.seconds          = timeMinSecMSec.seconds;
             global.milliseconds     = timeMinSecMSec.milliseconds;
             updateTimer();
-
-            global.selectedGroup = activeGroup;
-            if ((0 == global.resultTable[global.selectedGroup].duration) ||
-                (laptime < global.resultTable[global.selectedGroup].duration)) {
-
-                global.resultTable[global.selectedGroup].duration = laptime;
-
-                updateResultTable();
-            }
         }
 
         function onEvent(rsp) {
@@ -196,14 +220,15 @@
             } else if ("FINISHED" == rsp.event) {
 
                 triggerTimer();
-
                 processTime(rsp.activeGroup, rsp.duration);
+                $("#counterArea").append("<button type=\"button\" onclick=\"acceptRun(this,"+ rsp.activeGroup+","+ rsp.duration +")\" class=\"btn btn-success mx-2\">Accept Run</button\>");
+                global.previousRunAccepted = false;
 
             } else if("TABLE" == rsp.event){
                 if(0 < global.expectedEvents)
                 {
                     console.log("Group " + rsp.activeGroup + ": " + rsp.duration);
-                    processTime(rsp.activeGroup, rsp.duration);
+                    tableInput(rsp.activeGroup, rsp.duration);
                     global.expectedEvents--;
                     if(0 == global.expectedEvents)
                     {
