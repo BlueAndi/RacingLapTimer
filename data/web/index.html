@@ -34,15 +34,16 @@
     <main role="main" class="container">
 
         <div class="row justify-content-center">
-            <div id="groupSelectionBar" class="btn-toolbar" role="group" aria-label="Choose group">
+            <div id="groupSelectionBar" class="btn-toolbar" role="group" aria-label="Choose group" style="display: flex;">
             </div>
         </div>
 
-        <div class="starter-template" id="counterArea">
+        <div class="starter-template">
             <h1 id="showSelectedGroup"></h1>
             <p class="lead">Elapsed time:</p>
             <p id="elapsedTime" class="display-1 text-monospace"></p>
-            <button type="button" class="btn btn-secondary" id="releaseButton" onclick="releaseMeasurement()">Release</button>
+            <button type="button" class="btn btn-secondary" id="releaseButton" onclick="releaseMeasurement()" style="display: initial;">Release</button>
+            <div id="buttonsArea"></div>
         </div>
 
         <div class="row justify-content-center">
@@ -79,7 +80,7 @@
             selectedGroup: 0,
             expectedEvents: 0,
             resultTable: [],
-            previousRunAccepted: true
+            ready: false
         };
 
         function pad(num, size) {
@@ -140,13 +141,13 @@
         }
 
         function releaseMeasurement() {
-            if(true == global.previousRunAccepted)
+            if(true == global.ready)
             {
                 clearTimer();
                 global.wsClient.release(global.selectedGroup).then(function(rsp) {
                     global.isReleased = true;
-                    document.getElementById("releaseButton").innerHTML = "Released";
-                    document.getElementById("releaseButton").className = "btn btn-warning";
+                    document.getElementById("releaseButton").style="display: none;"
+                    document.getElementById("groupSelectionBar").style="display: none;"
                     console.info("Released.");
                 }).catch(function(err) {
                     if ("undefined" !== typeof err) {
@@ -160,14 +161,30 @@
             }
         }
 
+        function resetButtonsArea() {
+            document.getElementById("buttonsArea").innerHTML="";
+            document.getElementById("releaseButton").style="display: initial;"
+            document.getElementById("groupSelectionBar").style="display: flex;"
+        }
+
+        function setButtonsArea(rsp) {
+            document.getElementById("buttonsArea").style="display: initial;"
+            $("#buttonsArea").append("<button type=\"button\" onclick=\"acceptRun(this,"+ rsp.activeGroup+","+ rsp.duration +")\" class=\"btn btn-success mx-2\">Accept Run</button\>");
+            $("#buttonsArea").append("<button type=\"button\" onclick=\"rejectRun(this,"+ rsp.activeGroup+","+ rsp.duration +")\" class=\"btn btn-danger mx-2\">Reject Run</button\>");
+            global.ready = false;
+        }
+
         function acceptRun(successButton, activeGroup, laptime) {
             tableInput(activeGroup, laptime);
-
-            document.getElementById("releaseButton").innerHTML = "Release";
-            document.getElementById("releaseButton").className = "btn btn-secondary";
-            successButton.parentNode.removeChild(successButton);
-            global.previousRunAccepted = true;
+            resetButtonsArea()
+            global.ready = true;
             console.log("Run Accepted");
+        }
+
+        function rejectRun(rejectButton, activeGroup, laptime) {
+            resetButtonsArea()
+            global.ready = true;
+            console.log("Run Rejected");
         }
 
         function tableInput(activeGroup, laptime)
@@ -221,8 +238,7 @@
 
                 triggerTimer();
                 processTime(rsp.activeGroup, rsp.duration);
-                $("#counterArea").append("<button type=\"button\" onclick=\"acceptRun(this,"+ rsp.activeGroup+","+ rsp.duration +")\" class=\"btn btn-success mx-2\">Accept Run</button\>");
-                global.previousRunAccepted = false;
+                setButtonsArea(rsp);
 
             } else if("TABLE" == rsp.event){
                 if(0 < global.expectedEvents)
@@ -361,6 +377,7 @@
                     return getSavedTable();
                 }).then(function() {
                     updateResultTable();
+                    global.ready = true;
                     return Promise.resolve();
                 }).catch(function(err) {
                     return Promise.reject();
