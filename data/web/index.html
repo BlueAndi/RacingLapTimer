@@ -183,9 +183,12 @@
         }
 
         function rejectRun(rejectButton, activeGroup, laptime) {
-            resetButtonsArea()
-            global.ready = true;
-            console.log("Run Rejected");
+            return global.wsClient.rejectRun().then(function (rsp) {
+                resetButtonsArea()
+                global.ready = true;
+                console.log("Run Rejected");
+                return Promise.resolve();
+            });
         }
 
         function tableInput(activeGroup, laptime)

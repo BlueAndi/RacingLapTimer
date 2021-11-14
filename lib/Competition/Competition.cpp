@@ -50,6 +50,13 @@
  * Types and Classes
  *****************************************************************************/
 
+struct LAP
+{
+    uint8_t group = 0;
+    uint32_t runtime = 0;
+}lastRun;
+
+
 /******************************************************************************
  * Local Variables
  *****************************************************************************/
@@ -266,6 +273,12 @@ bool Competition::clearName(uint8_t group)
     return isSuccess;
 }
 
+bool Competition::rejectRun()
+{
+    m_resultTable[lastRun.group] = lastRun.runtime;
+    return true;
+}
+
 /******************************************************************************
  * Protected Methods
  *****************************************************************************/
@@ -279,6 +292,8 @@ void Competition::updateLapTime(uint32_t runtime)
     if ((runtime < m_resultTable[m_activeGroup]) ||
         (0 == m_resultTable[m_activeGroup]))
     {
+        lastRun.group = m_activeGroup;
+        lastRun.runtime = m_resultTable[m_activeGroup];
         m_resultTable[m_activeGroup] = runtime;
     }
 

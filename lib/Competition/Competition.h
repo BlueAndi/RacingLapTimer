@@ -148,6 +148,13 @@ public:
      */
     bool clearName(uint8_t group);
 
+    /**
+     *  Rejects the last fastest time of a group, reverting it to its previous fastest time.
+     *  
+     *  @return If succesfully rolled back returns true, Otherwise, false.
+     */
+    bool rejectRun();
+
 private:
     /**
      *  Updates fastest Lap Time of the currently Active Group.

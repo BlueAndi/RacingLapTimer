@@ -151,6 +151,8 @@ cpjs.ws.Client.prototype._onMessage = function(msg) {
             } else if ("CLEAR_NAME" === this.pendingCmd.name) {
                 rsp.group = parseInt(data[1]);
                 this.pendingCmd.resolve(rsp);
+            } else if ("REJECT_RUN" === this.pendingCmd.name) {
+                this.pendingCmd.resolve(rsp);
             } else {
                 console.error("Unknown command: " + this.pendingCmd.name);
                 this.pendingCmd.reject();
@@ -281,19 +283,17 @@ cpjs.ws.Client.prototype.getName =  function (group) {
     }.bind(this));
 };
 
-cpjs.ws.Client.prototype.clearName =  function (group) {
+cpjs.ws.Client.prototype.rejectRun =  function () {
     return new Promise( function (resolve, reject) {
         if (null === this.socket){
             reject();
-        } else if ((typeof group === 'number') && (isFinite(group))) {
+        } else {
             this._sendCmd({
-                name: "CLEAR_NAME",
-                par: group,
+                name: "REJECT_RUN",
+                par: null,
                 resolve: resolve,
                 reject: reject
             });
-        } else {
-            reject();
         }
     }.bind(this));
 };

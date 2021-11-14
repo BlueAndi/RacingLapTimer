@@ -411,6 +411,18 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
             m_webSocketSrv.sendTXT(clientId, "NACK");
         }
     }
+    else if(cmd.equals("REJECT_RUN"))
+    {
+        if (m_laptrigger->rejectRun())
+        {
+            String outputMessage = "ACK;REJECT_RUN";
+            m_webSocketSrv.sendTXT(clientId, outputMessage);
+        }
+        else
+        {
+            m_webSocketSrv.sendTXT(clientId, "NACK");
+        }
+    }
     else
     {
         m_webSocketSrv.sendTXT(clientId, "NACK");
