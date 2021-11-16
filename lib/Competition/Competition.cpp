@@ -50,16 +50,24 @@
  * Types and Classes
  *****************************************************************************/
 
+/**
+ *  Structure definition of a Lap.
+ */
 struct LAP
 {
-    uint8_t group = 0;
-    uint32_t runtime = 0;
-}lastRun;
-
+    uint8_t group = 0;    /**< Group that made the Lap */
+    uint32_t runtime = 0; /**< Duration of the Lap */
+};
 
 /******************************************************************************
  * Local Variables
  *****************************************************************************/
+
+/** 
+ *  Buffer of last valid run, saved for rollback if the current Lap is 
+ *  rejected. 
+ */
+LAP lastRun;
 
 /******************************************************************************
  * Public Methods
