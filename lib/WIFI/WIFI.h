@@ -46,7 +46,7 @@
  *****************************************************************************/
 
 /**
- *  WLAN Class for Implementation of Wireless Capabilites.
+ *  WiFi Class for Implementation of Wireless Capabilites.
  */
 class WIFI
 {

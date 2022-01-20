@@ -64,8 +64,8 @@ static const size_t         MAX_GROUPS  = 10;
 /** The groups/teams, which may take part in the challenge. */
 static Group                m_groups[MAX_GROUPS];
 
-/** WLAN Instance */
-static WIFI                 gWlan;
+/** WiFi Instance */
+static WIFI                 gWiFi;
 
 /** Competition Instance */
 static Competition          gCompetition(m_groups, MAX_GROUPS);
@@ -97,7 +97,7 @@ void setup() /* cppcheck-suppress unusedFunction */
         isError = true;
     }
     /* Start Wireless Connection. */
-    else if (false == gWlan.begin())
+    else if (false == gWiFi.begin())
     {
         LOG_FATAL("Failed to start wifi.");
         isError = true;
@@ -141,7 +141,7 @@ void loop() /* cppcheck-suppress unusedFunction */
     {
         isSuccess = false;
     }
-    else if (false == gWlan.runCycle())
+    else if (false == gWiFi.runCycle())
     {
         isSuccess = false;
     }
