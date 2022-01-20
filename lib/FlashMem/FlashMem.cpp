@@ -138,7 +138,7 @@ bool Flash::setHeader(bool areCredentialsStored)
     return isSuccess;
 }
 
-void Flash::getString(const uint8_t &address, const uint8_t &maxLength, String &output)
+void Flash::getString(const uint16_t &address, const uint8_t &maxLength, String &output)
 {
     output.clear();
 
@@ -157,7 +157,7 @@ void Flash::getString(const uint8_t &address, const uint8_t &maxLength, String &
     }
 }
 
-bool Flash::setString(const uint8_t &address, const uint8_t &maxLength, const String &input)
+bool Flash::setString(const uint16_t &address, const uint8_t &maxLength, const String &input)
 {
     bool isSuccess = false;
 
@@ -173,7 +173,7 @@ bool Flash::setString(const uint8_t &address, const uint8_t &maxLength, const St
     return isSuccess;
 }
 
-bool Flash::getUInt8(const uint8_t &address, uint8_t &value)
+bool Flash::getUInt8(const uint16_t &address, uint8_t &value)
 {
     bool isSuccess = false;
 
@@ -185,7 +185,7 @@ bool Flash::getUInt8(const uint8_t &address, uint8_t &value)
     return isSuccess;
 }
 
-bool Flash::setUInt8(const uint8_t &address, uint8_t value)
+bool Flash::setUInt8(const uint16_t &address, uint8_t value)
 {
     bool isSuccess = false;
 
