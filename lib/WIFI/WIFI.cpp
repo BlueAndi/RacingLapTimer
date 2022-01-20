@@ -33,7 +33,7 @@
  * Includes
  *****************************************************************************/
 #include "WIFI.h"
-#include "FlashMem.h"
+#include "Settings.h"
 
 #include <Log.h>
 
@@ -75,7 +75,11 @@ bool WIFI::begin()
 {
     bool isSuccess = true;
 
-    if (Flash::getCredentials(m_staSSID, m_staPassword))
+    Settings::getInstance().getWiFiSSD(m_staSSID);
+    Settings::getInstance().getWiFiPassphrase(m_staPassword);
+
+    if ((0 < m_staSSID.length()) &&
+        (0 < m_staPassword.length()))
     {
         WiFi.mode(WIFI_STA);
         WiFi.begin(m_staSSID, m_staPassword);

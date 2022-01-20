@@ -34,7 +34,7 @@
  *****************************************************************************/
 
 #include "Board.h"
-#include "FlashMem.h"
+#include "Settings.h"
 #include "WIFI.h"
 #include "LapTriggerWebServer.h"
 #include "Competition.h"
@@ -90,10 +90,10 @@ void setup() /* cppcheck-suppress unusedFunction */
         LOG_FATAL("Failed to initialize the HAL.");
         isError = true;
     }
-    /* Mount persistent memory. */
-    else if (false == Flash::begin())
+    /* Mount settings. */
+    else if (false == Settings::getInstance().begin())
     {
-        LOG_FATAL("Failed to mount persistent memory.");
+        LOG_FATAL("Failed to mount settings.");
         isError = true;
     }
     /* Start Wireless Connection. */
@@ -106,6 +106,12 @@ void setup() /* cppcheck-suppress unusedFunction */
     else if (false == LittleFS.begin())
     {
         LOG_FATAL("Failed to mount filesystem.");
+        isError = false;
+    }
+    /* Initialize competition */
+    else if (false == gCompetition.begin())
+    {
+        LOG_FATAL("Failed to initialize competition.");
         isError = false;
     }
     /* Start Web Server. */

@@ -90,6 +90,13 @@ public:
     }
 
     /**
+     * Initialize the competition by loading settings.
+     * 
+     * @return If successful, it will return true otherwise false.
+     */
+    bool begin();
+
+    /**
      *  Handle the competition state machine, depending on the user input 
      *  from web frontend and sensor input.
      * 

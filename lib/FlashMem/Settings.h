@@ -25,18 +25,17 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Abstraction of EEPROM for the ESP8266
- * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
+ * @brief  Settings stored in persistent memory
+ * @author Andreas Merkle <web@blue-andi.de>
  */
 
-#ifndef FLASHMEM_H_
-#define FLASHMEM_H_
+#ifndef SETTINGS_H_
+#define SETTINGS_H_
 
 /******************************************************************************
  * Includes
  *****************************************************************************/
-#include <EEPROM.h>
-#include <Arduino.h>
+#include "FlashMem.h"
 
 /******************************************************************************
  * Macros
@@ -46,52 +45,103 @@
  * Types and Classes
  *****************************************************************************/
 
-namespace FlashMem
+/** Settings which are stored in persistent memory. */
+class Settings
 {
+public:
+
     /**
-     *  Initialization of the EEPROM module.
+     * Get the settings instance.
      * 
-     *  @return If Initialization is successful, return true. Otherwise false.
+     * @return Settings instance
+     */
+    static Settings& getInstance()
+    {
+        static Settings instance; /* idiom */
+
+        return instance;
+    }
+
+    /**
+     * Initialize settings and get access to the persistent memory.
+     * 
+     * @return If successful, it will return true otherwise false.
      */
     bool begin();
 
     /**
-     *  Retrieves a Null-terminated String from the EEPROM.
-     *
-     *  @param[in] address Address where the String is saved.
-     *  @param[in] maxLength Maximum Length of the String.
-     *  @param[out] output Buffer to save the String to.
+     * Get wifi SSID.
+     * 
+     * @param[out] ssid WiFi SSID
      */
-    void getString(const uint16_t &address, const uint8_t &maxLength, String &output);
+    void getWiFiSSD(String& ssid);
 
     /**
-     *  Saves a Null-terminated String in the EEPROM.
-     *
-     *  @param[in] address Address where the String will be saved.
-     *  @param[in] maxLength Maximum Length of the String.
-     *  @param[in] input String to save in EEPROM.
-     *  @return If string written in EEPROM, returns true. Otherwise false.
+     * Set wifi SSID.
+     * 
+     * @param[in] ssid WiFi SSID
      */
-    bool setString(const uint16_t &address, const uint8_t &maxLength, const String &input);
+    void setWiFiSSID(const String& ssid);
 
     /**
-     *  Retrieves an 8-bit Unsigned Integer from the EEPROM.
-     *
-     *  @param[in] address Address where the 8-bit Unsigned Integer is saved.
-     *  @param[out] value Buffer to save the 8-bit Unsigned Integer to.
-     *  @return If 8-bit Unsigned Integer succesfully retrieved from EEPROM, returns true. 
-     *          Otherwise false.
+     * Get wifi passphrase.
+     * 
+     * @param[out] passphrase WiFi passphrase
      */
-    bool getUInt8(const uint16_t &address, uint8_t &value);
+    void getWiFiPassphrase(String& passphrase);
 
     /**
-     *  Saves an 8-bit Unsigned Integer in the EEPROM.
-     *
-     *  @param[in] address Address where the 8-bit Unsigned Integer will be saved.
-     *  @param[in] value 8-bit Unsigned Integer to save in EEPROM.
-     *  @return If 8-bit Unsigned Integer written in EEPROM, returns true. Otherwise false.
+     * Set wifi passphrase.
+     * 
+     * @param[in] passphrase WiFi passphrase
      */
-    bool setUInt8(const uint16_t &address, uint8_t value);
+    void setWiFiPassphrase(const String& passphrase);
+
+    /**
+     * Get number of groups.
+     * 
+     * @param[out] numberOfGroups   Number of groups
+     */
+    void getNumberOfGroups(uint8_t& numberOfGroups);
+
+    /**
+     * Set number of groups.
+     * 
+     * @param[in] numberOfGroups    Number of groups
+     */
+    void setNumberOfGroups(uint8_t numberOfGroups);
+
+    /**
+     * Get name of specific group.
+     * 
+     * @param[in] idx   Group index
+     * @param[out] name Group name
+     */
+    void getGroupName(uint8_t idx, String& name);
+
+    /**
+     * Set name of specific group.
+     * 
+     * @param[in] idx   Group index
+     * @param[in] name Group name
+     */
+    void setGroupName(uint8_t idx, const String& name);
+
+private:
+
+    /**
+     * Constructs the settings.
+     */
+    Settings()
+    {
+    }
+
+    /**
+     * Destroys the settings.
+     */
+    ~Settings()
+    {
+    }
 
 };
 
@@ -99,4 +149,4 @@ namespace FlashMem
  * Functions
  *****************************************************************************/
 
-#endif /* FLASHMEM_H_ */
+#endif /* SETTINGS_H_ */

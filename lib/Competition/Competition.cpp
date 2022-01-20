@@ -34,7 +34,7 @@
  *****************************************************************************/
 #include "Competition.h"
 #include "Board.h"
-#include "FlashMem.h"
+#include "Settings.h"
 
 #include <Log.h>
 
@@ -57,6 +57,35 @@
 /******************************************************************************
  * Public Methods
  *****************************************************************************/
+
+bool Competition::begin()
+{
+    uint8_t idx = 0;
+
+    Settings::getInstance().getNumberOfGroups(m_numberOfGroups);
+
+    if (MIN_NUMBER_OF_GROUPS > m_numberOfGroups)
+    {
+        m_numberOfGroups = MIN_NUMBER_OF_GROUPS;
+    }
+    else if (MAX_GROUPS < m_numberOfGroups)
+    {
+        m_numberOfGroups = MAX_GROUPS;
+    }
+
+    if (nullptr != m_groups)
+    {
+        for(idx = 0; idx < m_numberOfGroups; ++idx)
+        {
+            String name;
+            Settings::getInstance().getGroupName(idx, name);
+
+            m_groups[idx].setName(name);
+        }
+    }
+
+    return true;
+}
 
 bool Competition::handleCompetition(String &outputMessage)
 {
@@ -137,29 +166,13 @@ bool Competition::setReleasedState(uint8_t activeGroup)
 
 bool Competition::getNumberofGroups(uint8_t &groups)
 {
-    bool isSuccess = false;
+    groups = m_numberOfGroups;
 
-    if (Flash::getUInt8(Flash::NVM_GROUPS_ADDRESS, m_numberOfGroups))
-    {
-        if (MIN_NUMBER_OF_GROUPS > m_numberOfGroups)
-        {
-            m_numberOfGroups = MIN_NUMBER_OF_GROUPS;
-        }
-        else if (MAX_GROUPS < m_numberOfGroups)
-        {
-            m_numberOfGroups = MAX_GROUPS;
-        }
-
-        groups = m_numberOfGroups;
-        isSuccess = true;
-    }
-
-    return isSuccess;
+    return true;
 }
 
 bool Competition::setNumberofGroups(uint8_t groups)
 {
-    bool isSuccess = false;
     uint8_t validGroups = 0;
 
     if (MIN_NUMBER_OF_GROUPS > groups)
@@ -175,13 +188,26 @@ bool Competition::setNumberofGroups(uint8_t groups)
         validGroups = groups;
     }
 
-    if (Flash::setUInt8(Flash::NVM_GROUPS_ADDRESS, validGroups))
+    if (validGroups != m_numberOfGroups)
     {
+        uint8_t idx = 0;
+
+        Settings::getInstance().setNumberOfGroups(validGroups);
+
+        if ((nullptr != m_groups) &&
+            (validGroups > m_numberOfGroups))
+        {
+            for(idx = m_numberOfGroups; idx < validGroups; ++idx)
+            {
+                m_groups[idx].setName("");
+                m_groups[idx].setFastestLapTime(0);
+            }
+        }
+
         m_numberOfGroups = validGroups;
-        isSuccess = true;
     }
 
-    return isSuccess;
+    return true;
 }
 
 uint32_t Competition::getLaptime(uint8_t group)
@@ -218,6 +244,9 @@ bool Competition::setGroupName(uint8_t group, const String &groupName)
     if (nullptr != m_groups)
     {
         m_groups[group].setName(groupName);
+
+        Settings::getInstance().setGroupName(group, groupName);
+
         isSuccess = true;
     }
 
@@ -239,15 +268,7 @@ bool Competition::getGroupName(uint8_t group, String &groupName)
 
 bool Competition::clearName(uint8_t group)
 {
-    bool isSuccess = false;
-
-    if (nullptr != m_groups)
-    {
-        m_groups[group].setName("");
-        isSuccess = true;
-    }
-
-    return isSuccess;
+    return setGroupName(group, "");
 }
 
 bool Competition::rejectRun()

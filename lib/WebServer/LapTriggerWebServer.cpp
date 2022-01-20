@@ -33,7 +33,7 @@
  * Includes
  *****************************************************************************/
 #include "LapTriggerWebServer.h"
-#include "FlashMem.h"
+#include "Settings.h"
 
 #include <Log.h>
 
@@ -216,12 +216,12 @@ void LapTriggerWebServer::handleCredentials()
         }
         else
         {
-            if (Flash::setCredentials(ssidInput, passwordInput))
-            {
-                m_webServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
-                delay(3000);
-                ESP.restart();
-            }
+            Settings::getInstance().setWiFiSSID(ssidInput);
+            Settings::getInstance().setWiFiPassphrase(passwordInput);
+
+            m_webServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
+            delay(3000);
+            ESP.restart();
         }
     }
 }
