@@ -50,45 +50,13 @@
  * Types and Classes
  *****************************************************************************/
 
-/**
- *  Structure definition of a Lap.
- */
-struct LAP
-{
-    uint8_t group = 0;    /**< Group that made the Lap */
-    uint32_t runtime = 0; /**< Duration of the Lap */
-};
-
 /******************************************************************************
  * Local Variables
  *****************************************************************************/
 
-/** 
- *  Buffer of last valid run, saved for rollback if the current Lap is 
- *  rejected. 
- */
-LAP lastRun;
-
 /******************************************************************************
  * Public Methods
  *****************************************************************************/
-
-Competition::Competition() : m_startTimestamp(0),
-                             m_competitionState(COMPETITION_STATE_UNRELEASED),
-                             m_numberOfGroups(0),
-                             m_resultTable(),
-                             m_activeGroup(0)
-{
-    for (uint8_t group = 0; group < MAX_NUMBER_OF_GROUPS; group++)
-    {
-        m_resultTable[group] = 0;
-        m_nameTable[group] = "";
-    }
-}
-
-Competition::~Competition()
-{
-}
 
 bool Competition::handleCompetition(String &outputMessage)
 {
@@ -150,7 +118,7 @@ bool Competition::setReleasedState(uint8_t activeGroup)
 {
     bool isSuccess = false;
 
-    if ((MAX_NUMBER_OF_GROUPS - 1) > activeGroup)
+    if ((MAX_GROUPS - 1) > activeGroup)
     {
         m_activeGroup = activeGroup;
 
@@ -177,9 +145,9 @@ bool Competition::getNumberofGroups(uint8_t &groups)
         {
             m_numberOfGroups = MIN_NUMBER_OF_GROUPS;
         }
-        else if (MAX_NUMBER_OF_GROUPS < m_numberOfGroups)
+        else if (MAX_GROUPS < m_numberOfGroups)
         {
-            m_numberOfGroups = MAX_NUMBER_OF_GROUPS;
+            m_numberOfGroups = MAX_GROUPS;
         }
 
         groups = m_numberOfGroups;
@@ -198,9 +166,9 @@ bool Competition::setNumberofGroups(uint8_t groups)
     {
         validGroups = MIN_NUMBER_OF_GROUPS;
     }
-    else if (MAX_NUMBER_OF_GROUPS < groups)
+    else if (MAX_GROUPS < groups)
     {
-        validGroups = MAX_NUMBER_OF_GROUPS;
+        validGroups = MAX_GROUPS;
     }
     else
     {
@@ -220,9 +188,10 @@ uint32_t Competition::getLaptime(uint8_t group)
 {
     uint32_t result = 0;
 
-    if ((m_numberOfGroups > group))
+    if ((nullptr != m_groups) &&
+        (m_numberOfGroups > group))
     {
-        result = m_resultTable[group];
+        result = m_groups[group].getfastestLapTime();
     }
 
     return result;
@@ -232,9 +201,10 @@ bool Competition::clearLaptime(uint8_t group)
 {
     bool isSuccess = false;
 
-    if (m_numberOfGroups > group)
+    if ((nullptr != m_groups) &&
+        (m_numberOfGroups > group))
     {
-        m_resultTable[group] = 0;
+        m_groups[group].setFastestLapTime(0);
         isSuccess = true;
     }
 
@@ -245,9 +215,9 @@ bool Competition::setGroupName(uint8_t group, const String &groupName)
 {
     bool isSuccess = false;
 
-    if (!groupName.isEmpty())
+    if (nullptr != m_groups)
     {
-        m_nameTable[group] = groupName;
+        m_groups[group].setName(groupName);
         isSuccess = true;
     }
 
@@ -258,11 +228,9 @@ bool Competition::getGroupName(uint8_t group, String &groupName)
 {
     bool isSuccess = false;
 
-    String retrievedName = m_nameTable[group];
-
-    if (!retrievedName.isEmpty())
+    if (nullptr != m_groups)
     {
-        groupName = retrievedName;
+        groupName = m_groups[group].getName();
         isSuccess = true;
     }
 
@@ -271,11 +239,12 @@ bool Competition::getGroupName(uint8_t group, String &groupName)
 
 bool Competition::clearName(uint8_t group)
 {
-    bool isSuccess = true;
+    bool isSuccess = false;
 
-    if (!m_nameTable[group].isEmpty())
+    if (nullptr != m_groups)
     {
-        m_nameTable[group].clear();
+        m_groups[group].setName("");
+        isSuccess = true;
     }
 
     return isSuccess;
@@ -283,8 +252,15 @@ bool Competition::clearName(uint8_t group)
 
 bool Competition::rejectRun()
 {
-    m_resultTable[lastRun.group] = lastRun.runtime;
-    return true;
+    bool isSuccess = false;
+
+    if (nullptr != m_groups)
+    {
+        m_groups[m_lastRunGroup].setFastestLapTime(m_lastRunLapTime);
+        isSuccess = true;
+    }
+
+    return isSuccess;
 }
 
 /******************************************************************************
@@ -295,19 +271,16 @@ bool Competition::rejectRun()
  * Private Methods
  *****************************************************************************/
 
-void Competition::updateLapTime(uint32_t runtime)
+void Competition::updateLapTime(uint32_t lapTime)
 {
-    if ((runtime < m_resultTable[m_activeGroup]) ||
-        (0 == m_resultTable[m_activeGroup]))
-    {
-        lastRun.group = m_activeGroup;
-        lastRun.runtime = m_resultTable[m_activeGroup];
-        m_resultTable[m_activeGroup] = runtime;
-    }
+    m_lastRunGroup      = m_activeGroup;
+    m_lastRunLapTime    = m_groups[m_activeGroup].getfastestLapTime();
+
+    m_groups[m_activeGroup].setLapTimeIfFaster(lapTime);
 
     for (uint8_t group = 0; group < m_numberOfGroups; group++)
     {
-        LOG_INFO("Group %u: %u", group, m_resultTable[group]);
+        LOG_INFO("Group %u: %u", group, m_groups[group].getfastestLapTime());
     }
 }
 

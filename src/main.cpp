@@ -38,6 +38,7 @@
 #include "WIFI.h"
 #include "LapTriggerWebServer.h"
 #include "Competition.h"
+#include "Group.h"
 
 #include <Log.h>
 
@@ -57,14 +58,20 @@
  * Variables
  *****************************************************************************/
 
+/** Max. number of participating groups/teams. */
+static const size_t         MAX_GROUPS  = 10;
+
+/** The groups/teams, which may take part in the challenge. */
+static Group                m_groups[MAX_GROUPS];
+
 /** WLAN Instance */
 static WIFI                 gWlan;
 
 /** Competition Instance */
-static Competition          gLapTrigger;
+static Competition          gCompetition(m_groups, MAX_GROUPS);
 
 /** WebServer Instance */
-static LapTriggerWebServer  gWebServer(gLapTrigger);
+static LapTriggerWebServer  gWebServer(gCompetition);
 
 /******************************************************************************
  * External functions

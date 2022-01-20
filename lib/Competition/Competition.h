@@ -36,6 +36,7 @@
  * Includes
  *****************************************************************************/
 #include <Arduino.h>
+#include "Group.h"
 
 /******************************************************************************
  * Macros
@@ -64,14 +65,29 @@ public:
     } CompetitionState;
 
     /**
-     *  Default Constructor.
+     * Constructs the competition.
+     * 
+     * @param[in] groups    List of with max. supported groups.
+     * @param[in] maxGroups Max. number of groups in the list.
      */
-    Competition();
+    Competition(Group* groups, size_t maxGroups) :
+        m_groups(groups),
+        MAX_GROUPS(maxGroups),
+        m_lastRunGroup(0),
+        m_lastRunLapTime(0),
+        m_startTimestamp(0),
+        m_competitionState(COMPETITION_STATE_UNRELEASED),
+        m_numberOfGroups(0),
+        m_activeGroup(0)
+    {
+    }
 
     /**
-     *  Default Destructor.
+     * Destroys the competition.
      */
-    ~Competition();
+    ~Competition()
+    {
+    }
 
     /**
      *  Handle the competition state machine, depending on the user input 
@@ -159,9 +175,9 @@ private:
     /**
      *  Updates fastest Lap Time of the currently Active Group.
      *
-     *  @param[in] runtime Duration of Competition Lap
+     *  @param[in] lapTime Duration of Competition Lap
      */
-    void updateLapTime(uint32_t runtime);
+    void updateLapTime(uint32_t lapTime);
 
     /**
      *  After the first detection of the robot with the ext. sensor, this consider
@@ -170,14 +186,21 @@ private:
     static const uint32_t SENSOR_BLIND_PERIOD   = 400;
 
     /**
-     *  Maximum Number of Participating Groups 
-     */
-    static const uint8_t MAX_NUMBER_OF_GROUPS   = 10;
-
-    /**
      *  Minimum Number of Participating Groups 
      */
     static const uint8_t MIN_NUMBER_OF_GROUPS   = 1;
+
+    /** List of max. supported groups. Not all may participate in the competition. */
+    Group*              m_groups;
+
+    /** Max. number of groups, who can participate. */
+    const size_t        MAX_GROUPS;
+
+    /** The id of the group which did the last run. */
+    size_t              m_lastRunGroup;
+
+    /** The lap time in ms of the last run. */
+    uint32_t            m_lastRunLapTime;
 
     /** Competition start timestamp in ms. */
     uint32_t            m_startTimestamp;
@@ -188,14 +211,11 @@ private:
     /** Number of Groups */
     uint8_t             m_numberOfGroups;
 
-    /** Array to contain the fastest time of each group */
-    uint32_t            m_resultTable[MAX_NUMBER_OF_GROUPS];
-
     /** Group that has been RELEASED for the run */
     uint8_t             m_activeGroup;
 
-    /** Array to contain the name of each group */
-    String            m_nameTable[MAX_NUMBER_OF_GROUPS];
+    /* Default constructor not allowed. */
+    Competition();
 };
 
 /******************************************************************************
