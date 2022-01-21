@@ -60,8 +60,6 @@
 
 bool Competition::begin()
 {
-    uint8_t idx = 0;
-
     Settings::getInstance().getNumberOfGroups(m_numberOfGroups);
 
     if (MIN_NUMBER_OF_GROUPS > m_numberOfGroups)
@@ -75,6 +73,8 @@ bool Competition::begin()
 
     if (nullptr != m_groups)
     {
+        uint8_t idx = 0;
+
         for(idx = 0; idx < m_numberOfGroups; ++idx)
         {
             String name;
@@ -190,13 +190,13 @@ bool Competition::setNumberofGroups(uint8_t groups)
 
     if (validGroups != m_numberOfGroups)
     {
-        uint8_t idx = 0;
-
         Settings::getInstance().setNumberOfGroups(validGroups);
 
         if ((nullptr != m_groups) &&
             (validGroups > m_numberOfGroups))
         {
+            uint8_t idx = 0;
+            
             for(idx = m_numberOfGroups; idx < validGroups; ++idx)
             {
                 m_groups[idx].setName("");
