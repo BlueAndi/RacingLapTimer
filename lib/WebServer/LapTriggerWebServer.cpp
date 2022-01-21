@@ -357,16 +357,12 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
     }
     else if (cmd.equals("SET_NAME"))
     {
-        uint8_t selectedGroup = 0;
-        String selectedName = "";
-        uint8_t namePos = 0;
+        uint8_t selectedGroup = par.toInt();
+        uint8_t namePos = par.indexOf(":");
+        String selectedName = par.substring(namePos + 1);
         String outputMessage = "NACK";
 
-        selectedGroup = par.toInt();
-        namePos = par.indexOf(":");
-        selectedName = par.substring(namePos + 1);
-
-        if (m_laptrigger->setGroupName(selectedGroup, selectedName))
+        if (true == m_laptrigger->setGroupName(selectedGroup, selectedName))
         {
             outputMessage = "ACK;SET_NAME;";
             outputMessage += selectedGroup;
@@ -378,23 +374,16 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
     }
     else if (cmd.equals("GET_NAME"))
     {
-        uint8_t selectedGroup = 0;
+        uint8_t selectedGroup = par.toInt();
         String selectedName = "";
         String outputMessage = "NACK";
-        selectedGroup = par.toInt();
 
-        outputMessage = "ACK;GET_NAME;";
-        outputMessage += selectedGroup;
-        outputMessage += ';';
-
-        if (m_laptrigger->getGroupName(selectedGroup, selectedName))
+        if (true == m_laptrigger->getGroupName(selectedGroup, selectedName))
         {
+            outputMessage = "ACK;GET_NAME;";
+            outputMessage += selectedGroup;
+            outputMessage += ';';
             outputMessage += selectedName;
-        }
-        else
-        {
-            outputMessage += "Group ";
-            outputMessage += (char)(selectedGroup + 65);
         }
 
         m_webSocketSrv.sendTXT(clientId, outputMessage);

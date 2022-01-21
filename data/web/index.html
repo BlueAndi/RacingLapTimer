@@ -265,16 +265,33 @@
 
         function createGroups() {
             var index = 0;
+            var groupName = ""
 
             for (index = 0; index < global.numberOfGroups; ++index) {
-                $("#groupSelectionBar").append("<button type=\"button\" class=\"btn btn-primary mx-2\" onclick=\"selectGroup(" + index + ")\">" +  global.namesOfGroups[index] + "</button>");
+
+                if (0 == global.namesOfGroups[index].length) {
+                    groupName = "Group " + index;
+                } else {
+                    groupName = global.namesOfGroups[index];
+                }
+
+                $("#groupSelectionBar").append("<button type=\"button\" class=\"btn btn-primary mx-2\" onclick=\"selectGroup(" + index + ")\">" +  groupName + "</button>");
             }
         }
 
         function selectGroup(id) {
+            var groupName = ""
+
             if (global.numberOfGroups > id) {
                 global.selectedGroup = id;
-                $("#showSelectedGroup").html(global.namesOfGroups[global.selectedGroup]);
+
+                if (0 == global.namesOfGroups[global.selectedGroup].length) {
+                    groupName = "Group " + global.selectedGroup;
+                } else {
+                    groupName = global.namesOfGroups[global.selectedGroup];
+                }
+
+                $("#showSelectedGroup").html(groupName);
             }
         }
 
@@ -306,6 +323,7 @@
             var sortedTable     = global.resultTable.slice().sort(compareDuration);
             var fastestLap      = "";
             var timeMinSecMSec  = null;
+            var groupName       = "";
 
             $("#resultTable > tbody").empty();
             for (index = 0; index < global.numberOfGroups; ++index) {
@@ -321,10 +339,16 @@
                     fastestLap = getFormattedLapTime(timeMinSecMSec.minutes, timeMinSecMSec.seconds, timeMinSecMSec.milliseconds);
                 }
 
+                if (0 == global.namesOfGroups[sortedTable[index].id].length) {
+                    groupName = "Group " + sortedTable[index].id;
+                } else {
+                    groupName = global.namesOfGroups[sortedTable[index].id];
+                }
+
                 $("#resultTable > tbody").append("<tr><th scope=\"row\">" +
                     (index + 1) +
                     "</th><td>" +
-                    global.namesOfGroups[sortedTable[index].id] +
+                    groupName +
                     "</td><td>" +
                     fastestLap +
                     "</td></tr>");
@@ -334,8 +358,7 @@
         function getGroups() {
             return global.wsClient.getGroups().then(function (rsp) {
                 global.numberOfGroups = rsp.groups;
-                console.log(global.numberOfGroups + " Groups are configured.");
-                console.info("Retrieved Groups.");
+                console.info(global.numberOfGroups + " groups are configured.");
             
                 return Promise.resolve();
             });
@@ -374,22 +397,32 @@
                 onClosed: onClosed,
             }).then(function(rsp) {
                 console.info("Connected.");
+                return getGroups();
+            }).then(function() {
+                var promiseChain = Promise.resolve();
+                var index = 0;
                 
-                return getGroups().then(function() {
-                    updateTimer();
-                    selectGroup(0);
-                    createResultTable();              
-                    return getSavedTable();
-                }).then(function() {
-                    setTimeout(function(){
-                        createGroups();
-                        updateResultTable();
-                        global.ready = true;
-                        return Promise.resolve();
-                    }, 1000); // See To-Do in getSavedTable(). Optimization required.
-                }).catch(function(err) {
-                    return Promise.reject();
-                });
+                for(index = 0; index < global.numberOfGroups; ++index) {
+                    promiseChain = promiseChain.then(function() {
+                        return global.wsClient.getName(index);
+                    }).then(function(rsp) {
+                        global.namesOfGroups.push(rsp.name);
+                    });
+                }
+
+                return promiseChain;
+            }).then(function() {
+                updateTimer();
+                selectGroup(0);
+                createResultTable();              
+                return getSavedTable();
+            }).then(function() {
+                setTimeout(function(){
+                    createGroups();
+                    updateResultTable();
+                    global.ready = true;
+                    return Promise.resolve();
+                }, 1000); // See To-Do in getSavedTable(). Optimization required.
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);
