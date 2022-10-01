@@ -25,17 +25,17 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of Wireless Capabilities
- * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
+ * @brief  Settings stored in persistent memory
+ * @author Andreas Merkle <web@blue-andi.de>
  */
 
-#ifndef WIFI_H_
-#define WIFI_H_
+#ifndef SETTINGS_H_
+#define SETTINGS_H_
 
 /******************************************************************************
  * Includes
  *****************************************************************************/
-#include <ESP8266WiFi.h>
+#include "FlashMem.h"
 
 /******************************************************************************
  * Macros
@@ -45,96 +45,103 @@
  * Types and Classes
  *****************************************************************************/
 
-/**
- *  WiFi Class for Implementation of Wireless Capabilites.
- */
-class WIFI
+/** Settings which are stored in persistent memory. */
+class Settings
 {
 public:
 
     /**
-     *  Default Constructor.
-     */
-    WIFI();
-
-    /**
-     *  Default Destructor.
-     */
-    ~WIFI();
-
-    /**
-     *  Initialize WIFI Module.
+     * Get the settings instance.
      * 
-     *  @return If initialization is successful, returns true. Otherwise, false.
+     * @return Settings instance
+     */
+    static Settings& getInstance()
+    {
+        static Settings instance; /* idiom */
+
+        return instance;
+    }
+
+    /**
+     * Initialize settings and get access to the persistent memory.
+     * 
+     * @return If successful, it will return true otherwise false.
      */
     bool begin();
 
     /**
-     *  Executes WIFI Connection Check.
+     * Get wifi SSID.
      * 
-     *  @return success.
+     * @param[out] ssid WiFi SSID
      */
-    bool runCycle();
+    void getWiFiSSD(String& ssid);
 
     /**
-     *  Get the IP Address of the Syste,
+     * Set wifi SSID.
      * 
-     *  @return Returns the IP Address.
+     * @param[in] ssid WiFi SSID
      */
-    const IPAddress &getIPAddress(void);
+    void setWiFiSSID(const String& ssid);
+
+    /**
+     * Get wifi passphrase.
+     * 
+     * @param[out] passphrase WiFi passphrase
+     */
+    void getWiFiPassphrase(String& passphrase);
+
+    /**
+     * Set wifi passphrase.
+     * 
+     * @param[in] passphrase WiFi passphrase
+     */
+    void setWiFiPassphrase(const String& passphrase);
+
+    /**
+     * Get number of groups.
+     * 
+     * @param[out] numberOfGroups   Number of groups
+     */
+    void getNumberOfGroups(uint8_t& numberOfGroups);
+
+    /**
+     * Set number of groups.
+     * 
+     * @param[in] numberOfGroups    Number of groups
+     */
+    void setNumberOfGroups(uint8_t numberOfGroups);
+
+    /**
+     * Get name of specific group.
+     * 
+     * @param[in] idx   Group index
+     * @param[out] name Group name
+     */
+    void getGroupName(uint8_t idx, String& name);
+
+    /**
+     * Set name of specific group.
+     * 
+     * @param[in] idx   Group index
+     * @param[in] name Group name
+     */
+    void setGroupName(uint8_t idx, const String& name);
 
 private:
 
     /**
-     *  Connect to Wireless Access Point.
-     * 
-     *  @return If the device is succesfully connected to the Wireless Network, 
-     *  returns true. Otherwise false.
+     * Constructs the settings.
      */
-    bool connectStation();
+    Settings()
+    {
+    }
 
-    /** Timeout for WiFi connection. */
-    static const unsigned long      WIFI_TIMEOUT_MS         = 30000;
-
-    /** Default SSID for access point mode. */
-    static constexpr const char*   AP_MODE_SSID_DEFAULT     = "RacingLapTimer";
-
-    /** Default password for access point mode. */
-    static constexpr const char*   AP_MODE_PASSWORD_DEFAULT = "let me in";
-
-    /** true if system is connected in STA mode to a Network. */
-    bool m_isStaAvailable;
-
-    /** WiFi AP SSID. */
-    String m_apSSID;
-
-    /** WiFi AP Password. */
-    String m_apPassword;
-
-    /** WiFi STA SSID. */
-    String m_staSSID;
-
-    /** WiFi STA Password. */
-    String m_staPassword;
-
-    /** Local IP of the Device */
-    IPAddress m_localIP;
-
-private:
-
-    /** An instance shall not be copied. 
-     *  
-     *  @param[in] wifi WiFi instance to copy.
+    /**
+     * Destroys the settings.
      */
-    WIFI(const WIFI &wifi);
-
-    /** 
-     *  An instance shall not assigned.
-     *   
-     *  @param[in] wifi WiFi instance to assign.
-     *  @return Pointer to this instance.
-     */
-    WIFI &operator=(const WIFI &wifi);
+    ~Settings()
+    {
+    }
 
 };
 
@@ -142,4 +149,4 @@ private:
  * Functions
  *****************************************************************************/
 
-#endif /* WIFI_H_ */
+#endif /* SETTINGS_H_ */

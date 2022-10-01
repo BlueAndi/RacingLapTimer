@@ -22,6 +22,9 @@
                     <a class="nav-link hover" href="index.html">Home</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link hover" href="groupConfig.html">Group Configuration</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link hover" href="settings.html">Settings</a>
                 </li>
             </ul>
@@ -31,7 +34,7 @@
     <main role="main" class="container">
 
         <div class="row justify-content-center">
-            <div id="groupSelectionBar" class="btn-toolbar" role="group" aria-label="Choose group">
+            <div id="groupSelectionBar" class="btn-toolbar" role="group" aria-label="Choose group" style="display: flex;">
             </div>
         </div>
 
@@ -39,7 +42,8 @@
             <h1 id="showSelectedGroup"></h1>
             <p class="lead">Elapsed time:</p>
             <p id="elapsedTime" class="display-1 text-monospace"></p>
-            <button type="button" class="btn btn-secondary" onclick="releaseMeasurement()">Release</button>
+            <button type="button" class="btn btn-secondary" id="releaseButton" onclick="releaseMeasurement()" style="display: initial;">Release</button>
+            <div id="buttonsArea"></div>
         </div>
 
         <div class="row justify-content-center">
@@ -73,9 +77,11 @@
             milliseconds: 0,
             wsClient: new cpjs.ws.Client(),
             numberOfGroups: 0,
+            namesOfGroups : [],
             selectedGroup: 0,
             expectedEvents: 0,
-            resultTable: []
+            resultTable: [],
+            ready: false
         };
 
         function pad(num, size) {
@@ -136,14 +142,65 @@
         }
 
         function releaseMeasurement() {
-            clearTimer();
-            global.wsClient.release(global.selectedGroup).then(function(rsp) {
-                console.info("Released.");
-            }).catch(function(err) {
-                if ("undefined" !== typeof err) {
-                    console.error(err);
-                }
+            if(true == global.ready)
+            {
+                clearTimer();
+                global.wsClient.release(global.selectedGroup).then(function(rsp) {
+                    global.isReleased = true;
+                    document.getElementById("releaseButton").style="display: none;"
+                    document.getElementById("groupSelectionBar").style="display: none;"
+                    console.info("Released.");
+                }).catch(function(err) {
+                    if ("undefined" !== typeof err) {
+                        console.error(err);
+                    }
+                });
+            }
+            else
+            {
+                console.log("Previous run has not been accepted yet");
+            }
+        }
+
+        function resetButtonsArea() {
+            document.getElementById("buttonsArea").innerHTML="";
+            document.getElementById("releaseButton").style="display: initial;"
+            document.getElementById("groupSelectionBar").style="display: flex;"
+        }
+
+        function setButtonsArea(rsp) {
+            document.getElementById("buttonsArea").style="display: initial;"
+            $("#buttonsArea").append("<button type=\"button\" onclick=\"acceptRun(this,"+ rsp.activeGroup+","+ rsp.duration +")\" class=\"btn btn-success mx-2\">Accept Run</button\>");
+            $("#buttonsArea").append("<button type=\"button\" onclick=\"rejectRun(this,"+ rsp.activeGroup+","+ rsp.duration +")\" class=\"btn btn-danger mx-2\">Reject Run</button\>");
+            global.ready = false;
+        }
+
+        function acceptRun(successButton, activeGroup, laptime) {
+            tableInput(activeGroup, laptime);
+            resetButtonsArea()
+            global.ready = true;
+            console.log("Run Accepted");
+        }
+
+        function rejectRun(rejectButton, activeGroup, laptime) {
+            return global.wsClient.rejectRun().then(function (rsp) {
+                resetButtonsArea()
+                global.ready = true;
+                console.log("Run Rejected");
+                return Promise.resolve();
             });
+        }
+
+        function tableInput(activeGroup, laptime)
+        {
+            global.selectedGroup = activeGroup;
+            if ((0 == global.resultTable[global.selectedGroup].duration) ||
+                (laptime < global.resultTable[global.selectedGroup].duration)) {
+
+                global.resultTable[global.selectedGroup].duration = laptime;
+
+                updateResultTable();
+            }
         }
 
         function timestamp2MinSecMSec(timestamp) {
@@ -172,15 +229,6 @@
             global.seconds          = timeMinSecMSec.seconds;
             global.milliseconds     = timeMinSecMSec.milliseconds;
             updateTimer();
-
-            global.selectedGroup = activeGroup;
-            if ((0 == global.resultTable[global.selectedGroup].duration) ||
-                (laptime < global.resultTable[global.selectedGroup].duration)) {
-
-                global.resultTable[global.selectedGroup].duration = laptime;
-
-                updateResultTable();
-            }
         }
 
         function onEvent(rsp) {
@@ -193,14 +241,15 @@
             } else if ("FINISHED" == rsp.event) {
 
                 triggerTimer();
-
                 processTime(rsp.activeGroup, rsp.duration);
+                setButtonsArea(rsp);
 
             } else if("TABLE" == rsp.event){
                 if(0 < global.expectedEvents)
                 {
-                    console.log("Group " + rsp.activeGroup + ": " + rsp.duration);
-                    processTime(rsp.activeGroup, rsp.duration);
+                    console.log("Group " + rsp.activeGroup + " named \"" + rsp.name + "\" : " + rsp.duration);
+                    tableInput(rsp.activeGroup, rsp.duration);
+                    global.namesOfGroups[rsp.activeGroup] = rsp.name;
                     global.expectedEvents--;
                     if(0 == global.expectedEvents)
                     {
@@ -216,16 +265,33 @@
 
         function createGroups() {
             var index = 0;
+            var groupName = ""
 
             for (index = 0; index < global.numberOfGroups; ++index) {
-                $("#groupSelectionBar").append("<button type=\"button\" class=\"btn btn-primary mx-2\" onclick=\"selectGroup(" + index + ")\">Group " + String.fromCharCode(65 + index) + "</button>");
+
+                if (0 == global.namesOfGroups[index].length) {
+                    groupName = "Group " + index;
+                } else {
+                    groupName = global.namesOfGroups[index];
+                }
+
+                $("#groupSelectionBar").append("<button type=\"button\" class=\"btn btn-primary mx-2\" onclick=\"selectGroup(" + index + ")\">" +  groupName + "</button>");
             }
         }
 
         function selectGroup(id) {
+            var groupName = ""
+
             if (global.numberOfGroups > id) {
                 global.selectedGroup = id;
-                $("#showSelectedGroup").html("Group " + String.fromCharCode(65 + global.selectedGroup));
+
+                if (0 == global.namesOfGroups[global.selectedGroup].length) {
+                    groupName = "Group " + global.selectedGroup;
+                } else {
+                    groupName = global.namesOfGroups[global.selectedGroup];
+                }
+
+                $("#showSelectedGroup").html(groupName);
             }
         }
 
@@ -257,6 +323,7 @@
             var sortedTable     = global.resultTable.slice().sort(compareDuration);
             var fastestLap      = "";
             var timeMinSecMSec  = null;
+            var groupName       = "";
 
             $("#resultTable > tbody").empty();
             for (index = 0; index < global.numberOfGroups; ++index) {
@@ -272,10 +339,16 @@
                     fastestLap = getFormattedLapTime(timeMinSecMSec.minutes, timeMinSecMSec.seconds, timeMinSecMSec.milliseconds);
                 }
 
+                if (0 == global.namesOfGroups[sortedTable[index].id].length) {
+                    groupName = "Group " + sortedTable[index].id;
+                } else {
+                    groupName = global.namesOfGroups[sortedTable[index].id];
+                }
+
                 $("#resultTable > tbody").append("<tr><th scope=\"row\">" +
                     (index + 1) +
                     "</th><td>" +
-                    String.fromCharCode(65 + sortedTable[index].id) +
+                    groupName +
                     "</td><td>" +
                     fastestLap +
                     "</td></tr>");
@@ -285,15 +358,14 @@
         function getGroups() {
             return global.wsClient.getGroups().then(function (rsp) {
                 global.numberOfGroups = rsp.groups;
-                console.log(global.numberOfGroups + " Groups are configured.");
-                console.info("Retrieved Groups.");
+                console.info(global.numberOfGroups + " groups are configured.");
             
                 return Promise.resolve();
             });
         }
 
         function getSavedTable() {
-            global.wsClient.getTable().then(function (rsp) {
+            return global.wsClient.getTable().then(function (rsp) {
                 
                 if(rsp.groups === global.numberOfGroups)
                 {
@@ -306,6 +378,7 @@
                 /*  TODO
                  *  Wait for global.expectedEvents to be 0, or to timeout
                  */
+                return Promise.resolve();
 
             }).catch(function (err) {
                 if ("undefined" !== typeof err) {
@@ -324,19 +397,32 @@
                 onClosed: onClosed,
             }).then(function(rsp) {
                 console.info("Connected.");
+                return getGroups();
+            }).then(function() {
+                var promiseChain = Promise.resolve();
+                var index = 0;
                 
-                return getGroups().then(function() {
-                    updateTimer();
+                for(index = 0; index < global.numberOfGroups; ++index) {
+                    promiseChain = promiseChain.then(function() {
+                        return global.wsClient.getName(index);
+                    }).then(function(rsp) {
+                        global.namesOfGroups.push(rsp.name);
+                    });
+                }
+
+                return promiseChain;
+            }).then(function() {
+                updateTimer();
+                selectGroup(0);
+                createResultTable();              
+                return getSavedTable();
+            }).then(function() {
+                setTimeout(function(){
                     createGroups();
-                    selectGroup(0);
-                    createResultTable();              
-                    return getSavedTable();
-                }).then(function() {
                     updateResultTable();
+                    global.ready = true;
                     return Promise.resolve();
-                }).catch(function(err) {
-                    return Promise.reject();
-                });
+                }, 1000); // See To-Do in getSavedTable(). Optimization required.
             }).catch(function(err) {
                 if ("undefined" !== typeof err) {
                     console.error(err);

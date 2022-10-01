@@ -25,17 +25,17 @@
     DESCRIPTION
 *******************************************************************************/
 /**
- * @brief  Implementation of Wireless Capabilities
- * @author Gabryel Reyes <gabryelrdiaz@gmail.com>
+ * @brief  A group who participate in the competition.
+ * @author Andreas Merkle <web@blue-andi.de>
  */
 
-#ifndef WIFI_H_
-#define WIFI_H_
+#ifndef GROUP_H_
+#define GROUP_H_
 
 /******************************************************************************
  * Includes
  *****************************************************************************/
-#include <ESP8266WiFi.h>
+#include <Arduino.h>
 
 /******************************************************************************
  * Macros
@@ -46,100 +46,92 @@
  *****************************************************************************/
 
 /**
- *  WiFi Class for Implementation of Wireless Capabilites.
+ * A group or in other words a team which takes part in the challenge.
+ * It shall contain all group relevant informations.
  */
-class WIFI
+class Group
 {
 public:
 
     /**
-     *  Default Constructor.
+     * Constructs a group with a empty name.
      */
-    WIFI();
+    Group() :
+        m_name(),
+        m_fastestLapTime(0)
+    {
+    }
 
     /**
-     *  Default Destructor.
+     * Destroys the group.
      */
-    ~WIFI();
+    ~Group()
+    {
+    }
 
     /**
-     *  Initialize WIFI Module.
+     * Get the group name.
      * 
-     *  @return If initialization is successful, returns true. Otherwise, false.
+     * @return Group name 
      */
-    bool begin();
+    String getName() const
+    {
+        return m_name;
+    }
 
     /**
-     *  Executes WIFI Connection Check.
+     * Set the group name.
      * 
-     *  @return success.
+     * @param[in] name  The name of the group.
      */
-    bool runCycle();
+    void setName(const String& name)
+    {
+        m_name = name;
+    }
 
     /**
-     *  Get the IP Address of the Syste,
+     * Get the fastest lap time in ms.
      * 
-     *  @return Returns the IP Address.
+     * @return Lap time in ms 
      */
-    const IPAddress &getIPAddress(void);
+    uint32_t getfastestLapTime() const
+    {
+        return m_fastestLapTime;
+    }
+
+    /**
+     * Set the fastest lap time in ms.
+     * 
+     * @param[in] lapTime   The fastest lap time in ms.
+     */
+    void setFastestLapTime(uint32_t lapTime)
+    {
+        m_fastestLapTime = lapTime;
+    }
+
+    /**
+     * Set lap time only, if it is faster than the current one.
+     * If the current lap time is 0, it will be set in any case.
+     * 
+     * @param[in] lapTime   The lap time in ms.
+     */
+    void setLapTimeIfFaster(uint32_t lapTime)
+    {
+        if ((0 == m_fastestLapTime) ||
+            (lapTime < m_fastestLapTime))
+        {
+            m_fastestLapTime = lapTime;
+        }
+    }
 
 private:
 
-    /**
-     *  Connect to Wireless Access Point.
-     * 
-     *  @return If the device is succesfully connected to the Wireless Network, 
-     *  returns true. Otherwise false.
-     */
-    bool connectStation();
-
-    /** Timeout for WiFi connection. */
-    static const unsigned long      WIFI_TIMEOUT_MS         = 30000;
-
-    /** Default SSID for access point mode. */
-    static constexpr const char*   AP_MODE_SSID_DEFAULT     = "RacingLapTimer";
-
-    /** Default password for access point mode. */
-    static constexpr const char*   AP_MODE_PASSWORD_DEFAULT = "let me in";
-
-    /** true if system is connected in STA mode to a Network. */
-    bool m_isStaAvailable;
-
-    /** WiFi AP SSID. */
-    String m_apSSID;
-
-    /** WiFi AP Password. */
-    String m_apPassword;
-
-    /** WiFi STA SSID. */
-    String m_staSSID;
-
-    /** WiFi STA Password. */
-    String m_staPassword;
-
-    /** Local IP of the Device */
-    IPAddress m_localIP;
-
-private:
-
-    /** An instance shall not be copied. 
-     *  
-     *  @param[in] wifi WiFi instance to copy.
-     */
-    WIFI(const WIFI &wifi);
-
-    /** 
-     *  An instance shall not assigned.
-     *   
-     *  @param[in] wifi WiFi instance to assign.
-     *  @return Pointer to this instance.
-     */
-    WIFI &operator=(const WIFI &wifi);
-
+    String      m_name;             /**< The name of the group, must not be unique. */
+    uint32_t    m_fastestLapTime;   /**< The fastest lap time in ms. */
 };
 
 /******************************************************************************
  * Functions
  *****************************************************************************/
 
-#endif /* WIFI_H_ */
+#endif /* GROUP_H_ */

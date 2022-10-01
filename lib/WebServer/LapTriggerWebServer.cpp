@@ -1,6 +1,6 @@
 /* MIT License
  *
- * Copyright (c) 2020-2021 Andreas Merkle <web@blue-andi.de>
+ * Copyright (c) 2020-2022 Andreas Merkle <web@blue-andi.de>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
  * Includes
  *****************************************************************************/
 #include "LapTriggerWebServer.h"
-#include "FlashMem.h"
+#include "Settings.h"
 
 #include <Log.h>
 
@@ -216,12 +216,12 @@ void LapTriggerWebServer::handleCredentials()
         }
         else
         {
-            if (Flash::setCredentials(ssidInput, passwordInput))
-            {
-                m_webServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
-                delay(3000);
-                ESP.restart();
-            }
+            Settings::getInstance().setWiFiSSID(ssidInput);
+            Settings::getInstance().setWiFiPassphrase(passwordInput);
+
+            m_webServer.send(200, "text/plain", "Credentials Accepted.\nRestarting...");
+            delay(3000);
+            ESP.restart();
         }
     }
 }
@@ -321,7 +321,20 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
                 output += currentGroup;
                 output += ';';
                 output += groupLaptime;
-                
+                output += ';';
+
+                String selectedName = "";
+
+                if (m_laptrigger->getGroupName(currentGroup, selectedName))
+                {
+                    output += selectedName;
+                }
+                else
+                {
+                    output += "Group ";
+                    output += (char)(currentGroup + 65);
+                }
+
                 m_webSocketSrv.sendTXT(clientId, output);
             }
         }
@@ -335,6 +348,63 @@ void LapTriggerWebServer::parseWSTextEvent(const uint8_t clientId, const WStype_
         if (m_laptrigger->clearLaptime(par.toInt()))
         {
             String outputMessage = "ACK;CLEAR;" + par;
+            m_webSocketSrv.sendTXT(clientId, outputMessage);
+        }
+        else
+        {
+            m_webSocketSrv.sendTXT(clientId, "NACK");
+        }
+    }
+    else if (cmd.equals("SET_NAME"))
+    {
+        uint8_t selectedGroup = par.toInt();
+        uint8_t namePos = par.indexOf(":");
+        String selectedName = par.substring(namePos + 1);
+        String outputMessage = "NACK";
+
+        if (true == m_laptrigger->setGroupName(selectedGroup, selectedName))
+        {
+            outputMessage = "ACK;SET_NAME;";
+            outputMessage += selectedGroup;
+            outputMessage += ';';
+            outputMessage += selectedName;
+        }
+
+        m_webSocketSrv.sendTXT(clientId, outputMessage);
+    }
+    else if (cmd.equals("GET_NAME"))
+    {
+        uint8_t selectedGroup = par.toInt();
+        String selectedName = "";
+        String outputMessage = "NACK";
+
+        if (true == m_laptrigger->getGroupName(selectedGroup, selectedName))
+        {
+            outputMessage = "ACK;GET_NAME;";
+            outputMessage += selectedGroup;
+            outputMessage += ';';
+            outputMessage += selectedName;
+        }
+
+        m_webSocketSrv.sendTXT(clientId, outputMessage);
+    }
+    else if (cmd.equals("CLEAR_NAME"))
+    {
+        if (m_laptrigger->clearName(par.toInt()))
+        {
+            String outputMessage = "ACK;CLEAR_NAME;" + par;
+            m_webSocketSrv.sendTXT(clientId, outputMessage);
+        }
+        else
+        {
+            m_webSocketSrv.sendTXT(clientId, "NACK");
+        }
+    }
+    else if(cmd.equals("REJECT_RUN"))
+    {
+        if (m_laptrigger->rejectRun())
+        {
+            String outputMessage = "ACK;REJECT_RUN";
             m_webSocketSrv.sendTXT(clientId, outputMessage);
         }
         else

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <title>Racing Lap Timer</title>
+    <link rel="stylesheet" href="./bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link href="starter-template.css" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Racing Lap Timer</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation" />
+        <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link hover" href="index.html">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link hover" href="groupConfig.html">Group Configuration</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link hover" href="settings.html">Settings</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+
+        <div class="mb-3">
+            <label for="NumberOfGroups" class="form-label">Number Of Groups: </label>
+            <input type="number" class="form-range" min="0" max="10" id="NumberOfGroups" />
+            <button id="buttonSaveGroups" type="submit" class="btn btn-secondary" onclick="setGroups()">Set</button>
+            <button type="button" class="btn btn-danger mx-2" onclick="clearAll()">Clear All </button>
+        </div>
+
+        <div class="container" id="groupNameTable">
+        </div>
+
+
+
+
+    </main>
+    <!-- /.container -->
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./jquery/jquery-3.5.1.slim.min.js"></script>
+    <script src="./popper/2.4.4/popper.min.js"></script>
+    <script src="./bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="./ws.js"></script>
+    <script>
+        var global = {
+            wsClient: new cpjs.ws.Client(),
+            numberOfGroups: null,
+        };
+
+        function onClosed() {
+            console.info("Closed.");
+            alert("Websocket connection closed.");
+        }
+
+        function onEvent(rsp) {
+            alert("Unknown event received: " + rsp.event);
+        }
+
+        function getGroups() {
+            return global.wsClient.getGroups().then(function (rsp) {
+                global.numberOfGroups = rsp.groups;
+                console.log(global.numberOfGroups + " Groups are configured.");
+                console.info("Retrieved Groups.");
+
+                return Promise.resolve();
+            });
+        }
+
+        function setGroups() {
+            document.getElementById("buttonSaveGroups").disabled = true;
+            global.numberOfGroups = parseInt(document.getElementById("NumberOfGroups").value);
+            global.wsClient.setGroups(global.numberOfGroups).then(function (rsp) {
+                alert("Groups have been saved!");
+                document.getElementById("buttonSaveGroups").disabled = false;
+                window.location.reload();
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+                document.getElementById("buttonSaveGroups").disabled = false;
+            });
+        }
+
+        function clearGroup(selectedGroup) {
+            global.wsClient.clearGroup(selectedGroup).then(function (rsp) {
+                console.info("Cleared Group " + rsp.cleared);
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        function clearAll() {
+            var index = 0;
+            for (index = 0; index < global.numberOfGroups; ++index) {
+                clearGroup(index);
+            }
+        }
+
+        function setSettingsTable() {
+            var index = 0;
+            for (index = 0; index < global.numberOfGroups; ++index) {
+                $("#groupNameTable").append("<div class=\"row\"><div class=\"column\">Group " + String.fromCharCode(65 + index) + ": </div></div><div class=\"row\"><div class=\"column\"> <input type=\"text\" id=\"group" + index + "\"/></div><div class=\"column\"><button type=\"button\" onclick=\"setName(" + index + ")\" class=\"btn btn-secondary mx-2\">Set Name</button\></div><div class=\"column\"><button type=\"button\" onclick=\"deleteName(" + index + ")\" class=\"btn btn-secondary mx-2\">Delete Name</button></div><div class=\"column\"><button type=\"button\" class=\"btn btn-info mx-2\" onclick=\"clearGroup(" + index + ")\">Clear Laptime</button></div></div>");
+                getName(index);
+            }
+        }
+
+        function setName(group) {
+            var name = "";
+            name = document.getElementById("group" + group).value;
+
+            if ("" == name) {
+                alert("Empty Name Field");
+            } else {
+                global.wsClient.setName(group, name).then(function (rsp) {
+                    console.info("Set Name \"" + rsp.name + "\" for Group " + rsp.group);
+                    document.getElementById("group" + group).disabled = true;
+                }).catch(function (err) {
+                    if ("undefined" !== typeof err) {
+                        console.error(err);
+                    }
+                });
+
+            }
+        }
+
+        function getName(group) {
+            global.wsClient.getName(group).then(function (rsp) {
+                document.getElementById("group" + group).value = rsp.name;
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        function deleteName(group) {
+            global.wsClient.clearName(group).then(function (rsp) {
+                console.log("Name deleted for Group " + rsp.group);
+                return getName(group);
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            global.wsClient.connect({
+                protocol: "ws",
+                hostname: location.hostname,
+                port: 81,
+                endpoint: "/",
+                onEvent: onEvent,
+                onClosed: onClosed,
+            }).then(function (rsp) {
+                console.info("Connected.");
+
+                return getGroups().then(function () {
+                    document.getElementById("NumberOfGroups").value = global.numberOfGroups;
+                    setSettingsTable();
+                    return Promise.resolve();
+                }).catch(function (err) {
+                    return Promise.reject();
+                });
+
+            }).catch(function (err) {
+                if ("undefined" !== typeof err) {
+                    console.error(err);
+                }
+
+                alert("Websocket connection failed.");
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 /* MIT License
  *
- * Copyright (c) 2020-2021 Andreas Merkle <web@blue-andi.de>
+ * Copyright (c) 2020-2022 Andreas Merkle <web@blue-andi.de>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@
  *****************************************************************************/
 #include "Competition.h"
 #include "Board.h"
-#include "FlashMem.h"
+#include "Settings.h"
 
 #include <Log.h>
 
@@ -58,20 +58,33 @@
  * Public Methods
  *****************************************************************************/
 
-Competition::Competition() : m_startTimestamp(0),
-                             m_competitionState(COMPETITION_STATE_UNRELEASED),
-                             m_numberOfGroups(0),
-                             m_resultTable(),
-                             m_activeGroup(0)
+bool Competition::begin()
 {
-    for (uint8_t group = 0; group < MAX_NUMBER_OF_GROUPS; group++)
-    {
-        m_resultTable[group] = 0;
-    }
-}
+    Settings::getInstance().getNumberOfGroups(m_numberOfGroups);
 
-Competition::~Competition()
-{
+    if (MIN_NUMBER_OF_GROUPS > m_numberOfGroups)
+    {
+        m_numberOfGroups = MIN_NUMBER_OF_GROUPS;
+    }
+    else if (MAX_GROUPS < m_numberOfGroups)
+    {
+        m_numberOfGroups = MAX_GROUPS;
+    }
+
+    if (nullptr != m_groups)
+    {
+        uint8_t idx = 0;
+
+        for(idx = 0; idx < m_numberOfGroups; ++idx)
+        {
+            String name;
+            Settings::getInstance().getGroupName(idx, name);
+
+            m_groups[idx].setName(name);
+        }
+    }
+
+    return true;
 }
 
 bool Competition::handleCompetition(String &outputMessage)
@@ -134,7 +147,7 @@ bool Competition::setReleasedState(uint8_t activeGroup)
 {
     bool isSuccess = false;
 
-    if ((MAX_NUMBER_OF_GROUPS - 1) > activeGroup)
+    if ((MAX_GROUPS - 1) > activeGroup)
     {
         m_activeGroup = activeGroup;
 
@@ -153,60 +166,58 @@ bool Competition::setReleasedState(uint8_t activeGroup)
 
 bool Competition::getNumberofGroups(uint8_t &groups)
 {
-    bool isSuccess = false;
+    groups = m_numberOfGroups;
 
-    if (Flash::getUInt8(Flash::NVM_GROUPS_ADDRESS, m_numberOfGroups))
-    {
-        if (MIN_NUMBER_OF_GROUPS > m_numberOfGroups)
-        {
-            m_numberOfGroups = MIN_NUMBER_OF_GROUPS;
-        }
-        else if (MAX_NUMBER_OF_GROUPS < m_numberOfGroups)
-        {
-            m_numberOfGroups = MAX_NUMBER_OF_GROUPS;
-        }
-
-        groups = m_numberOfGroups;
-        isSuccess = true;
-    }
-
-    return isSuccess;
+    return true;
 }
 
 bool Competition::setNumberofGroups(uint8_t groups)
 {
-    bool isSuccess = false;
     uint8_t validGroups = 0;
 
     if (MIN_NUMBER_OF_GROUPS > groups)
     {
         validGroups = MIN_NUMBER_OF_GROUPS;
     }
-    else if (MAX_NUMBER_OF_GROUPS < groups)
+    else if (MAX_GROUPS < groups)
     {
-        validGroups = MAX_NUMBER_OF_GROUPS;
+        validGroups = MAX_GROUPS;
     }
     else
     {
         validGroups = groups;
     }
 
-    if (Flash::setUInt8(Flash::NVM_GROUPS_ADDRESS, validGroups))
+    if (validGroups != m_numberOfGroups)
     {
+        Settings::getInstance().setNumberOfGroups(validGroups);
+
+        if ((nullptr != m_groups) &&
+            (validGroups > m_numberOfGroups))
+        {
+            uint8_t idx = 0;
+            
+            for(idx = m_numberOfGroups; idx < validGroups; ++idx)
+            {
+                m_groups[idx].setName("");
+                m_groups[idx].setFastestLapTime(0);
+            }
+        }
+
         m_numberOfGroups = validGroups;
-        isSuccess = true;
     }
 
-    return isSuccess;
+    return true;
 }
 
 uint32_t Competition::getLaptime(uint8_t group)
 {
     uint32_t result = 0;
 
-    if((m_numberOfGroups > group))
+    if ((nullptr != m_groups) &&
+        (m_numberOfGroups > group))
     {
-        result = m_resultTable[group];
+        result = m_groups[group].getfastestLapTime();
     }
 
     return result;
@@ -216,9 +227,57 @@ bool Competition::clearLaptime(uint8_t group)
 {
     bool isSuccess = false;
 
-    if(m_numberOfGroups > group)
+    if ((nullptr != m_groups) &&
+        (m_numberOfGroups > group))
     {
-        m_resultTable[group] = 0;
+        m_groups[group].setFastestLapTime(0);
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
+bool Competition::setGroupName(uint8_t group, const String &groupName)
+{
+    bool isSuccess = false;
+
+    if (nullptr != m_groups)
+    {
+        m_groups[group].setName(groupName);
+
+        Settings::getInstance().setGroupName(group, groupName);
+
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
+bool Competition::getGroupName(uint8_t group, String &groupName)
+{
+    bool isSuccess = false;
+
+    if (nullptr != m_groups)
+    {
+        groupName = m_groups[group].getName();
+        isSuccess = true;
+    }
+
+    return isSuccess;
+}
+
+bool Competition::clearName(uint8_t group)
+{
+    return setGroupName(group, "");
+}
+
+bool Competition::rejectRun()
+{
+    bool isSuccess = false;
+
+    if (nullptr != m_groups)
+    {
+        m_groups[m_lastRunGroup].setFastestLapTime(m_lastRunLapTime);
         isSuccess = true;
     }
 
@@ -233,17 +292,16 @@ bool Competition::clearLaptime(uint8_t group)
  * Private Methods
  *****************************************************************************/
 
-void Competition::updateLapTime(uint32_t runtime)
+void Competition::updateLapTime(uint32_t lapTime)
 {
-    if ((runtime < m_resultTable[m_activeGroup]) ||
-        (0 == m_resultTable[m_activeGroup]))
-    {
-        m_resultTable[m_activeGroup] = runtime;
-    }
+    m_lastRunGroup      = m_activeGroup;
+    m_lastRunLapTime    = m_groups[m_activeGroup].getfastestLapTime();
+
+    m_groups[m_activeGroup].setLapTimeIfFaster(lapTime);
 
     for (uint8_t group = 0; group < m_numberOfGroups; group++)
     {
-        LOG_INFO("Group %u: %u", group, m_resultTable[group]);
+        LOG_INFO("Group %u: %u", group, m_groups[group].getfastestLapTime());
     }
 }
 

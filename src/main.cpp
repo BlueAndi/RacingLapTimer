@@ -1,6 +1,6 @@
 /* MIT License
  *
- * Copyright (c) 2020-2021 Andreas Merkle <web@blue-andi.de>
+ * Copyright (c) 2020-2022 Andreas Merkle <web@blue-andi.de>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,11 @@
  *****************************************************************************/
 
 #include "Board.h"
-#include "FlashMem.h"
+#include "Settings.h"
 #include "WIFI.h"
 #include "LapTriggerWebServer.h"
 #include "Competition.h"
+#include "Group.h"
 
 #include <Log.h>
 
@@ -49,15 +50,6 @@
  * Types and Classes
  *****************************************************************************/
 
-/** WLAN Instance */
-static WIFI                 gWlan;
-
-/** Competition Instance */
-static Competition          gLapTrigger;
-
-/** WebServer Instance */
-static LapTriggerWebServer  gWebServer(gLapTrigger);
-
 /******************************************************************************
  * Prototypes
  *****************************************************************************/
@@ -65,6 +57,21 @@ static LapTriggerWebServer  gWebServer(gLapTrigger);
 /******************************************************************************
  * Variables
  *****************************************************************************/
+
+/** Max. number of participating groups/teams. */
+static const size_t         MAX_GROUPS  = 10;
+
+/** The groups/teams, which may take part in the challenge. */
+static Group                m_groups[MAX_GROUPS];
+
+/** WiFi Instance */
+static WIFI                 gWiFi;
+
+/** Competition Instance */
+static Competition          gCompetition(m_groups, MAX_GROUPS);
+
+/** WebServer Instance */
+static LapTriggerWebServer  gWebServer(gCompetition);
 
 /******************************************************************************
  * External functions
@@ -83,14 +90,14 @@ void setup() /* cppcheck-suppress unusedFunction */
         LOG_FATAL("Failed to initialize the HAL.");
         isError = true;
     }
-    /* Mount persistent memory. */
-    else if (false == Flash::begin())
+    /* Mount settings. */
+    else if (false == Settings::getInstance().begin())
     {
-        LOG_FATAL("Failed to mount persistent memory.");
+        LOG_FATAL("Failed to mount settings.");
         isError = true;
     }
     /* Start Wireless Connection. */
-    else if (false == gWlan.begin())
+    else if (false == gWiFi.begin())
     {
         LOG_FATAL("Failed to start wifi.");
         isError = true;
@@ -99,6 +106,12 @@ void setup() /* cppcheck-suppress unusedFunction */
     else if (false == LittleFS.begin())
     {
         LOG_FATAL("Failed to mount filesystem.");
+        isError = false;
+    }
+    /* Initialize competition */
+    else if (false == gCompetition.begin())
+    {
+        LOG_FATAL("Failed to initialize competition.");
         isError = false;
     }
     /* Start Web Server. */
@@ -134,7 +147,7 @@ void loop() /* cppcheck-suppress unusedFunction */
     {
         isSuccess = false;
     }
-    else if (false == gWlan.runCycle())
+    else if (false == gWiFi.runCycle())
     {
         isSuccess = false;
     }

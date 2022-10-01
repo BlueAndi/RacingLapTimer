@@ -22,6 +22,9 @@
                 <li class="nav-item">
                     <a class="nav-link hover" href="index.html">Home</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link hover" href="groupConfig.html">Group Configuration</a>
+                </li>
                 <li class="nav-item active">
                     <a class="nav-link hover" href="settings.html">Settings</a>
                 </li>
@@ -30,23 +33,7 @@
     </nav>
 
     <main role="main" class="container">
-        <div class="row row-cols-2">
-            <div class="col">
-                <h1>Edit Groups</h1>
-                <div class="mb-3">
-                    <label for="NumberOfGroups" class="form-label">Number Of Groups: </label>
-                    <input type="number" class="form-range" min="0" max="10" id="NumberOfGroups" />
-                    <p><button id="buttonSaveGroups" type="submit" class="btn btn-secondary" onclick="setGroups()">Save</button></p>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col align-middle">
-                        <h2>Clear Laptime</h2>
-                        <div id="groupClearColumn" class="btn-group-vertical">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
+        
                 <h1>Change Station Credentials</h1>
                 <form action="" method="post">
                     <p><input class="form-control" type="text" placeholder="SSID" required name="STA_SSID" />
@@ -54,12 +41,7 @@
                     <p><input class="form-control" type="password" placeholder="Password" name="STA_PASSWORD" />
                     </p>
                     <p><button type="submit" class="btn btn-secondary">Save and Restart</button></p>
-                </form>
-            </div>
-        </div>
-
-        
-
+                </form>  
     </main>
     <!-- /.container -->
 
@@ -67,99 +49,6 @@
     <script src="./jquery/jquery-3.5.1.slim.min.js"></script>
     <script src="./popper/2.4.4/popper.min.js"></script>
     <script src="./bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="./ws.js"></script>
-    <script>
-        var global = {
-            wsClient: new cpjs.ws.Client(),
-            numberOfGroups: null,
-        };
-
-        function onClosed() {
-            console.info("Closed.");
-            alert("Websocket connection closed.");
-        }
-
-        function onEvent(rsp) {
-            alert("Unknown event received: " + rsp.event);
-        }
-
-        function getGroups() {
-            return global.wsClient.getGroups().then(function (rsp) {
-                global.numberOfGroups = rsp.groups;
-                console.log(global.numberOfGroups + " Groups are configured.");
-                console.info("Retrieved Groups.");
-
-                return Promise.resolve();
-            });
-        }
-
-        function setGroups() {
-            document.getElementById("buttonSaveGroups").disabled = true;
-            global.numberOfGroups = parseInt(document.getElementById("NumberOfGroups").value);
-            global.wsClient.setGroups(global.numberOfGroups).then(function (rsp) {
-                alert("Groups have been saved!");
-                document.getElementById("buttonSaveGroups").disabled = false;
-            }).catch(function (err) {
-                if ("undefined" !== typeof err) {
-                    console.error(err);
-                }
-                document.getElementById("buttonSaveGroups").disabled = false;
-            });
-        }
-
-        function setClearButtons() {
-            var index = 0;
-            for (index = 0; index < global.numberOfGroups; ++index) {
-                $("#groupClearColumn").append("<button type=\"button\" class=\"btn btn-info mx-2\" onclick=\"clearGroup(" + index + ")\">Group " + String.fromCharCode(65 + index) + "</button>");
-            }
-            $("#groupClearColumn").append("<button type=\"button\" class=\"btn btn-danger mx-2\" onclick=\"clearAll()\">Clear All </button>");
-        }
-
-        function clearGroup(selectedGroup){
-            global.wsClient.clearGroup(selectedGroup).then(function(rsp) {
-                console.info("Cleared Group " + rsp.cleared);
-            }).catch(function(err) {
-                if ("undefined" !== typeof err) {
-                    console.error(err);
-                }
-            });
-        }
-
-        function clearAll(){
-            var index = 0;
-            for (index = 0; index < global.numberOfGroups; ++index) {
-                clearGroup(index);
-            }
-        }
-
-        $(document).ready(function () {
-            global.wsClient.connect({
-                protocol: "ws",
-                hostname: location.hostname,
-                port: 81,
-                endpoint: "/",
-                onEvent: onEvent,
-                onClosed: onClosed,
-            }).then(function (rsp) {
-                console.info("Connected.");
-
-                return getGroups().then(function () {
-                    document.getElementById("NumberOfGroups").value = global.numberOfGroups;
-                    setClearButtons();
-                    return Promise.resolve();
-                }).catch(function(err) {
-                    return Promise.reject();
-                });
-
-            }).catch(function (err) {
-                if ("undefined" !== typeof err) {
-                    console.error(err);
-                }
-
-                alert("Websocket connection failed.");
-            });
-        });
-    </script>
 </body>
 
 </html>
