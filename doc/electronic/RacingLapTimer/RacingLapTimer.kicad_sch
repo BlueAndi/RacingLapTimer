@@ -4,11 +4,123 @@
 
   (paper "A4")
 
+  (title_block
+    (title "RacingLapTimer")
+    (date "2022-11-11")
+    (rev "1")
+  )
+
   (lib_symbols
   )
 
 
+  (wire (pts (xy 129.54 109.22) (xy 137.16 109.22))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 12e7f80d-54cb-4ef6-8847-6a0cf02fad34)
+  )
+  (wire (pts (xy 129.54 101.6) (xy 170.18 101.6))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 5285381a-f914-4c16-8e4b-e49c6ef384a6)
+  )
+  (wire (pts (xy 162.56 109.22) (xy 170.18 109.22))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 6a1ba8a4-835e-406d-bb58-808167646df2)
+  )
+
+  (sheet (at 170.18 99.06) (size 21.59 12.7) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid) (color 255 36 40 1))
+    (fill (color 0 0 0 0.0000))
+    (uuid 101f6469-1048-47b7-9c66-fb64bff03eb1)
+    (property "Sheet name" "Laser" (id 0) (at 170.18 98.3484 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheet file" "Laser.kicad_sch" (id 1) (at 170.18 112.3446 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (pin "Laser_DOUT" output (at 170.18 101.6 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 1581f2d2-0a6d-43ef-8648-70b649b59fec)
+    )
+    (pin "Laser_3V3" input (at 170.18 109.22 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 08e61f7e-08a3-4eee-b552-07d52a32c56b)
+    )
+  )
+
+  (sheet (at 137.16 106.68) (size 25.4 5.08) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid) (color 0 0 0 0))
+    (fill (color 0 0 0 0.0000))
+    (uuid 6c6cca01-bb56-4a72-b520-8d1c355cefbe)
+    (property "Sheet name" "Power_Supply" (id 0) (at 137.16 105.9684 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheet file" "Power_Supply.kicad_sch" (id 1) (at 137.16 112.3446 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (pin "V_USB" input (at 137.16 109.22 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 179ee753-9395-4c74-9e6d-ef0d26b8083a)
+    )
+    (pin "Laser_3V3" output (at 162.56 109.22 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid b2eabd35-e8ea-49e8-91b7-d0c7362dc61b)
+    )
+  )
+
+  (sheet (at 107.95 99.06) (size 21.59 12.7) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid) (color 64 100 255 1))
+    (fill (color 0 0 0 0.0000))
+    (uuid f924a469-2674-42bb-b415-426171a5e3c3)
+    (property "Sheet name" "MCU" (id 0) (at 107.95 98.3484 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheet file" "MCU.kicad_sch" (id 1) (at 107.95 112.3446 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (pin "V_USB" output (at 129.54 109.22 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid abaa9d45-738d-49ee-a3e8-88fa116e528b)
+    )
+    (pin "Laser_DIN" input (at 129.54 101.6 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid 2d2fe72f-c8aa-4f4e-aad4-19b4559f6925)
+    )
+  )
+
   (sheet_instances
     (path "/" (page "1"))
+    (path "/f924a469-2674-42bb-b415-426171a5e3c3" (page "2"))
+    (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe" (page "3"))
+    (path "/101f6469-1048-47b7-9c66-fb64bff03eb1" (page "4"))
+  )
+
+  (symbol_instances
+    (path "/f924a469-2674-42bb-b415-426171a5e3c3/d4d4d037-63e8-40bb-897b-d6127a1f6e84"
+      (reference "#PWR01") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe/34a9eafd-7796-4597-b3aa-de2edced18d0"
+      (reference "#PWR02") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/101f6469-1048-47b7-9c66-fb64bff03eb1/0e8ea6b1-5f52-4d8f-8bb3-59e3209eed44"
+      (reference "#PWR03") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/101f6469-1048-47b7-9c66-fb64bff03eb1/6d6ad856-c1ec-440d-902f-042e2193e3a6"
+      (reference "J1") (unit 1) (value "Conn_01x03") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
+    )
+    (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe/13ab379e-892e-4ed5-b529-6c0ab5e5d51c"
+      (reference "R1") (unit 1) (value "470") (footprint "Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal")
+    )
+    (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe/fa5f8fa7-83e4-4f6d-ac48-de1831dbcd98"
+      (reference "R2") (unit 1) (value "910") (footprint "Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal")
+    )
+    (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe/a07c2bc0-9d39-4e0c-bab2-5bb36de02045"
+      (reference "R3") (unit 1) (value "470") (footprint "Resistor_SMD:R_1206_3216Metric")
+    )
+    (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe/617c3de4-8233-4029-b1df-4116adc18d48"
+      (reference "R4") (unit 1) (value "910") (footprint "Resistor_SMD:R_1206_3216Metric")
+    )
+    (path "/f924a469-2674-42bb-b415-426171a5e3c3/d5e94323-a234-42d5-a7d3-5190769650f3"
+      (reference "U1") (unit 1) (value "WeMos_D1_mini") (footprint "wemos-d1-mini:wemos-d1-mini-with-pin-header-and-connector")
+    )
   )
 )

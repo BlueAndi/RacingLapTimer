@@ -57,7 +57,7 @@
         "annular_width": "error",
         "clearance": "error",
         "copper_edge_clearance": "error",
-        "courtyards_overlap": "error",
+        "courtyards_overlap": "warning",
         "diff_pair_gap_out_of_range": "error",
         "diff_pair_uncoupled_length_too_long": "error",
         "drill_out_of_range": "error",
@@ -320,7 +320,7 @@
       "pin_not_connected": "error",
       "pin_not_driven": "error",
       "pin_to_pin": "warning",
-      "power_pin_not_driven": "error",
+      "power_pin_not_driven": "ignore",
       "similar_labels": "warning",
       "unannotated": "error",
       "unit_value_mismatch": "error",
@@ -414,6 +414,18 @@
     [
       "b8117e65-0702-4191-a727-b4ebf4e89227",
       ""
+    ],
+    [
+      "f924a469-2674-42bb-b415-426171a5e3c3",
+      "MCU"
+    ],
+    [
+      "6c6cca01-bb56-4a72-b520-8d1c355cefbe",
+      "Power_Supply"
+    ],
+    [
+      "101f6469-1048-47b7-9c66-fb64bff03eb1",
+      "Laser"
     ]
   ],
   "text_variables": {}
