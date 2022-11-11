@@ -151,15 +151,15 @@
     (property "Sheetname" "Power_Supply")
     (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe/617c3de4-8233-4029-b1df-4116adc18d48")
     (attr smd)
-    (fp_text reference "R4" (at 0 -1.82) (layer "F.SilkS") hide
-      (effects (font (size 1 1) (thickness 0.15)))
+    (fp_text reference "R4" (at 0 0 90) (layer "F.SilkS")
+      (effects (font (size 0.5 0.5) (thickness 0.1)))
       (tstamp 5d9db46f-f142-4d48-9ff1-22951844ea81)
     )
     (fp_text value "910" (at 0 1.82) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp b33a7b58-c557-4c0d-ac6a-d05e2e0060c7)
     )
-    (fp_text user "${REFERENCE}" (at 3.556 0) (layer "F.Fab")
+    (fp_text user "${REFERENCE}" (at 3.556 0) (layer "F.Fab") hide
       (effects (font (size 0.8 0.8) (thickness 0.12)))
       (tstamp e54cd5b0-df7a-4dc9-9cab-01b6bc317494)
     )
@@ -290,7 +290,7 @@
     (property "Sheetname" "Power_Supply")
     (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe/fa5f8fa7-83e4-4f6d-ac48-de1831dbcd98")
     (attr through_hole)
-    (fp_text reference "R2" (at 7.62 -2.92) (layer "F.SilkS") hide
+    (fp_text reference "R2" (at 18.288 0) (layer "F.SilkS")
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 81f30e60-321e-4576-b513-6c7cdc356c50)
     )
@@ -298,7 +298,7 @@
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp d55c2ed9-543a-47b8-a3a8-211615f89ce4)
     )
-    (fp_text user "${REFERENCE}" (at 18.288 0) (layer "F.Fab")
+    (fp_text user "${REFERENCE}" (at 18.288 0) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 1d849b5c-7950-4375-ac1b-5a41126c5814)
     )
@@ -338,15 +338,15 @@
     (property "Sheetname" "Power_Supply")
     (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe/a07c2bc0-9d39-4e0c-bab2-5bb36de02045")
     (attr smd)
-    (fp_text reference "R3" (at 0 -1.82) (layer "F.SilkS") hide
-      (effects (font (size 1 1) (thickness 0.15)))
+    (fp_text reference "R3" (at 0 0 90) (layer "F.SilkS")
+      (effects (font (size 0.5 0.5) (thickness 0.1)))
       (tstamp 70e9c597-100c-4ac7-b917-fab188d6fecb)
     )
     (fp_text value "470" (at 0 1.82) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 03a114d6-b39a-4200-ac51-e26a3888d7b2)
     )
-    (fp_text user "${REFERENCE}" (at -3.556 -1.524) (layer "F.Fab")
+    (fp_text user "${REFERENCE}" (at -3.556 -1.524) (layer "F.Fab") hide
       (effects (font (size 0.8 0.8) (thickness 0.12)))
       (tstamp 8d295dca-8592-4d9e-b88a-3615c8f34ee6)
     )
@@ -380,7 +380,7 @@
     (property "Sheetname" "Power_Supply")
     (path "/6c6cca01-bb56-4a72-b520-8d1c355cefbe/13ab379e-892e-4ed5-b529-6c0ab5e5d51c")
     (attr through_hole)
-    (fp_text reference "R1" (at 7.62 -2.92) (layer "F.SilkS") hide
+    (fp_text reference "R1" (at -3.048 0) (layer "F.SilkS")
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp d2d6f9f5-de17-4b0e-9719-29da4923d60c)
     )
@@ -388,7 +388,7 @@
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 79e90cad-8a26-4ee7-8455-f483922896cf)
     )
-    (fp_text user "${REFERENCE}" (at -3.048 0) (layer "F.Fab")
+    (fp_text user "${REFERENCE}" (at -3.048 0) (layer "F.Fab") hide
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp f5d7b0bb-c1d6-490f-90a4-9d54a9497e74)
     )
