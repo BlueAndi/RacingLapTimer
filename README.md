@@ -42,11 +42,26 @@ After configuration, the system will try to establish a connection. If the conne
 
 ## Schematic
 
-**TODO KiCAD schematic**
+Schematic files can be found [here](./doc/electronic/RacingLapTimer). These have been developed using KiCAD 6.
 
-* Laser module DOUT -- Pin 5 MCU
-* Laser module Vcc shall be 3.3V, because MCU is only 3.3V tolerant.
-* Power supply by USB 5V, with a simple voltage divider to get 3.3V / ~40mA (must be verified by measurement).
+### MCU
+![MCU](./doc/electronic/RacingLapTimer/SCH_MCU_v1_0.png)
+- Digital signal of laser sensor is connected to D1/GPIO_5 of the Wemos D1 Mini.
+- Power is supplied by USB 5V directly to the Wemos D1 Mini
+
+### Laser Power Supply
+![Power Supply](./doc/electronic/RacingLapTimer/SCH_POW_v1_0.png)
+- Laser module Vcc shall be 3.3V, because MCU is only 3.3V tolerant.
+- THT or SMD resistor options are provided. **DO NOT PLACE ALL RESISTORS**.
+
+### Laser Sensor
+![Power Supply](./doc/electronic/RacingLapTimer/SCH_Laser_v1_0.png)
+- Pin header for Waveshare Laser Sensor.
+
+## PCB 
+### v1.0
+![PCBv1.0](./doc/electronic/RacingLapTimer/PCBv1_0.png)
+- It is recommended to give the Laser Sensor some kind of support in order to protect the pin header from breaking. The height of the support depends on the pin headers used.
 
 # Software
 
