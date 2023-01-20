@@ -23,10 +23,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
         
       - name: Install dependencies
         run: |
@@ -41,10 +43,10 @@ jobs:
         run: platformio check --environment test --skip-packages
       
       - name: Set up graphviz
-        uses: ts-graphviz/setup-graphviz@v1
+        uses: ts-graphviz/setup-graphviz@v1.2.0
         
       - name: Set up doxygen and generate documentation
-        uses: mattnotmitt/doxygen-action@v1.2.3
+        uses: mattnotmitt/doxygen-action@v1.9.5
         with:
           working-directory: './doc/doxygen'
           doxyfile-path: './Doxyfile'
