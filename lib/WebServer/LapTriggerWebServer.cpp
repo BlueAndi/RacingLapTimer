@@ -128,7 +128,7 @@ bool LapTriggerWebServer::runCycle()
  * Private Methods
  *****************************************************************************/
 
-void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length)
+void LapTriggerWebServer::webSocketEvent(uint8_t clientId, WStype_t type, const uint8_t *payload, size_t length)
 {
     switch (type)
     {

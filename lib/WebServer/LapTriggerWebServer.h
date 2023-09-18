@@ -111,7 +111,7 @@ private:
      *  @param[in] payload   Event payload.
      *  @param[in] length    Event payload length.
      */
-    void webSocketEvent(uint8_t clientId, WStype_t type, uint8_t *payload, size_t length);
+    void webSocketEvent(uint8_t clientId, WStype_t type, const uint8_t *payload, size_t length);
 
     /** Handler for POST Request for the storage of the STA Credentials. */
     void handleCredentials();
