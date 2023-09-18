@@ -40,7 +40,7 @@ jobs:
         run: platformio run --environment d1_mini
       
       - name: Perform static checks
-        run: platformio check --environment test --skip-packages
+        run: platformio check --environment test --skip-packages --fail-on-defect=medium --fail-on-defect=high
       
       - name: Set up graphviz
         uses: ts-graphviz/setup-graphviz@v1.2.0
