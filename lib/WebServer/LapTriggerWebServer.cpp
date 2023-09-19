@@ -94,7 +94,7 @@ bool LapTriggerWebServer::begin()
 
         /* Setup websocket server. */
         m_webSocketSrv.onEvent(
-            [this](uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
+            [this](uint8_t num, WStype_t type, uint8_t *payload, size_t length) { // cppcheck-suppress constParameterPointer
                 this->webSocketEvent(num, type, payload, length);
             });
         m_webSocketSrv.begin();
